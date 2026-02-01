@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比特币地址 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <div class="nav-links">
+                <a href="index.html" data-i18n="nav.home">首页</a>
+                <a href="hash.html" data-i18n="nav.hash">哈希</a>
+                <a href="signature.html" data-i18n="nav.signature">签名</a>
+                <a href="address.html" class="active" data-i18n="nav.address">地址</a>
+                <a href="utxo.html" data-i18n="nav.utxo">UTXO</a>
+                <a href="block.html" data-i18n="nav.block">区块</a>
+                <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">📫</span>
+                    <div>
+                        <h1 data-i18n="addr.title">比特币地址</h1>
+                        <p class="section-desc" data-i18n="addr.desc">比特币地址是从公钥派生的简短标识符，用于接收比特币。地址经过多次哈希和编码处理，既安全又便于使用。</p>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="addr.generate.title">🔑 地址生成流程</h3>
+                    <p class="demo-desc" data-i18n="addr.generate.desc">选择地址类型，点击按钮观察完整的地址生成过程。</p>
+
+                    <div class="address-type-selector">
+                        <label data-i18n="addr.type.label">选择地址类型：</label>
+                        <div class="type-buttons">
+                            <button class="type-btn active" data-type="p2pkh">
+                                <span class="type-prefix">1...</span>
+                                <span class="type-name">P2PKH</span>
+                                <span class="type-tag" data-i18n="addr.type.legacy">传统</span>
+                            </button>
+                            <button class="type-btn" data-type="p2sh">
+                                <span class="type-prefix">3...</span>
+                                <span class="type-name">P2SH</span>
+                                <span class="type-tag" data-i18n="addr.type.script">脚本</span>
+                            </button>
+                            <button class="type-btn" data-type="p2wpkh">
+                                <span class="type-prefix">bc1q...</span>
+                                <span class="type-name">P2WPKH</span>
+                                <span class="type-tag" data-i18n="addr.type.segwit">隔离见证</span>
+                            </button>
+                            <button class="type-btn" data-type="p2tr">
+                                <span class="type-prefix">bc1p...</span>
+                                <span class="type-name">P2TR</span>
+                                <span class="type-tag" data-i18n="addr.type.taproot">Taproot</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="generate-address" class="btn primary" data-i18n="addr.generate.btn">🎲 生成新地址</button>
+
+                    <div class="address-process" id="address-process" style="display: none;">
+                        <div class="address-steps-vertical">
+                            <div class="address-step-row" id="addr-step-1">
+                                <div class="step-header">
+                                    <span class="step-icon">🔐</span>
+                                    <span class="step-label" data-i18n="addr.step.privkey">私钥 (256 bit)</span>
+                                </div>
+                                <div class="step-value-full" id="addr-privkey-value">-</div>
+                            </div>
+                            <div class="address-arrow-down" id="addr-arrow-1">↓</div>
+                            <div class="address-step-row" id="addr-step-2">
+                                <div class="step-header">
+                                    <span class="step-icon">🔓</span>
+                                    <span class="step-label" data-i18n="addr.step.pubkey">公钥 (512 bit)</span>
+                                </div>
+                                <div class="step-value-full" id="addr-pubkey-value">-</div>
+                            </div>
+                            <div class="address-arrow-down" id="addr-arrow-2">↓</div>
+                            <div class="address-step-row" id="addr-step-3">
+                                <div class="step-header">
+                                    <span class="step-icon">🔢</span>
+                                    <span class="step-label" data-i18n="addr.step.sha256">SHA-256 (256 bit)</span>
+                                </div>
+                                <div class="step-value-full hash-value" id="addr-sha256-value">-</div>
+                            </div>
+                            <div class="address-arrow-down" id="addr-arrow-3">↓</div>
+                            <div class="address-step-row" id="addr-step-4">
+                                <div class="step-header">
+                                    <span class="step-icon">🔒</span>
+                                    <span class="step-label" data-i18n="addr.step.ripemd">RIPEMD-160 (160 bit)</span>
+                                </div>
+                                <div class="step-value-full hash-value" id="addr-ripemd-value">-</div>
+                            </div>
+                            <div class="address-arrow-down" id="addr-arrow-4">↓</div>
+                            <div class="address-step-row" id="addr-step-5">
+                                <div class="step-header">
+                                    <span class="step-icon">📫</span>
+                                    <span class="step-label" id="addr-encoding-label">Base58Check 编码</span>
+                                </div>
+                                <div class="step-value-full address-value" id="addr-final-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="address-output" id="address-output" style="display: none;">
+                        <label data-i18n="addr.result.label">📬 生成的地址：</label>
+                        <div class="address-display" id="generated-address">-</div>
+                        <div class="address-type-info" id="address-type-info">
+                            <span class="type-badge" id="type-badge">P2PKH</span>
+                            <span class="type-desc" id="type-desc" data-i18n="addr.result.note">注意：这是以 "1" 开头的 P2PKH (Pay-to-Public-Key-Hash) 地址</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="addr.validate.title">✅ 地址验证</h3>
+                    <p class="demo-desc" data-i18n="addr.validate.desc">输入一个比特币地址，验证其格式是否正确。</p>
+
+                    <div class="input-group">
+                        <label data-i18n="addr.validate.input">输入比特币地址：</label>
+                        <input type="text" id="validate-input" placeholder="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2">
+                    </div>
+
+                    <button id="validate-btn" class="btn" data-i18n="addr.validate.btn">🔍 验证地址</button>
+
+                    <div class="validate-result" id="validate-result"></div>
+
+                    <div class="address-breakdown" id="address-breakdown" style="display: none;">
+                        <h4 data-i18n="addr.breakdown.title">📋 地址解析</h4>
+                        <div class="breakdown-grid">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label" data-i18n="addr.breakdown.version">版本字节</span>
+                                <span class="breakdown-value" id="breakdown-version">-</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label" data-i18n="addr.breakdown.hash">公钥哈希</span>
+                                <span class="breakdown-value" id="breakdown-hash">-</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label" data-i18n="addr.breakdown.checksum">校验和</span>
+                                <span class="breakdown-value" id="breakdown-checksum">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4 data-i18n="addr.why.title">💡 为什么不直接使用公钥？</h4>
+                    <ul>
+                        <li><strong data-i18n="addr.why.1">更短</strong> — <span data-i18n="addr.why.1.desc">公钥有 65 字节，地址只有 25 字节（Base58 编码后约 34 字符）</span></li>
+                        <li><strong data-i18n="addr.why.2">有校验</strong> — <span data-i18n="addr.why.2.desc">Base58Check 包含 4 字节校验和，可以检测输入错误</span></li>
+                        <li><strong data-i18n="addr.why.3">量子安全</strong> — <span data-i18n="addr.why.3.desc">地址隐藏了公钥，直到花费时才暴露</span></li>
+                    </ul>
+                </div>
+
+                <div class="card highlight">
+                    <h4 data-i18n="addr.formats.title">📋 比特币地址类型详解</h4>
+                    <div class="address-types-grid">
+                        <div class="address-type-card">
+                            <div class="type-header">
+                                <span class="type-icon">1️⃣</span>
+                                <div>
+                                    <h5>P2PKH</h5>
+                                    <span class="type-full">Pay-to-Public-Key-Hash</span>
+                                </div>
+                            </div>
+                            <div class="type-example">1BvBMSEYstWetqTFn5Au4m4GFg7...</div>
+                            <p class="type-description" data-i18n="addr.type.p2pkh.desc">最早的地址格式（2009年），以 "1" 开头。使用 Base58Check 编码，包含版本字节 0x00。</p>
+                            <div class="type-meta">
+                                <span class="meta-item"><strong data-i18n="addr.type.encoding">编码</strong>: Base58Check</span>
+                                <span class="meta-item"><strong data-i18n="addr.type.length">长度</strong>: 25-34 chars</span>
+                            </div>
+                        </div>
+
+                        <div class="address-type-card">
+                            <div class="type-header">
+                                <span class="type-icon">3️⃣</span>
+                                <div>
+                                    <h5>P2SH</h5>
+                                    <span class="type-full">Pay-to-Script-Hash</span>
+                                </div>
+                            </div>
+                            <div class="type-example">3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy</div>
+                            <p class="type-description" data-i18n="addr.type.p2sh.desc">以 "3" 开头（2012年 BIP16）。支持多重签名和复杂脚本，也用于包装 SegWit (P2SH-P2WPKH)。</p>
+                            <div class="type-meta">
+                                <span class="meta-item"><strong data-i18n="addr.type.encoding">编码</strong>: Base58Check</span>
+                                <span class="meta-item"><strong data-i18n="addr.type.version">版本</strong>: 0x05</span>
+                            </div>
+                        </div>
+
+                        <div class="address-type-card">
+                            <div class="type-header">
+                                <span class="type-icon">⚡</span>
+                                <div>
+                                    <h5>P2WPKH</h5>
+                                    <span class="type-full">Pay-to-Witness-Public-Key-Hash</span>
+                                </div>
+                            </div>
+                            <div class="type-example">bc1qar0srrr7xfkvy5l643lydnw9re...</div>
+                            <p class="type-description" data-i18n="addr.type.p2wpkh.desc">原生隔离见证地址（2017年 BIP141），以 "bc1q" 开头。使用 Bech32 编码，交易手续费更低。</p>
+                            <div class="type-meta">
+                                <span class="meta-item"><strong data-i18n="addr.type.encoding">编码</strong>: Bech32</span>
+                                <span class="meta-item"><strong data-i18n="addr.type.witness">见证版本</strong>: v0</span>
+                            </div>
+                        </div>
+
+                        <div class="address-type-card">
+                            <div class="type-header">
+                                <span class="type-icon">🌱</span>
+                                <div>
+                                    <h5>P2TR</h5>
+                                    <span class="type-full">Pay-to-Taproot</span>
+                                </div>
+                            </div>
+                            <div class="type-example">bc1p5cyxnuxmeuwuvkwfem96lqzszd...</div>
+                            <p class="type-description" data-i18n="addr.type.p2tr.desc">Taproot 地址（2021年 BIP341），以 "bc1p" 开头。使用 Bech32m 编码，支持 Schnorr 签名，隐私性更好。</p>
+                            <div class="type-meta">
+                                <span class="meta-item"><strong data-i18n="addr.type.encoding">编码</strong>: Bech32m</span>
+                                <span class="meta-item"><strong data-i18n="addr.type.witness">见证版本</strong>: v1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4 data-i18n="addr.evolution.title">📈 地址格式演进</h4>
+                    <div class="evolution-timeline">
+                        <div class="timeline-item">
+                            <span class="timeline-year">2009</span>
+                            <span class="timeline-event" data-i18n="addr.evolution.2009">P2PKH - 比特币创世地址格式</span>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="timeline-year">2012</span>
+                            <span class="timeline-event" data-i18n="addr.evolution.2012">P2SH - 支持复杂脚本</span>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="timeline-year">2017</span>
+                            <span class="timeline-event" data-i18n="addr.evolution.2017">P2WPKH/P2WSH - 隔离见证激活</span>
+                        </div>
+                        <div class="timeline-item">
+                            <span class="timeline-year">2021</span>
+                            <span class="timeline-event" data-i18n="addr.evolution.2021">P2TR - Taproot 升级</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <a href="signature.html" class="btn secondary" data-i18n="addr.nav.prev">← 数字签名</a>
+                    <a href="utxo.html" class="btn primary" data-i18n="addr.nav.next">UTXO 模型 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="address.js"></script>
+</body>
+</html>

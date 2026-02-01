@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTXO 模型 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <div class="nav-links">
+                <a href="index.html" data-i18n="nav.home">首页</a>
+                <a href="hash.html" data-i18n="nav.hash">哈希</a>
+                <a href="signature.html" data-i18n="nav.signature">签名</a>
+                <a href="address.html" data-i18n="nav.address">地址</a>
+                <a href="utxo.html" class="active" data-i18n="nav.utxo">UTXO</a>
+                <a href="block.html" data-i18n="nav.block">区块</a>
+                <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">💰</span>
+                    <div>
+                        <h1 data-i18n="utxo.title">UTXO 模型</h1>
+                        <p class="section-desc" data-i18n="utxo.desc">比特币使用 UTXO (Unspent Transaction Output) 模型来追踪余额。没有"账户余额"的概念，只有未花费的交易输出。</p>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="utxo.balance.title">💳 余额计算</h3>
+                    <p class="demo-desc" data-i18n="utxo.balance.desc">你的"余额"实际上是所有属于你的 UTXO 金额之和。点击 UTXO 查看详情。</p>
+
+                    <div class="utxo-wallet">
+                        <div class="wallet-header">
+                            <div class="wallet-address">
+                                <span class="wallet-label" data-i18n="utxo.wallet.address">地址:</span>
+                                <span class="wallet-value" id="wallet-address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                            </div>
+                            <div class="wallet-balance">
+                                <span class="wallet-label" data-i18n="utxo.wallet.balance">总余额:</span>
+                                <span class="wallet-value" id="wallet-balance">0 BTC</span>
+                            </div>
+                        </div>
+
+                        <div class="utxo-list" id="utxo-list">
+                            <!-- UTXOs will be dynamically inserted here -->
+                        </div>
+
+                        <button id="add-utxo" class="btn" data-i18n="utxo.add.btn">➕ 模拟收款</button>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="utxo.tx.title">💸 创建交易</h3>
+                    <p class="demo-desc" data-i18n="utxo.tx.desc">选择要花费的 UTXO，输入接收地址和金额，观察交易如何消耗旧 UTXO 并创建新 UTXO。</p>
+
+                    <div class="tx-builder">
+                        <div class="tx-section">
+                            <h4 data-i18n="utxo.tx.inputs">📥 选择输入 (UTXO)</h4>
+                            <div class="tx-inputs" id="tx-inputs">
+                                <p class="empty-hint" data-i18n="utxo.tx.select">点击上方的 UTXO 来选择作为输入</p>
+                            </div>
+                            <div class="tx-input-total">
+                                <span data-i18n="utxo.tx.input.total">输入总额:</span>
+                                <span id="input-total">0 BTC</span>
+                            </div>
+                        </div>
+
+                        <div class="tx-arrow-section">
+                            <div class="tx-big-arrow">→</div>
+                            <div class="tx-label" data-i18n="utxo.tx.label">交易</div>
+                        </div>
+
+                        <div class="tx-section">
+                            <h4 data-i18n="utxo.tx.outputs">📤 设置输出</h4>
+                            <div class="tx-output-form">
+                                <div class="output-row">
+                                    <label data-i18n="utxo.tx.recipient">接收地址:</label>
+                                    <input type="text" id="recipient-address" placeholder="1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2">
+                                </div>
+                                <div class="output-row">
+                                    <label data-i18n="utxo.tx.amount">发送金额:</label>
+                                    <input type="number" id="send-amount" placeholder="0.5" step="0.001" min="0">
+                                    <span class="unit">BTC</span>
+                                </div>
+                            </div>
+                            <div class="tx-outputs-preview" id="tx-outputs-preview">
+                                <!-- Outputs preview will be shown here -->
+                            </div>
+                            <div class="tx-summary">
+                                <div class="summary-row">
+                                    <span data-i18n="utxo.tx.send">发送:</span>
+                                    <span id="summary-send">0 BTC</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span data-i18n="utxo.tx.change">找零:</span>
+                                    <span id="summary-change">0 BTC</span>
+                                </div>
+                                <div class="summary-row fee">
+                                    <span data-i18n="utxo.tx.fee">手续费:</span>
+                                    <span id="summary-fee">0.0001 BTC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="send-tx" class="btn primary" disabled data-i18n="utxo.tx.send.btn">📤 广播交易</button>
+
+                    <div class="tx-result" id="tx-result" style="display: none;">
+                        <!-- Transaction animation will be shown here -->
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="utxo.chain.title">🔗 UTXO 链追溯</h3>
+                    <p class="demo-desc" data-i18n="utxo.chain.desc">每个 UTXO 都可以追溯到创建它的交易，形成一条交易链。</p>
+
+                    <div class="utxo-chain" id="utxo-chain">
+                        <!-- UTXO chain visualization -->
+                    </div>
+
+                    <button id="trace-utxo" class="btn" data-i18n="utxo.chain.trace">🔍 追溯示例 UTXO</button>
+                </div>
+
+                <div class="card info">
+                    <h4 data-i18n="utxo.compare.title">⚖️ UTXO vs 账户模型</h4>
+                    <div class="compare-table">
+                        <div class="compare-row header">
+                            <span></span>
+                            <span>UTXO</span>
+                            <span data-i18n="utxo.compare.account">账户模型</span>
+                        </div>
+                        <div class="compare-row">
+                            <span data-i18n="utxo.compare.rep">余额表示</span>
+                            <span data-i18n="utxo.compare.rep.utxo">未花费输出集合</span>
+                            <span data-i18n="utxo.compare.rep.account">单一数值</span>
+                        </div>
+                        <div class="compare-row">
+                            <span data-i18n="utxo.compare.parallel">并行验证</span>
+                            <span>✅</span>
+                            <span>❌</span>
+                        </div>
+                        <div class="compare-row">
+                            <span data-i18n="utxo.compare.privacy">隐私性</span>
+                            <span data-i18n="utxo.compare.privacy.utxo">更好（多地址）</span>
+                            <span data-i18n="utxo.compare.privacy.account">较差</span>
+                        </div>
+                        <div class="compare-row">
+                            <span data-i18n="utxo.compare.example">代表</span>
+                            <span>Bitcoin</span>
+                            <span>Ethereum</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card highlight">
+                    <h4 data-i18n="utxo.change.title">💡 找零地址的重要性</h4>
+                    <p data-i18n="utxo.change.desc">当你花费一个 UTXO 时，必须完全花费它。多余的金额会作为"找零"发送回你自己的地址。为了隐私保护，建议每次都使用新的找零地址。</p>
+                </div>
+
+                <div class="page-nav">
+                    <a href="address.html" class="btn secondary" data-i18n="utxo.nav.prev">← 比特币地址</a>
+                    <a href="block.html" class="btn primary" data-i18n="utxo.nav.next">区块结构 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="utxo.js"></script>
+</body>
+</html>

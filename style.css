@@ -1306,3 +1306,887 @@ a.concept:hover {
         max-width: 100%;
     }
 }
+
+/* ==========================================
+   地址页面样式
+   ========================================== */
+
+/* 地址生成垂直流程 */
+.address-steps-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.address-step-row {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+    border: 2px solid transparent;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.address-step-row.active {
+    opacity: 1;
+    border-color: var(--primary);
+    box-shadow: 0 0 12px rgba(247, 147, 26, 0.3);
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.step-header .step-icon {
+    font-size: 1.2rem;
+}
+
+.step-header .step-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.step-value-full {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+    line-height: 1.6;
+    padding: 0.75rem;
+    background: var(--code-bg);
+    border-radius: 4px;
+    color: var(--text);
+}
+
+.step-value-full.hash-value {
+    color: var(--primary);
+}
+
+.step-value-full.address-value {
+    color: var(--success);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.address-arrow-down {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--border);
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.address-arrow-down.active {
+    opacity: 1;
+    color: var(--primary);
+}
+
+.address-flow {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.address-flow .process-step {
+    min-width: 140px;
+}
+
+.address-output {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+}
+
+.address-output label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+}
+
+.address-display {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 1.1rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 2px solid var(--success);
+    text-align: center;
+    word-break: break-all;
+}
+
+.address-note {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.address-value {
+    color: var(--success) !important;
+    font-weight: 600;
+}
+
+.validate-result {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.address-breakdown {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+}
+
+.address-breakdown h4 {
+    margin-bottom: 1rem;
+}
+
+.breakdown-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.breakdown-item {
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.breakdown-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.breakdown-value {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+    color: var(--primary);
+    line-height: 1.6;
+}
+
+/* 地址类型选择器 */
+.address-type-selector {
+    margin-bottom: 1.5rem;
+}
+
+.address-type-selector > label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+}
+
+.type-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: var(--code-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.type-btn:hover {
+    border-color: var(--primary);
+}
+
+.type-btn.active {
+    border-color: var(--primary);
+    background: rgba(247, 147, 26, 0.1);
+}
+
+.type-prefix {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.type-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.type-tag {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--border);
+    border-radius: 10px;
+    color: var(--text-muted);
+}
+
+.type-btn.active .type-tag {
+    background: var(--primary);
+    color: white;
+}
+
+/* 地址类型信息 */
+.address-type-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+}
+
+.type-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: white;
+    background: var(--primary);
+}
+
+.type-badge.p2pkh { background: #6366f1; }
+.type-badge.p2sh { background: #8b5cf6; }
+.type-badge.p2wpkh { background: #06b6d4; }
+.type-badge.p2tr { background: #22c55e; }
+
+.type-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* 地址类型详解网格 */
+.address-types-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.address-type-card {
+    background: var(--code-bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.address-type-card .type-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.address-type-card .type-icon {
+    font-size: 1.5rem;
+}
+
+.address-type-card h5 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.address-type-card .type-full {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.address-type-card .type-example {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.7rem;
+    color: var(--primary);
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    word-break: break-all;
+}
+
+.address-type-card .type-description {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.address-type-card .type-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.address-type-card .meta-item {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.address-type-card .meta-item strong {
+    color: var(--text);
+}
+
+/* 演进时间线 */
+.evolution-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+}
+
+.timeline-year {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--primary);
+    min-width: 50px;
+}
+
+.timeline-event {
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+@media (max-width: 768px) {
+    .type-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .address-types-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+   UTXO 页面样式
+   ========================================== */
+
+.utxo-wallet {
+    background: var(--code-bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.wallet-address,
+.wallet-balance {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.wallet-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.wallet-value {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.9rem;
+}
+
+.wallet-balance .wallet-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.utxo-list {
+    margin-bottom: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.utxo-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.utxo-item:hover {
+    border-color: var(--primary);
+}
+
+.utxo-item.selected {
+    border-color: var(--success);
+    background: #f0fdf4;
+}
+
+.utxo-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+    min-width: 120px;
+}
+
+.utxo-details {
+    flex: 1;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.utxo-txid,
+.utxo-vout {
+    font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.utxo-status {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    background: var(--code-bg);
+}
+
+.utxo-status.selected {
+    background: var(--success);
+    color: white;
+}
+
+.utxo-status.unspent {
+    color: var(--text-muted);
+}
+
+.empty-hint {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+    font-size: 0.9rem;
+}
+
+/* 交易构建器 */
+.tx-builder {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tx-section {
+    flex: 1;
+    min-width: 250px;
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+}
+
+.tx-section h4 {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.tx-arrow-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+.tx-big-arrow {
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.tx-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.tx-inputs {
+    min-height: 80px;
+    margin-bottom: 1rem;
+}
+
+.tx-input-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.input-amount {
+    font-weight: 600;
+}
+
+.input-txid {
+    font-family: 'Monaco', 'Consolas', monospace;
+    color: var(--text-muted);
+}
+
+.tx-input-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    font-weight: 600;
+}
+
+.tx-output-form {
+    margin-bottom: 1rem;
+}
+
+.output-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.output-row label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    min-width: 70px;
+}
+
+.output-row input {
+    flex: 1;
+    font-size: 0.85rem;
+}
+
+.output-row .unit {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.tx-outputs-preview {
+    margin-bottom: 1rem;
+}
+
+.output-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.output-preview-item.change {
+    border-left: 3px solid var(--warning);
+}
+
+.output-label {
+    color: var(--text-muted);
+}
+
+.output-address {
+    flex: 1;
+    font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.output-amount {
+    font-weight: 600;
+}
+
+.tx-summary {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.summary-row.fee {
+    color: var(--warning);
+}
+
+/* 交易动画 */
+.tx-result {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+}
+
+.tx-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.tx-anim-inputs,
+.tx-anim-outputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 120px;
+}
+
+.tx-anim-center {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tx-anim-arrow {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+}
+
+.tx-anim-box {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.tx-anim-box.processing {
+    border-color: var(--primary);
+    animation: pulse 0.3s infinite;
+}
+
+.tx-anim-box.done {
+    border-color: var(--success);
+    background: #f0fdf4;
+}
+
+.anim-utxo {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    text-align: center;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.anim-utxo.input {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+}
+
+.anim-utxo.input.consuming {
+    opacity: 1;
+    transform: scale(1);
+    animation: consumeUtxo 0.5s ease forwards;
+}
+
+@keyframes consumeUtxo {
+    0% { opacity: 1; border-color: var(--border); }
+    50% { border-color: var(--error); }
+    100% { opacity: 0.5; border-color: var(--error); text-decoration: line-through; }
+}
+
+.anim-utxo.output {
+    background: var(--card-bg);
+    border: 2px solid var(--success);
+}
+
+.anim-utxo.output.change {
+    border-color: var(--warning);
+}
+
+.anim-utxo.output.created {
+    opacity: 1;
+    transform: scale(1);
+    animation: createUtxo 0.3s ease;
+}
+
+@keyframes createUtxo {
+    0% { opacity: 0; transform: scale(0.5); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.anim-amount {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.anim-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.tx-fee-display {
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--warning);
+}
+
+/* UTXO 链可视化 */
+.utxo-chain {
+    padding: 1.5rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+.chain-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: max-content;
+}
+
+.chain-connector {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+}
+
+.chain-tx {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+    min-width: 180px;
+}
+
+.chain-tx-header {
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.chain-tx-body {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chain-inputs,
+.chain-outputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.chain-arrow {
+    color: var(--text-muted);
+}
+
+.chain-utxo {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.chain-utxo.consumed {
+    background: #fee2e2;
+    color: var(--error);
+    text-decoration: line-through;
+}
+
+.chain-utxo.sent {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.chain-utxo.change {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+/* 比较表格 */
+.compare-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.compare-row.header {
+    font-weight: 600;
+    background: var(--primary);
+    color: white;
+}
+
+.compare-row span:first-child {
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .tx-builder {
+        flex-direction: column;
+    }
+
+    .tx-arrow-section {
+        transform: rotate(90deg);
+        padding: 1rem 0;
+    }
+
+    .wallet-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tx-animation {
+        flex-direction: column;
+    }
+
+    .tx-anim-center {
+        transform: rotate(90deg);
+    }
+}
