@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区块链 · 比特币白皮书</title>
+    <meta name="description" content="区块链结构的交互式演示">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="hash.html">哈希</a>
+                <a href="signature.html">签名</a>
+                <a href="block.html">区块</a>
+                <a href="chain.html" class="active">区块链</a>
+                <a href="pow.html">工作量证明</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">⛓️</span>
+                    <div>
+                        <h1>区块链</h1>
+                        <p class="section-desc">区块通过哈希指针连接成链。尝试修改某个区块的数据，观察链的完整性如何被破坏。</p>
+                    </div>
+                </div>
+
+                <div class="chain-controls">
+                    <button id="add-block-btn" class="btn">➕ 添加新区块</button>
+                    <button id="reset-chain-btn" class="btn secondary">🔄 重置链</button>
+                </div>
+
+                <div class="blockchain" id="blockchain">
+                    <!-- 区块链将通过JS动态生成 -->
+                </div>
+
+                <div class="card warning" id="tamper-warning" style="display: none;">
+                    <h4>⚠️ 篡改检测</h4>
+                    <p>修改区块数据后，该区块及其后续所有区块的哈希都将失效。攻击者需要重新计算所有后续区块的工作量证明，这在计算上是不可行的。</p>
+                </div>
+
+                <div class="card info">
+                    <h4>🔗 区块链特性</h4>
+                    <ul>
+                        <li><strong>链式结构</strong> — 每个区块包含前一区块的哈希，形成不可断裂的链</li>
+                        <li><strong>不可篡改</strong> — 修改任意区块会导致后续所有区块失效</li>
+                        <li><strong>可验证</strong> — 任何人都可以独立验证整条链的完整性</li>
+                        <li><strong>分布式</strong> — 链的副本存储在网络中的每个节点</li>
+                    </ul>
+                </div>
+
+                <div class="page-nav">
+                    <a href="block.html" class="btn secondary">← 区块结构</a>
+                    <a href="pow.html" class="btn primary">工作量证明 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+    </footer>
+
+    <script src="chain.js"></script>
+</body>
+</html>

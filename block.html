@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区块结构 · 比特币白皮书</title>
+    <meta name="description" content="比特币区块结构的交互式演示">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="hash.html">哈希</a>
+                <a href="signature.html">签名</a>
+                <a href="block.html" class="active">区块</a>
+                <a href="chain.html">区块链</a>
+                <a href="pow.html">工作量证明</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">📦</span>
+                    <div>
+                        <h1>区块结构</h1>
+                        <p class="section-desc">区块包含交易数据和元信息。修改 Nonce 观察哈希值如何变化。</p>
+                    </div>
+                </div>
+
+                <div class="block-demo">
+                    <div class="block-card" id="single-block">
+                        <div class="block-header">
+                            <span class="block-number">区块 #1</span>
+                            <span class="block-status" id="block-status">⏳ 待挖矿</span>
+                        </div>
+
+                        <div class="block-field">
+                            <label>前一区块哈希：</label>
+                            <input type="text" id="prev-hash" value="0000000000000000000000000000000000000000000000000000000000000000" readonly>
+                        </div>
+
+                        <div class="block-field">
+                            <label>时间戳：</label>
+                            <input type="text" id="timestamp" readonly>
+                        </div>
+
+                        <div class="block-field">
+                            <label>交易数据：</label>
+                            <textarea id="block-data">Alice 转给 Bob 10 BTC
+Bob 转给 Charlie 5 BTC</textarea>
+                        </div>
+
+                        <div class="block-field">
+                            <label>Nonce（随机数）：</label>
+                            <div class="nonce-control">
+                                <input type="number" id="nonce" value="0" min="0">
+                                <button id="nonce-minus" class="btn-small">−</button>
+                                <button id="nonce-plus" class="btn-small">+</button>
+                            </div>
+                        </div>
+
+                        <div class="block-field">
+                            <label>区块哈希：</label>
+                            <div class="hash-display block-hash" id="block-hash">计算中...</div>
+                        </div>
+
+                        <div class="difficulty-control">
+                            <label>难度（前导零数量）：</label>
+                            <input type="range" id="difficulty" min="1" max="5" value="2">
+                            <span id="difficulty-value">2</span>
+                        </div>
+
+                        <button id="mine-btn" class="btn primary">⛏️ 开始挖矿</button>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4>📋 区块组成部分</h4>
+                    <ul>
+                        <li><strong>前一区块哈希</strong> — 指向前一个区块，形成链式结构</li>
+                        <li><strong>时间戳</strong> — 区块创建的时间</li>
+                        <li><strong>交易数据</strong> — 本区块包含的所有交易</li>
+                        <li><strong>Nonce</strong> — 用于工作量证明的随机数</li>
+                        <li><strong>区块哈希</strong> — 以上所有数据的 SHA-256 哈希</li>
+                    </ul>
+                </div>
+
+                <div class="page-nav">
+                    <a href="signature.html" class="btn secondary">← 数字签名</a>
+                    <a href="chain.html" class="btn primary">区块链 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+    </footer>
+
+    <script src="block.js"></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字签名 · 比特币白皮书</title>
+    <meta name="description" content="数字签名的交互式演示">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="hash.html">哈希</a>
+                <a href="signature.html" class="active">签名</a>
+                <a href="block.html">区块</a>
+                <a href="chain.html">区块链</a>
+                <a href="pow.html">工作量证明</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">✍️</span>
+                    <div>
+                        <h1>数字签名</h1>
+                        <p class="section-desc">数字签名用于证明交易确实由比特币的所有者发起，防止他人伪造交易。</p>
+                    </div>
+                </div>
+
+                <!-- 密钥对生成 -->
+                <div class="demo-box">
+                    <h3>🔑 第一步：生成密钥对</h3>
+                    <p class="demo-desc">每个用户拥有一对密钥：私钥（保密）和公钥（公开）。私钥用于签名，公钥用于验证。</p>
+
+                    <button id="generate-keys" class="btn primary">🎲 生成新密钥对</button>
+
+                    <div class="key-pair">
+                        <div class="key-box private">
+                            <label>🔐 私钥（保密）</label>
+                            <div class="key-display" id="private-key">点击生成...</div>
+                        </div>
+                        <div class="key-box public">
+                            <label>🔓 公钥（公开）</label>
+                            <div class="key-display" id="public-key">点击生成...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 签名过程 -->
+                <div class="demo-box">
+                    <h3>✍️ 第二步：签名消息</h3>
+                    <p class="demo-desc">使用私钥对消息进行签名，生成数字签名。</p>
+
+                    <div class="input-group">
+                        <label>输入要签名的消息：</label>
+                        <textarea id="message-input" placeholder="例如：Alice 转给 Bob 10 BTC">Alice 转给 Bob 10 BTC</textarea>
+                    </div>
+
+                    <button id="sign-btn" class="btn primary" disabled>✍️ 使用私钥签名</button>
+
+                    <div class="signature-output">
+                        <label>📝 数字签名：</label>
+                        <div class="hash-display" id="signature-output">先生成密钥对...</div>
+                    </div>
+                </div>
+
+                <!-- 验证过程 -->
+                <div class="demo-box">
+                    <h3>✅ 第三步：验证签名</h3>
+                    <p class="demo-desc">任何人都可以使用公钥验证签名是否有效。尝试修改消息，观察验证结果。</p>
+
+                    <div class="input-group">
+                        <label>待验证的消息：</label>
+                        <textarea id="verify-message" placeholder="输入消息..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>待验证的签名：</label>
+                        <textarea id="verify-signature" placeholder="输入签名..."></textarea>
+                    </div>
+
+                    <button id="verify-btn" class="btn" disabled>🔍 使用公钥验证</button>
+
+                    <div class="verify-result" id="verify-result"></div>
+                </div>
+
+                <div class="card info">
+                    <h4>🎯 数字签名的作用</h4>
+                    <ul>
+                        <li><strong>身份验证</strong> — 证明交易由私钥持有者发起</li>
+                        <li><strong>不可伪造</strong> — 没有私钥无法生成有效签名</li>
+                        <li><strong>不可否认</strong> — 签名者无法否认曾经签名</li>
+                        <li><strong>完整性</strong> — 消息被篡改后签名失效</li>
+                    </ul>
+                </div>
+
+                <div class="card highlight">
+                    <h4>₿ 在比特币中的应用</h4>
+                    <p>当你发起一笔比特币交易时，你的钱包会使用私钥对交易进行签名。网络中的其他节点使用你的公钥（从比特币地址派生）验证签名，确认这笔交易确实由你授权。</p>
+                </div>
+
+                <div class="page-nav">
+                    <a href="hash.html" class="btn secondary">← 哈希函数</a>
+                    <a href="block.html" class="btn primary">区块结构 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+    </footer>
+
+    <script src="signature.js"></script>
+</body>
+</html>

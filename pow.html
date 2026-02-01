@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作量证明 · 比特币白皮书</title>
+    <meta name="description" content="工作量证明机制的交互式演示">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="hash.html">哈希</a>
+                <a href="signature.html">签名</a>
+                <a href="block.html">区块</a>
+                <a href="chain.html">区块链</a>
+                <a href="pow.html" class="active">工作量证明</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">⛏️</span>
+                    <div>
+                        <h1>工作量证明</h1>
+                        <p class="section-desc">矿工必须找到一个 Nonce，使得区块哈希满足难度要求（以特定数量的零开头）。</p>
+                    </div>
+                </div>
+
+                <div class="pow-demo">
+                    <div class="pow-stats">
+                        <div class="stat">
+                            <span class="stat-label">目标难度</span>
+                            <span class="stat-value" id="pow-target">哈希必须以 <code>00</code> 开头</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">尝试次数</span>
+                            <span class="stat-value" id="pow-attempts">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">状态</span>
+                            <span class="stat-value" id="pow-status">就绪</span>
+                        </div>
+                    </div>
+
+                    <div class="pow-log" id="pow-log">
+                        <div class="log-entry header">
+                            <span>Nonce</span>
+                            <span>哈希值</span>
+                            <span>结果</span>
+                        </div>
+                    </div>
+
+                    <div class="pow-controls">
+                        <button id="pow-step" class="btn">👆 单步尝试</button>
+                        <button id="pow-auto" class="btn primary">🚀 自动挖矿</button>
+                        <button id="pow-reset" class="btn secondary">🔄 重置</button>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4>💭 为什么需要工作量证明？</h4>
+                    <ul>
+                        <li><strong>防止双重支付</strong> — 使篡改历史交易的代价极高</li>
+                        <li><strong>公平发行</strong> — 新币通过计算工作获得</li>
+                        <li><strong>去中心化共识</strong> — 最长链代表网络的共识</li>
+                        <li><strong>安全保证</strong> — 攻击者需要超过50%算力才能篡改</li>
+                    </ul>
+                </div>
+
+                <div class="card highlight">
+                    <h4>📊 难度调整</h4>
+                    <p>比特币网络每 2016 个区块（约两周）自动调整难度，以保持平均每 10 分钟产生一个新区块。难度越高，需要的前导零越多，找到有效哈希所需的计算量也越大。</p>
+                </div>
+
+                <div class="page-nav">
+                    <a href="chain.html" class="btn secondary">← 区块链</a>
+                    <a href="index.html" class="btn primary">返回首页 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+    </footer>
+
+    <script src="pow.js"></script>
+</body>
+</html>

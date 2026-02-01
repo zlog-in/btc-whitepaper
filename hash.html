@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈希函数 · 比特币白皮书</title>
+    <meta name="description" content="SHA-256 哈希函数的交互式演示">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="hash.html" class="active">哈希</a>
+                <a href="signature.html">签名</a>
+                <a href="block.html">区块</a>
+                <a href="chain.html">区块链</a>
+                <a href="pow.html">工作量证明</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🔐</span>
+                    <div>
+                        <h1>密码学哈希函数</h1>
+                        <p class="section-desc">SHA-256 将任意长度的输入转换为固定256位的输出。输入的微小变化会导致输出的巨大改变。</p>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <div class="input-group">
+                        <label>输入任意内容：</label>
+                        <textarea id="hash-input" placeholder="在这里输入文字...">Hello, Bitcoin!</textarea>
+                        <button id="hash-calc-btn" class="btn primary" style="margin-top: 1rem;">🔢 计算哈希</button>
+                    </div>
+                    <div class="hash-output">
+                        <label>SHA-256 哈希值（二进制 256位）：</label>
+                        <div class="hash-display binary" id="hash-binary">点击按钮计算...</div>
+                    </div>
+                    <div class="hash-output">
+                        <label>SHA-256 哈希值（十六进制 64字符）：</label>
+                        <div class="hash-display" id="hash-output">点击按钮计算...</div>
+                    </div>
+                    <div class="hash-visual" id="hash-visual"></div>
+                </div>
+
+                <div class="card info">
+                    <h4>🎯 哈希函数特性</h4>
+                    <ul>
+                        <li><strong>确定性</strong> — 相同输入永远产生相同输出</li>
+                        <li><strong>快速计算</strong> — 可以快速计算任意输入的哈希</li>
+                        <li><strong>单向性</strong> — 无法从哈希值反推原始输入</li>
+                        <li><strong>雪崩效应</strong> — 输入微小变化导致输出剧烈变化</li>
+                        <li><strong>抗碰撞</strong> — 几乎不可能找到两个不同输入产生相同输出</li>
+                    </ul>
+                </div>
+
+                <div class="page-nav">
+                    <a href="index.html" class="btn secondary">← 返回首页</a>
+                    <a href="signature.html" class="btn primary">数字签名 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+    </footer>
+
+    <script src="hash.js"></script>
+</body>
+</html>
