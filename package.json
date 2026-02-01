@@ -1,0 +1,22 @@
+{
+  "name": "btc-whitepaper",
+  "version": "1.0.0",
+  "description": "比特币白皮书交互式指南",
+  "private": true,
+  "scripts": {
+    "dev": "serve -l 8080",
+    "start": "serve -l 8080",
+    "build": "echo 'Static site, no build needed'"
+  },
+  "keywords": [
+    "bitcoin",
+    "whitepaper",
+    "blockchain",
+    "interactive"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

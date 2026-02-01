@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比特币白皮书 · 交互式指南</title>
+    <meta name="description" content="通过交互式演示理解比特币白皮书的核心概念：哈希函数、区块结构、区块链和工作量证明">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="比特币白皮书 · 交互式指南">
+    <meta property="og:description" content="通过交互式演示理解比特币白皮书的核心概念">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/og-image.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="比特币白皮书 · 交互式指南">
+    <meta name="twitter:description" content="通过交互式演示理解比特币白皮书的核心概念">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <span class="logo">₿ 比特币白皮书</span>
+            <div class="nav-links">
+                <a href="#intro">概述</a>
+                <a href="#hash">哈希</a>
+                <a href="#block">区块</a>
+                <a href="#chain">区块链</a>
+                <a href="#pow">工作量证明</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 引言 -->
+        <section id="intro" class="section">
+            <div class="container">
+                <h1>📜 比特币：一种点对点的电子现金系统</h1>
+                <p class="subtitle">Satoshi Nakamoto · 2008</p>
+
+                <div class="card highlight">
+                    <h3>💡 核心问题</h3>
+                    <p>如何在没有可信第三方的情况下，实现数字货币的安全转账？</p>
+                </div>
+
+                <div class="concepts">
+                    <div class="concept">
+                        <span class="emoji">🔗</span>
+                        <h4>交易链</h4>
+                        <p>每笔交易包含前一笔交易的哈希</p>
+                    </div>
+                    <div class="concept">
+                        <span class="emoji">⏱️</span>
+                        <h4>时间戳服务器</h4>
+                        <p>证明数据在某个时间点存在</p>
+                    </div>
+                    <div class="concept">
+                        <span class="emoji">⛏️</span>
+                        <h4>工作量证明</h4>
+                        <p>通过计算消耗来保证安全性</p>
+                    </div>
+                    <div class="concept">
+                        <span class="emoji">🌐</span>
+                        <h4>去中心化网络</h4>
+                        <p>节点独立验证，共识达成真相</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 哈希函数演示 -->
+        <section id="hash" class="section alt">
+            <div class="container">
+                <h2>🔐 密码学哈希函数</h2>
+                <p class="section-desc">SHA-256 将任意长度的输入转换为固定256位的输出。输入的微小变化会导致输出的巨大改变。</p>
+
+                <div class="demo-box">
+                    <div class="input-group">
+                        <label>输入任意内容：</label>
+                        <textarea id="hash-input" placeholder="在这里输入文字...">Hello, Bitcoin!</textarea>
+                    </div>
+                    <div class="hash-output">
+                        <label>SHA-256 哈希值：</label>
+                        <div class="hash-display" id="hash-output">计算中...</div>
+                    </div>
+                    <div class="hash-visual" id="hash-visual"></div>
+                </div>
+
+                <div class="card info">
+                    <h4>🎯 哈希函数特性</h4>
+                    <ul>
+                        <li><strong>确定性</strong> — 相同输入永远产生相同输出</li>
+                        <li><strong>快速计算</strong> — 可以快速计算任意输入的哈希</li>
+                        <li><strong>单向性</strong> — 无法从哈希值反推原始输入</li>
+                        <li><strong>雪崩效应</strong> — 输入微小变化导致输出剧烈变化</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 区块结构 -->
+        <section id="block" class="section">
+            <div class="container">
+                <h2>📦 区块结构</h2>
+                <p class="section-desc">区块包含交易数据和元信息。修改 Nonce 观察哈希值如何变化。</p>
+
+                <div class="block-demo">
+                    <div class="block-card" id="single-block">
+                        <div class="block-header">
+                            <span class="block-number">区块 #1</span>
+                            <span class="block-status" id="block-status">⏳ 待挖矿</span>
+                        </div>
+
+                        <div class="block-field">
+                            <label>前一区块哈希：</label>
+                            <input type="text" id="prev-hash" value="0000000000000000000000000000000000000000000000000000000000000000" readonly>
+                        </div>
+
+                        <div class="block-field">
+                            <label>时间戳：</label>
+                            <input type="text" id="timestamp" readonly>
+                        </div>
+
+                        <div class="block-field">
+                            <label>交易数据：</label>
+                            <textarea id="block-data">Alice 转给 Bob 10 BTC
+Bob 转给 Charlie 5 BTC</textarea>
+                        </div>
+
+                        <div class="block-field">
+                            <label>Nonce（随机数）：</label>
+                            <div class="nonce-control">
+                                <input type="number" id="nonce" value="0" min="0">
+                                <button id="nonce-minus" class="btn-small">−</button>
+                                <button id="nonce-plus" class="btn-small">+</button>
+                            </div>
+                        </div>
+
+                        <div class="block-field">
+                            <label>区块哈希：</label>
+                            <div class="hash-display block-hash" id="block-hash">计算中...</div>
+                        </div>
+
+                        <div class="difficulty-control">
+                            <label>难度（前导零数量）：</label>
+                            <input type="range" id="difficulty" min="1" max="5" value="2">
+                            <span id="difficulty-value">2</span>
+                        </div>
+
+                        <button id="mine-btn" class="btn primary">⛏️ 开始挖矿</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 区块链演示 -->
+        <section id="chain" class="section alt">
+            <div class="container">
+                <h2>⛓️ 区块链</h2>
+                <p class="section-desc">区块通过哈希指针连接成链。尝试修改某个区块的数据，观察链的完整性如何被破坏。</p>
+
+                <div class="chain-controls">
+                    <button id="add-block-btn" class="btn">➕ 添加新区块</button>
+                    <button id="reset-chain-btn" class="btn secondary">🔄 重置链</button>
+                </div>
+
+                <div class="blockchain" id="blockchain">
+                    <!-- 区块链将通过JS动态生成 -->
+                </div>
+
+                <div class="card warning" id="tamper-warning" style="display: none;">
+                    <h4>⚠️ 篡改检测</h4>
+                    <p>修改区块数据后，该区块及其后续所有区块的哈希都将失效。攻击者需要重新计算所有后续区块的工作量证明，这在计算上是不可行的。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 工作量证明 -->
+        <section id="pow" class="section">
+            <div class="container">
+                <h2>⛏️ 工作量证明</h2>
+                <p class="section-desc">矿工必须找到一个 Nonce，使得区块哈希满足难度要求（以特定数量的零开头）。</p>
+
+                <div class="pow-demo">
+                    <div class="pow-stats">
+                        <div class="stat">
+                            <span class="stat-label">目标难度</span>
+                            <span class="stat-value" id="pow-target">哈希必须以 <code>00</code> 开头</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">尝试次数</span>
+                            <span class="stat-value" id="pow-attempts">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">状态</span>
+                            <span class="stat-value" id="pow-status">就绪</span>
+                        </div>
+                    </div>
+
+                    <div class="pow-log" id="pow-log">
+                        <div class="log-entry header">
+                            <span>Nonce</span>
+                            <span>哈希值</span>
+                            <span>结果</span>
+                        </div>
+                    </div>
+
+                    <div class="pow-controls">
+                        <button id="pow-step" class="btn">👆 单步尝试</button>
+                        <button id="pow-auto" class="btn primary">🚀 自动挖矿</button>
+                        <button id="pow-reset" class="btn secondary">🔄 重置</button>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4>💭 为什么需要工作量证明？</h4>
+                    <ul>
+                        <li><strong>防止双重支付</strong> — 使篡改历史交易的代价极高</li>
+                        <li><strong>公平发行</strong> — 新币通过计算工作获得</li>
+                        <li><strong>去中心化共识</strong> — 最长链代表网络的共识</li>
+                        <li><strong>安全保证</strong> — 攻击者需要超过50%算力才能篡改</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 总结 -->
+        <section id="summary" class="section alt">
+            <div class="container">
+                <h2>📝 总结</h2>
+
+                <div class="summary-flow">
+                    <div class="flow-step">
+                        <span class="flow-num">1</span>
+                        <h4>交易广播</h4>
+                        <p>新交易向所有节点广播</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <span class="flow-num">2</span>
+                        <h4>区块打包</h4>
+                        <p>节点将交易打包成区块</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <span class="flow-num">3</span>
+                        <h4>工作量证明</h4>
+                        <p>节点寻找有效的 Nonce</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <span class="flow-num">4</span>
+                        <h4>广播区块</h4>
+                        <p>找到后向网络广播</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <span class="flow-num">5</span>
+                        <h4>验证接受</h4>
+                        <p>其他节点验证并接受</p>
+                    </div>
+                </div>
+
+                <blockquote class="quote">
+                    "我们提出了一种不依赖信任的电子交易系统。"
+                    <cite>— 中本聪，2008</cite>
+                </blockquote>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
