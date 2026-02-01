@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P 网络 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <div class="nav-links">
+                <a href="index.html" data-i18n="nav.home">首页</a>
+                <a href="hash.html" data-i18n="nav.hash">哈希</a>
+                <a href="signature.html" data-i18n="nav.signature">签名</a>
+                <a href="block.html" data-i18n="nav.block">区块</a>
+                <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                <a href="p2p.html" class="active" data-i18n="nav.p2p">P2P 网络</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🌐</span>
+                    <div>
+                        <h1 data-i18n="p2p.title">P2P 网络</h1>
+                        <p class="section-desc" data-i18n="p2p.desc">比特币运行在一个去中心化的点对点网络上，没有中央服务器，每个节点都是平等的。</p>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="p2p.sim.title">🖥️ 网络模拟</h3>
+                    <p class="demo-desc" data-i18n="p2p.sim.desc">点击添加节点，观察消息如何在网络中传播。点击任意节点发起广播。</p>
+
+                    <div class="p2p-controls">
+                        <button id="add-node-btn" class="btn" data-i18n="p2p.add.btn">➕ 添加节点</button>
+                        <button id="broadcast-btn" class="btn primary" data-i18n="p2p.broadcast.btn">📡 广播消息</button>
+                        <button id="reset-network-btn" class="btn secondary" data-i18n="p2p.reset.btn">🔄 重置网络</button>
+                    </div>
+
+                    <div class="network-container">
+                        <canvas id="network-canvas" width="700" height="400"></canvas>
+                    </div>
+
+                    <div class="network-stats">
+                        <div class="stat">
+                            <span class="stat-label" data-i18n="p2p.nodes.label">节点数量</span>
+                            <span class="stat-value" id="node-count">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label" data-i18n="p2p.connections.label">连接数</span>
+                            <span class="stat-value" id="connection-count">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label" data-i18n="p2p.messages.label">消息传播</span>
+                            <span class="stat-value" id="message-status" data-i18n="p2p.status.idle">空闲</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4 data-i18n="p2p.features.title">🔗 P2P 网络特性</h4>
+                    <ul>
+                        <li><strong data-i18n="p2p.feature.1">去中心化</strong> — <span data-i18n="p2p.feature.1.desc">没有中央服务器，任何节点故障不影响网络运行</span></li>
+                        <li><strong data-i18n="p2p.feature.2">对等性</strong> — <span data-i18n="p2p.feature.2.desc">每个节点既是客户端也是服务器</span></li>
+                        <li><strong data-i18n="p2p.feature.3">消息广播</strong> — <span data-i18n="p2p.feature.3.desc">交易和区块通过泛洪方式传播到整个网络</span></li>
+                        <li><strong data-i18n="p2p.feature.4">自组织</strong> — <span data-i18n="p2p.feature.4.desc">节点可以随时加入或离开，网络自动调整</span></li>
+                    </ul>
+                </div>
+
+                <div class="card highlight">
+                    <h4 data-i18n="p2p.process.title">📨 消息传播过程</h4>
+                    <p data-i18n="p2p.process.desc">当一个节点收到新交易或区块时，它会验证后转发给所有已连接的邻居节点。每个节点都会记录已见过的消息，避免重复转发，最终消息会扩散到整个网络。</p>
+                </div>
+
+                <div class="page-nav">
+                    <a href="pow.html" class="btn secondary" data-i18n="p2p.nav.prev">← 工作量证明</a>
+                    <a href="index.html" class="btn primary" data-i18n="p2p.nav.next">返回首页 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="p2p.js"></script>
+</body>
+</html>

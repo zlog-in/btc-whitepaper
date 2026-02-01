@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>哈希函数 · 比特币白皮书</title>
-    <meta name="description" content="SHA-256 哈希函数的交互式演示">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="nav">
         <div class="nav-content">
-            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
             <div class="nav-links">
-                <a href="index.html">首页</a>
-                <a href="hash.html" class="active">哈希</a>
-                <a href="signature.html">签名</a>
-                <a href="block.html">区块</a>
-                <a href="chain.html">区块链</a>
-                <a href="pow.html">工作量证明</a>
+                <a href="index.html" data-i18n="nav.home">首页</a>
+                <a href="hash.html" class="active" data-i18n="nav.hash">哈希</a>
+                <a href="signature.html" data-i18n="nav.signature">签名</a>
+                <a href="block.html" data-i18n="nav.block">区块</a>
+                <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
             </div>
         </div>
     </nav>
@@ -29,51 +29,52 @@
                 <div class="page-header">
                     <span class="page-icon">🔐</span>
                     <div>
-                        <h1>密码学哈希函数</h1>
-                        <p class="section-desc">SHA-256 将任意长度的输入转换为固定256位的输出。输入的微小变化会导致输出的巨大改变。</p>
+                        <h1 data-i18n="hash.title">密码学哈希函数</h1>
+                        <p class="section-desc" data-i18n="hash.desc">SHA-256 将任意长度的输入转换为固定256位的输出。输入的微小变化会导致输出的巨大改变。</p>
                     </div>
                 </div>
 
                 <div class="demo-box">
                     <div class="input-group">
-                        <label>输入任意内容：</label>
+                        <label data-i18n="hash.input.label">输入任意内容：</label>
                         <textarea id="hash-input" placeholder="在这里输入文字...">Hello, Bitcoin!</textarea>
-                        <button id="hash-calc-btn" class="btn primary" style="margin-top: 1rem;">🔢 计算哈希</button>
+                        <button id="hash-calc-btn" class="btn primary" style="margin-top: 1rem;" data-i18n="hash.calc.btn">🔢 计算哈希</button>
                     </div>
                     <div class="hash-output">
-                        <label>SHA-256 哈希值（二进制 256位）：</label>
-                        <div class="hash-display binary" id="hash-binary">点击按钮计算...</div>
+                        <label data-i18n="hash.binary.label">SHA-256 哈希值（二进制 256位）：</label>
+                        <div class="hash-display binary" id="hash-binary" data-i18n="hash.click.calc">点击按钮计算...</div>
                     </div>
                     <div class="hash-output">
-                        <label>SHA-256 哈希值（十六进制 64字符）：</label>
-                        <div class="hash-display" id="hash-output">点击按钮计算...</div>
+                        <label data-i18n="hash.hex.label">SHA-256 哈希值（十六进制 64字符）：</label>
+                        <div class="hash-display" id="hash-output" data-i18n="hash.click.calc">点击按钮计算...</div>
                     </div>
                     <div class="hash-visual" id="hash-visual"></div>
                 </div>
 
                 <div class="card info">
-                    <h4>🎯 哈希函数特性</h4>
+                    <h4 data-i18n="hash.features.title">🎯 哈希函数特性</h4>
                     <ul>
-                        <li><strong>确定性</strong> — 相同输入永远产生相同输出</li>
-                        <li><strong>快速计算</strong> — 可以快速计算任意输入的哈希</li>
-                        <li><strong>单向性</strong> — 无法从哈希值反推原始输入</li>
-                        <li><strong>雪崩效应</strong> — 输入微小变化导致输出剧烈变化</li>
-                        <li><strong>抗碰撞</strong> — 几乎不可能找到两个不同输入产生相同输出</li>
+                        <li><strong data-i18n="hash.feature.1">确定性</strong> — <span data-i18n="hash.feature.1.desc">相同输入永远产生相同输出</span></li>
+                        <li><strong data-i18n="hash.feature.2">快速计算</strong> — <span data-i18n="hash.feature.2.desc">可以快速计算任意输入的哈希</span></li>
+                        <li><strong data-i18n="hash.feature.3">单向性</strong> — <span data-i18n="hash.feature.3.desc">无法从哈希值反推原始输入</span></li>
+                        <li><strong data-i18n="hash.feature.4">雪崩效应</strong> — <span data-i18n="hash.feature.4.desc">输入微小变化导致输出剧烈变化</span></li>
+                        <li><strong data-i18n="hash.feature.5">抗碰撞</strong> — <span data-i18n="hash.feature.5.desc">几乎不可能找到两个不同输入产生相同输出</span></li>
                     </ul>
                 </div>
 
                 <div class="page-nav">
-                    <a href="index.html" class="btn secondary">← 返回首页</a>
-                    <a href="signature.html" class="btn primary">数字签名 →</a>
+                    <a href="index.html" class="btn secondary" data-i18n="hash.nav.prev">← 返回首页</a>
+                    <a href="signature.html" class="btn primary" data-i18n="hash.nav.next">数字签名 →</a>
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
+    <script src="i18n.js"></script>
     <script src="hash.js"></script>
 </body>
 </html>

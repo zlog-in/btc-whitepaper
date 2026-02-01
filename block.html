@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>区块结构 · 比特币白皮书</title>
-    <meta name="description" content="比特币区块结构的交互式演示">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="nav">
         <div class="nav-content">
-            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
             <div class="nav-links">
-                <a href="index.html">首页</a>
-                <a href="hash.html">哈希</a>
-                <a href="signature.html">签名</a>
-                <a href="block.html" class="active">区块</a>
-                <a href="chain.html">区块链</a>
-                <a href="pow.html">工作量证明</a>
+                <a href="index.html" data-i18n="nav.home">首页</a>
+                <a href="hash.html" data-i18n="nav.hash">哈希</a>
+                <a href="signature.html" data-i18n="nav.signature">签名</a>
+                <a href="block.html" class="active" data-i18n="nav.block">区块</a>
+                <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
             </div>
         </div>
     </nav>
@@ -29,36 +29,36 @@
                 <div class="page-header">
                     <span class="page-icon">📦</span>
                     <div>
-                        <h1>区块结构</h1>
-                        <p class="section-desc">区块包含交易数据和元信息。修改 Nonce 观察哈希值如何变化。</p>
+                        <h1 data-i18n="block.title">区块结构</h1>
+                        <p class="section-desc" data-i18n="block.desc">区块包含交易数据和元信息。修改 Nonce 观察哈希值如何变化。</p>
                     </div>
                 </div>
 
                 <div class="block-demo">
                     <div class="block-card" id="single-block">
                         <div class="block-header">
-                            <span class="block-number">区块 #1</span>
-                            <span class="block-status" id="block-status">⏳ 待挖矿</span>
+                            <span class="block-number" data-i18n="block.number">区块 #1</span>
+                            <span class="block-status" id="block-status" data-i18n="block.status.pending">⏳ 待挖矿</span>
                         </div>
 
                         <div class="block-field">
-                            <label>前一区块哈希：</label>
+                            <label data-i18n="block.prev.label">前一区块哈希：</label>
                             <input type="text" id="prev-hash" value="0000000000000000000000000000000000000000000000000000000000000000" readonly>
                         </div>
 
                         <div class="block-field">
-                            <label>时间戳：</label>
+                            <label data-i18n="block.time.label">时间戳：</label>
                             <input type="text" id="timestamp" readonly>
                         </div>
 
                         <div class="block-field">
-                            <label>交易数据：</label>
+                            <label data-i18n="block.data.label">交易数据：</label>
                             <textarea id="block-data">Alice 转给 Bob 10 BTC
 Bob 转给 Charlie 5 BTC</textarea>
                         </div>
 
                         <div class="block-field">
-                            <label>Nonce（随机数）：</label>
+                            <label data-i18n="block.nonce.label">Nonce（随机数）：</label>
                             <div class="nonce-control">
                                 <input type="number" id="nonce" value="0" min="0">
                                 <button id="nonce-minus" class="btn-small">−</button>
@@ -67,43 +67,44 @@ Bob 转给 Charlie 5 BTC</textarea>
                         </div>
 
                         <div class="block-field">
-                            <label>区块哈希：</label>
+                            <label data-i18n="block.hash.label">区块哈希：</label>
                             <div class="hash-display block-hash" id="block-hash">计算中...</div>
                         </div>
 
                         <div class="difficulty-control">
-                            <label>难度（前导零数量）：</label>
+                            <label data-i18n="block.difficulty.label">难度（前导零数量）：</label>
                             <input type="range" id="difficulty" min="1" max="5" value="2">
                             <span id="difficulty-value">2</span>
                         </div>
 
-                        <button id="mine-btn" class="btn primary">⛏️ 开始挖矿</button>
+                        <button id="mine-btn" class="btn primary" data-i18n="block.mine.btn">⛏️ 开始挖矿</button>
                     </div>
                 </div>
 
                 <div class="card info">
-                    <h4>📋 区块组成部分</h4>
+                    <h4 data-i18n="block.features.title">📋 区块组成部分</h4>
                     <ul>
-                        <li><strong>前一区块哈希</strong> — 指向前一个区块，形成链式结构</li>
-                        <li><strong>时间戳</strong> — 区块创建的时间</li>
-                        <li><strong>交易数据</strong> — 本区块包含的所有交易</li>
-                        <li><strong>Nonce</strong> — 用于工作量证明的随机数</li>
-                        <li><strong>区块哈希</strong> — 以上所有数据的 SHA-256 哈希</li>
+                        <li><strong data-i18n="block.feature.1">前一区块哈希</strong> — <span data-i18n="block.feature.1.desc">指向前一个区块，形成链式结构</span></li>
+                        <li><strong data-i18n="block.feature.2">时间戳</strong> — <span data-i18n="block.feature.2.desc">区块创建的时间</span></li>
+                        <li><strong data-i18n="block.feature.3">交易数据</strong> — <span data-i18n="block.feature.3.desc">本区块包含的所有交易</span></li>
+                        <li><strong data-i18n="block.feature.4">Nonce</strong> — <span data-i18n="block.feature.4.desc">用于工作量证明的随机数</span></li>
+                        <li><strong data-i18n="block.feature.5">区块哈希</strong> — <span data-i18n="block.feature.5.desc">以上所有数据的 SHA-256 哈希</span></li>
                     </ul>
                 </div>
 
                 <div class="page-nav">
-                    <a href="signature.html" class="btn secondary">← 数字签名</a>
-                    <a href="chain.html" class="btn primary">区块链 →</a>
+                    <a href="signature.html" class="btn secondary" data-i18n="block.nav.prev">← 数字签名</a>
+                    <a href="chain.html" class="btn primary" data-i18n="block.nav.next">区块链 →</a>
                 </div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
+    <script src="i18n.js"></script>
     <script src="block.js"></script>
 </body>
 </html>

@@ -91,6 +91,28 @@ body {
     font-weight: 600;
 }
 
+/* 语言切换按钮 */
+.lang-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lang-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
 /* 主内容区偏移 */
 body {
     margin-left: 220px;
@@ -186,12 +208,25 @@ h3 {
     border-bottom: none;
 }
 
+/* 概念分组 */
+.concepts-section {
+    margin-bottom: 2rem;
+}
+
+.concepts-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--primary);
+}
+
 /* 概念网格 */
 .concepts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    margin-top: 2rem;
 }
 
 .concept {
@@ -964,6 +999,43 @@ a.concept:hover {
 
 @media (max-width: 768px) {
     .key-pair {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* P2P 网络页面 */
+.p2p-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.network-container {
+    background: var(--code-bg);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+#network-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.network-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .network-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .concepts {
         grid-template-columns: 1fr;
     }
 }

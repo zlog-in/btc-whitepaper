@@ -5,26 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>比特币白皮书 · 交互式指南</title>
     <meta name="description" content="通过交互式演示理解比特币白皮书的核心概念：哈希函数、区块结构、区块链和工作量证明">
-    <meta property="og:title" content="比特币白皮书 · 交互式指南">
-    <meta property="og:description" content="通过交互式演示理解比特币白皮书的核心概念">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="比特币白皮书 · 交互式指南">
-    <meta name="twitter:description" content="通过交互式演示理解比特币白皮书的核心概念">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="nav">
         <div class="nav-content">
-            <a href="index.html" class="logo">₿ 比特币白皮书</a>
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
             <div class="nav-links">
-                <a href="index.html" class="active">首页</a>
-                <a href="hash.html">哈希</a>
-                <a href="signature.html">签名</a>
-                <a href="block.html">区块</a>
-                <a href="chain.html">区块链</a>
-                <a href="pow.html">工作量证明</a>
+                <a href="index.html" class="active" data-i18n="nav.home">首页</a>
+                <a href="hash.html" data-i18n="nav.hash">哈希</a>
+                <a href="signature.html" data-i18n="nav.signature">签名</a>
+                <a href="block.html" data-i18n="nav.block">区块</a>
+                <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
             </div>
         </div>
     </nav>
@@ -32,87 +27,109 @@
     <main>
         <section class="section hero">
             <div class="container">
-                <h1>📜 比特币：一种点对点的电子现金系统</h1>
-                <p class="subtitle">Satoshi Nakamoto · 2008</p>
+                <h1 data-i18n="home.title">📜 比特币：一种点对点的电子现金系统</h1>
+                <p class="subtitle" data-i18n="home.subtitle">Satoshi Nakamoto · 2008</p>
 
                 <div class="card highlight">
-                    <h3>💡 核心问题</h3>
-                    <p>如何在没有可信第三方的情况下，实现数字货币的安全转账？</p>
+                    <h3 data-i18n="home.problem.title">💡 核心问题</h3>
+                    <p data-i18n="home.problem.desc">如何在没有可信第三方的情况下，实现数字货币的安全转账？</p>
                 </div>
 
-                <div class="concepts">
-                    <a href="hash.html" class="concept">
-                        <span class="emoji">🔐</span>
-                        <h4>哈希函数</h4>
-                        <p>将任意数据转换为固定长度的指纹</p>
-                    </a>
-                    <a href="signature.html" class="concept">
-                        <span class="emoji">✍️</span>
-                        <h4>数字签名</h4>
-                        <p>证明交易由所有者授权发起</p>
-                    </a>
-                    <a href="block.html" class="concept">
-                        <span class="emoji">📦</span>
-                        <h4>区块结构</h4>
-                        <p>交易数据的打包与组织方式</p>
-                    </a>
-                    <a href="chain.html" class="concept">
-                        <span class="emoji">⛓️</span>
-                        <h4>区块链</h4>
-                        <p>通过哈希指针连接的不可篡改账本</p>
-                    </a>
-                    <a href="pow.html" class="concept">
-                        <span class="emoji">⛏️</span>
-                        <h4>工作量证明</h4>
-                        <p>通过计算消耗来保证网络安全</p>
-                    </a>
+                <div class="concepts-section">
+                    <h3 class="concepts-label">🔧 密码学基础</h3>
+                    <div class="concepts">
+                        <a href="hash.html" class="concept">
+                            <span class="emoji">🔐</span>
+                            <h4 data-i18n="home.hash.title">哈希函数</h4>
+                            <p data-i18n="home.hash.desc">将任意数据转换为固定长度的指纹</p>
+                        </a>
+                        <a href="signature.html" class="concept">
+                            <span class="emoji">✍️</span>
+                            <h4 data-i18n="home.signature.title">数字签名</h4>
+                            <p data-i18n="home.signature.desc">证明交易由所有者授权发起</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="concepts-section">
+                    <h3 class="concepts-label">📊 数据结构</h3>
+                    <div class="concepts">
+                        <a href="block.html" class="concept">
+                            <span class="emoji">📦</span>
+                            <h4 data-i18n="home.block.title">区块结构</h4>
+                            <p data-i18n="home.block.desc">交易数据的打包与组织方式</p>
+                        </a>
+                        <a href="chain.html" class="concept">
+                            <span class="emoji">⛓️</span>
+                            <h4 data-i18n="home.chain.title">区块链</h4>
+                            <p data-i18n="home.chain.desc">通过哈希指针连接的不可篡改账本</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="concepts-section">
+                    <h3 class="concepts-label">🌐 网络与共识</h3>
+                    <div class="concepts">
+                        <a href="pow.html" class="concept">
+                            <span class="emoji">⛏️</span>
+                            <h4 data-i18n="home.pow.title">工作量证明</h4>
+                            <p data-i18n="home.pow.desc">通过计算消耗来保证网络安全</p>
+                        </a>
+                        <a href="p2p.html" class="concept">
+                            <span class="emoji">🌐</span>
+                            <h4 data-i18n="home.p2p.title">P2P 网络</h4>
+                            <p data-i18n="home.p2p.desc">去中心化的点对点网络架构</p>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="summary-section">
-                    <h2>📝 比特币网络运作流程</h2>
+                    <h2 data-i18n="home.flow.title">📝 比特币网络运作流程</h2>
                     <div class="summary-flow">
                         <div class="flow-step">
                             <span class="flow-num">1</span>
-                            <h4>交易广播</h4>
-                            <p>新交易向所有节点广播</p>
+                            <h4 data-i18n="home.flow.1.title">交易广播</h4>
+                            <p data-i18n="home.flow.1.desc">新交易向所有节点广播</p>
                         </div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-step">
                             <span class="flow-num">2</span>
-                            <h4>区块打包</h4>
-                            <p>节点将交易打包成区块</p>
+                            <h4 data-i18n="home.flow.2.title">区块打包</h4>
+                            <p data-i18n="home.flow.2.desc">节点将交易打包成区块</p>
                         </div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-step">
                             <span class="flow-num">3</span>
-                            <h4>工作量证明</h4>
-                            <p>节点寻找有效的 Nonce</p>
+                            <h4 data-i18n="home.flow.3.title">工作量证明</h4>
+                            <p data-i18n="home.flow.3.desc">节点寻找有效的 Nonce</p>
                         </div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-step">
                             <span class="flow-num">4</span>
-                            <h4>广播区块</h4>
-                            <p>找到后向网络广播</p>
+                            <h4 data-i18n="home.flow.4.title">广播区块</h4>
+                            <p data-i18n="home.flow.4.desc">找到后向网络广播</p>
                         </div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-step">
                             <span class="flow-num">5</span>
-                            <h4>验证接受</h4>
-                            <p>其他节点验证并接受</p>
+                            <h4 data-i18n="home.flow.5.title">验证接受</h4>
+                            <p data-i18n="home.flow.5.desc">其他节点验证并接受</p>
                         </div>
                     </div>
                 </div>
 
                 <blockquote class="quote">
-                    "我们提出了一种不依赖信任的电子交易系统。"
-                    <cite>— 中本聪，2008</cite>
+                    <span data-i18n="home.quote">"我们提出了一种不依赖信任的电子交易系统。"</span>
+                    <cite data-i18n="home.quote.author">— 中本聪，2008</cite>
                 </blockquote>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>基于 Satoshi Nakamoto 的<a href="https://bitcoin.org/bitcoin.pdf" target="_blank">比特币白皮书</a>制作</p>
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
+
+    <script src="i18n.js"></script>
 </body>
 </html>
