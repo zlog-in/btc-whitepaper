@@ -1301,3 +1301,97 @@ function initNavGroups() {
         });
     });
 }
+
+// 移动端菜单功能
+function initMobileMenu() {
+    // 只在移动端宽度下初始化
+    if (window.innerWidth > 768) return;
+
+    const nav = document.querySelector('.nav');
+    if (!nav) return;
+
+    // 创建移动端头部
+    let mobileHeader = document.querySelector('.mobile-header');
+    if (!mobileHeader) {
+        mobileHeader = document.createElement('div');
+        mobileHeader.className = 'mobile-header';
+        mobileHeader.innerHTML = `
+            <button class="mobile-menu-btn" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="index.html" class="logo">₿ Bitcoin</a>
+        `;
+        document.body.insertBefore(mobileHeader, document.body.firstChild);
+    }
+
+    // 创建遮罩层
+    let overlay = document.querySelector('.mobile-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'mobile-overlay';
+        document.body.appendChild(overlay);
+    }
+
+    const menuBtn = mobileHeader.querySelector('.mobile-menu-btn');
+
+    // 切换菜单
+    function toggleMenu() {
+        nav.classList.toggle('mobile-open');
+        menuBtn.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+    }
+
+    // 关闭菜单
+    function closeMenu() {
+        nav.classList.remove('mobile-open');
+        menuBtn.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
+
+    // 绑定事件
+    menuBtn.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', closeMenu);
+
+    // 点击导航链接后关闭菜单
+    nav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    // ESC 键关闭菜单
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMenu();
+        }
+    });
+}
+
+// 窗口大小变化时处理
+function handleResize() {
+    const mobileHeader = document.querySelector('.mobile-header');
+    const overlay = document.querySelector('.mobile-overlay');
+    const nav = document.querySelector('.nav');
+
+    if (window.innerWidth > 768) {
+        // 桌面端：隐藏移动端元素
+        if (mobileHeader) mobileHeader.style.display = 'none';
+        if (overlay) overlay.classList.remove('active');
+        if (nav) nav.classList.remove('mobile-open');
+        document.body.classList.remove('menu-open');
+    } else {
+        // 移动端：显示移动端头部
+        if (mobileHeader) mobileHeader.style.display = 'flex';
+        // 如果移动端头部不存在，重新初始化
+        if (!mobileHeader) initMobileMenu();
+    }
+}
+
+// 页面加载和窗口调整时初始化
+window.addEventListener('resize', handleResize);
+window.addEventListener('load', () => {
+    initMobileMenu();
+    handleResize();
+});
