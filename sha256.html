@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHA-256 计算过程 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="sha256.html" class="active sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📜</span><span data-i18n="nav.group.script">脚本</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="multisig.html" data-i18n="nav.multisig">多重签名</a>
+                        <a href="timelock.html" data-i18n="nav.timelock">时间锁</a>
+                        <a href="htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🔬</span>
+                    <div>
+                        <h1 data-i18n="sha256.page.title">SHA-256 计算过程</h1>
+                        <p class="section-desc" data-i18n="sha256.page.desc">深入了解 SHA-256 哈希算法的完整计算过程，包括消息填充、消息调度、64轮压缩函数和最终哈希生成。</p>
+                    </div>
+                </div>
+
+                <!-- SHA-256 算法结构图 -->
+                <div class="demo-box sha256-demo" style="margin-top: 2rem;">
+                    <div class="sha256-circuit">
+                        <div class="circuit-title" data-i18n="sha256.circuit.title">SHA-256 算法结构</div>
+
+                        <!-- 整体流程图 -->
+                        <div class="circuit-overview">
+                            <!-- 输入 -->
+                            <div class="circuit-stage input-stage">
+                                <div class="stage-label" data-i18n="sha256.circuit.input">输入消息</div>
+                                <div class="stage-box input-box">
+                                    <span class="box-icon">📝</span>
+                                    <span class="box-text">Message</span>
+                                </div>
+                            </div>
+
+                            <div class="circuit-arrow">▼</div>
+
+                            <!-- 预处理 -->
+                            <div class="circuit-stage" data-step="padding">
+                                <div class="stage-box process-box">
+                                    <div class="box-header" data-i18n="sha256.circuit.padding">1. 消息填充</div>
+                                    <div class="box-content">
+                                        <code>M + 0x80 + 0...0 + len</code>
+                                    </div>
+                                    <div class="box-output">512 bits block</div>
+                                </div>
+                            </div>
+
+                            <div class="circuit-arrow">▼</div>
+
+                            <!-- 消息调度 -->
+                            <div class="circuit-stage" data-step="schedule">
+                                <div class="stage-box process-box schedule-box">
+                                    <div class="box-header" data-i18n="sha256.circuit.schedule">2. 消息调度</div>
+                                    <div class="box-content">
+                                        <div class="schedule-split">
+                                            <div class="schedule-part">
+                                                <span class="part-label">W[0-15]</span>
+                                                <span class="part-desc" data-i18n="sha256.circuit.direct">直接提取</span>
+                                            </div>
+                                            <div class="schedule-part">
+                                                <span class="part-label">W[16-63]</span>
+                                                <span class="part-desc">σ₀ + σ₁</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box-output">W[0..63]</div>
+                                </div>
+                            </div>
+
+                            <div class="circuit-arrow">▼</div>
+
+                            <!-- 压缩函数核心 -->
+                            <div class="circuit-stage compress-stage" data-step="compress">
+                                <div class="stage-box process-box compress-box">
+                                    <div class="box-header" data-i18n="sha256.circuit.compress">3. 压缩函数 (64轮)</div>
+
+                                    <!-- 压缩函数电路图 -->
+                                    <div class="compress-circuit">
+                                        <!-- 初始值 -->
+                                        <div class="compress-init">
+                                            <div class="init-label">H₀...H₇</div>
+                                            <div class="init-arrow">→</div>
+                                            <div class="var-group">
+                                                <span class="var-chip">a</span>
+                                                <span class="var-chip">b</span>
+                                                <span class="var-chip">c</span>
+                                                <span class="var-chip">d</span>
+                                                <span class="var-chip">e</span>
+                                                <span class="var-chip">f</span>
+                                                <span class="var-chip">g</span>
+                                                <span class="var-chip">h</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- 单轮运算示意 -->
+                                        <div class="round-circuit">
+                                            <div class="round-label" data-i18n="sha256.circuit.round">单轮运算</div>
+                                            <div class="round-diagram">
+                                                <!-- 左侧：Maj 分支 -->
+                                                <div class="branch left-branch">
+                                                    <div class="func-box sigma">Σ₀(a)</div>
+                                                    <div class="branch-arrow">↓</div>
+                                                    <div class="func-box maj">Maj(a,b,c)</div>
+                                                    <div class="branch-arrow">↓</div>
+                                                    <div class="func-box add">+</div>
+                                                    <div class="branch-result">temp2</div>
+                                                </div>
+
+                                                <!-- 中间：变量移位 -->
+                                                <div class="shift-indicator">
+                                                    <div class="shift-arrows">
+                                                        <span>a→b→c→d</span>
+                                                        <span>e→f→g→h</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- 右侧：Ch 分支 -->
+                                                <div class="branch right-branch">
+                                                    <div class="func-box sigma">Σ₁(e)</div>
+                                                    <div class="branch-arrow">↓</div>
+                                                    <div class="func-box ch">Ch(e,f,g)</div>
+                                                    <div class="branch-arrow">↓</div>
+                                                    <div class="func-box add-multi">+ h + K + W</div>
+                                                    <div class="branch-result">temp1</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- 更新公式 -->
+                                            <div class="update-formulas">
+                                                <div class="formula"><span class="var">a</span> ← temp1 + temp2</div>
+                                                <div class="formula"><span class="var">e</span> ← d + temp1</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 循环指示 -->
+                                        <div class="loop-indicator">
+                                            <span class="loop-icon">🔄</span>
+                                            <span class="loop-text">× 64 rounds</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="circuit-arrow">▼</div>
+
+                            <!-- 最终加法 -->
+                            <div class="circuit-stage" data-step="final">
+                                <div class="stage-box process-box final-box">
+                                    <div class="box-header" data-i18n="sha256.circuit.final">4. 最终哈希</div>
+                                    <div class="box-content">
+                                        <code>H₀+=a, H₁+=b, ... H₇+=h</code>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="circuit-arrow">▼</div>
+
+                            <!-- 输出 -->
+                            <div class="circuit-stage output-stage">
+                                <div class="stage-box output-box">
+                                    <span class="box-icon">🔐</span>
+                                    <span class="box-text">256-bit Hash</span>
+                                </div>
+                                <div class="output-display">
+                                    <span class="hash-segment">H₀</span>
+                                    <span class="hash-concat">||</span>
+                                    <span class="hash-segment">H₁</span>
+                                    <span class="hash-concat">||</span>
+                                    <span class="hash-segment">...</span>
+                                    <span class="hash-concat">||</span>
+                                    <span class="hash-segment">H₇</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 图例 -->
+                        <div class="circuit-legend">
+                            <div class="legend-item">
+                                <span class="legend-symbol func-box sigma">Σ</span>
+                                <span class="legend-desc" data-i18n="sha256.circuit.legend.sigma">位旋转异或</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-symbol func-box ch">Ch</span>
+                                <span class="legend-desc" data-i18n="sha256.circuit.legend.ch">选择函数 (e∧f)⊕(¬e∧g)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-symbol func-box maj">Maj</span>
+                                <span class="legend-desc" data-i18n="sha256.circuit.legend.maj">多数函数 (a∧b)⊕(a∧c)⊕(b∧c)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-symbol const-chip">K</span>
+                                <span class="legend-desc" data-i18n="sha256.circuit.legend.k">轮常量 K[0..63]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="demo-box sha256-input-box" style="margin-top: 2rem;">
+                    <div class="input-group">
+                        <label data-i18n="sha256.input.label">输入要计算哈希的消息：</label>
+                        <textarea id="sha256-input" placeholder="在这里输入文字...">Hi</textarea>
+                        <button id="sha256-calc-btn" class="btn primary" style="margin-top: 1rem;" data-i18n="sha256.calc.btn">🔬 开始计算</button>
+                    </div>
+                </div>
+
+                <!-- SHA-256 计算过程演示 -->
+                <div class="demo-box sha256-demo" id="sha256-process-demo" style="display:none; margin-top: 2rem;">
+                    <h3 data-i18n="sha256.process.title">SHA-256 计算过程</h3>
+                    <p class="demo-desc" data-i18n="sha256.process.desc">逐步观察 SHA-256 的完整计算过程，包括消息填充、消息调度、压缩函数和最终哈希生成。</p>
+
+                    <!-- 步骤导航 -->
+                    <div class="sha256-steps">
+                        <button class="sha256-step-btn active" data-step="padding" data-i18n="sha256.step.padding">1. 消息填充</button>
+                        <button class="sha256-step-btn" data-step="schedule" data-i18n="sha256.step.schedule">2. 消息调度</button>
+                        <button class="sha256-step-btn" data-step="compress" data-i18n="sha256.step.compress">3. 压缩函数</button>
+                        <button class="sha256-step-btn" data-step="final" data-i18n="sha256.step.final">4. 最终哈希</button>
+                    </div>
+
+                    <!-- 步骤1: 消息填充 -->
+                    <div class="sha256-panel" id="padding-panel">
+                        <div class="panel-header">
+                            <h4 data-i18n="sha256.padding.title">消息填充 (Padding)</h4>
+                            <p class="panel-desc" data-i18n="sha256.padding.desc">将消息填充至 512 位的倍数：原文 + 0x80 + 零填充 + 64位长度</p>
+                        </div>
+                        <div class="byte-grid" id="padding-visual"></div>
+                        <div class="padding-legend" id="padding-legend"></div>
+                    </div>
+
+                    <!-- 步骤2: 消息调度 -->
+                    <div class="sha256-panel" id="schedule-panel" style="display:none">
+                        <div class="panel-header">
+                            <h4 data-i18n="sha256.schedule.title">消息调度 (Message Schedule)</h4>
+                            <p class="panel-desc" data-i18n="sha256.schedule.desc">生成 64 个字 W[0..63]。W[0..15] 直接从消息块提取，W[16..63] 通过公式计算。点击查看计算过程。</p>
+                        </div>
+                        <div class="w-grid" id="w-array"></div>
+                        <div class="w-detail" id="w-computation">
+                            <p class="w-detail-hint" data-i18n="sha256.w.click">点击上方的 W[i] 查看计算详情</p>
+                        </div>
+                    </div>
+
+                    <!-- 步骤3: 压缩函数 -->
+                    <div class="sha256-panel" id="compress-panel" style="display:none">
+                        <div class="panel-header">
+                            <h4 data-i18n="sha256.compress.title">压缩函数 (Compression)</h4>
+                            <p class="panel-desc" data-i18n="sha256.compress.desc">执行 64 轮压缩运算，每轮更新工作变量 a-h。</p>
+                        </div>
+                        <div class="round-controls">
+                            <div class="round-controls-top">
+                                <button id="prev-round" class="round-btn">⏮</button>
+                                <button id="play-pause" class="round-btn play-btn">▶</button>
+                                <button id="next-round" class="round-btn">⏭</button>
+                                <button id="reset-rounds" class="round-btn">🔄</button>
+                                <span class="round-indicator"><span data-i18n="sha256.round.label">轮次</span> <span id="current-round">0</span>/63</span>
+                            </div>
+                            <div class="round-progress-container" id="round-progress-container">
+                                <div class="round-progress-bar" id="round-progress-bar"></div>
+                                <div class="round-progress-marks" id="round-progress-marks"></div>
+                            </div>
+                        </div>
+                        <div class="working-vars" id="working-vars"></div>
+                        <div class="round-operations" id="round-ops"></div>
+                    </div>
+
+                    <!-- 步骤4: 最终哈希 -->
+                    <div class="sha256-panel" id="final-panel" style="display:none">
+                        <div class="panel-header">
+                            <h4 data-i18n="sha256.final.title">最终哈希 (Final Hash)</h4>
+                            <p class="panel-desc" data-i18n="sha256.final.desc">将工作变量 a-h 加回初始哈希值 H0-H7，得到最终的 256 位哈希。</p>
+                        </div>
+                        <div class="final-addition" id="final-add"></div>
+                        <div class="final-hash" id="final-hash-result"></div>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <a href="hash.html" class="btn secondary" data-i18n="sha256.nav.prev">← 哈希函数</a>
+                    <a href="signature.html" class="btn primary" data-i18n="sha256.nav.next">数字签名 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="sha256-demo.js"></script>
+</body>
+</html>

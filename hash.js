@@ -51,8 +51,15 @@ function sha256(message) {
         bytes.push(0);
     }
 
-    for (let i = 7; i >= 0; i--) {
-        bytes.push((bitLength >>> (i * 8)) & 0xff);
+    // 添加64位长度（大端序）
+    // 注意：JavaScript 位移只支持 32 位，需要分开处理高32位和低32位
+    const highBits = Math.floor(bitLength / 0x100000000);
+    const lowBits = bitLength >>> 0;
+    for (let i = 3; i >= 0; i--) {
+        bytes.push((highBits >>> (i * 8)) & 0xff);
+    }
+    for (let i = 3; i >= 0; i--) {
+        bytes.push((lowBits >>> (i * 8)) & 0xff);
     }
 
     for (let chunk = 0; chunk < bytes.length; chunk += 64) {
