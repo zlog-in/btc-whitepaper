@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间锁 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📜</span><span data-i18n="nav.group.script">脚本</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="multisig.html" data-i18n="nav.multisig">多重签名</a>
+                        <a href="timelock.html" class="active" data-i18n="nav.timelock">时间锁</a>
+                        <a href="htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">⏰</span>
+                    <div>
+                        <h1 data-i18n="timelock.title">时间锁 (CLTV)</h1>
+                        <p class="section-desc" data-i18n="timelock.desc">时间锁脚本使资金在指定的区块高度或时间戳之前无法被花费，常用于定期释放、遗产继承等场景。</p>
+                    </div>
+                </div>
+
+                <!-- 区块高度模拟器 -->
+                <div class="demo-box highlight-box">
+                    <h3 data-i18n="timelock.simulator.title">⛏️ 区块高度模拟器</h3>
+                    <p class="demo-desc" data-i18n="timelock.simulator.desc">模拟比特币网络的区块高度。点击"挖矿"按钮增加区块高度，观察时间锁如何解锁。</p>
+                    <div class="block-simulator">
+                        <div class="current-block">
+                            <span class="block-label" data-i18n="timelock.current.block">当前区块高度</span>
+                            <span class="block-value" id="current-block-height">840000</span>
+                        </div>
+                        <button class="btn" id="mine-block-btn">⛏️ <span data-i18n="timelock.mine">挖矿 (+1 区块)</span></button>
+                        <button class="btn secondary" id="mine-10-btn">⛏️ +10</button>
+                        <button class="btn secondary" id="mine-100-btn">⛏️ +100</button>
+                    </div>
+                </div>
+
+                <!-- 步骤1: 创建时间锁地址 -->
+                <div class="demo-box">
+                    <h3 data-i18n="timelock.step1.title">🔒 第一步：创建时间锁地址</h3>
+                    <p class="demo-desc" data-i18n="timelock.step1.desc">设置解锁区块高度，生成密钥对，创建时间锁脚本地址。</p>
+
+                    <div class="config-panel">
+                        <div class="config-row">
+                            <label data-i18n="timelock.unlock.height">解锁区块高度：</label>
+                            <input type="number" id="lock-height" value="840100" min="1" max="10000000">
+                            <span class="config-hint" id="lock-hint"></span>
+                        </div>
+                        <button class="btn primary" id="create-timelock-btn" data-i18n="timelock.create">🔑 创建时间锁地址</button>
+                    </div>
+
+                    <div class="timelock-creation" id="timelock-creation" style="display: none;">
+                        <div class="creation-step">
+                            <div class="step-badge">1</div>
+                            <div class="step-content">
+                                <h4 data-i18n="timelock.keypair">密钥对</h4>
+                                <div class="key-display">
+                                    <div class="key-row">
+                                        <span class="key-label">🔐 <span data-i18n="timelock.privatekey">私钥</span>:</span>
+                                        <code id="tl-private-key"></code>
+                                    </div>
+                                    <div class="key-row">
+                                        <span class="key-label">🔓 <span data-i18n="timelock.publickey">公钥</span>:</span>
+                                        <code id="tl-public-key"></code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="creation-step">
+                            <div class="step-badge">2</div>
+                            <div class="step-content">
+                                <h4 data-i18n="timelock.script">赎回脚本</h4>
+                                <div class="script-display">
+                                    <div class="script-visual" id="tl-script-visual"></div>
+                                    <div class="script-hex">
+                                        <code id="tl-script-hex"></code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="creation-step">
+                            <div class="step-badge">3</div>
+                            <div class="step-content">
+                                <h4 data-i18n="timelock.address">P2SH 地址</h4>
+                                <div class="address-display">
+                                    <code class="address-value" id="tl-address"></code>
+                                    <div class="lock-status" id="lock-status"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤2: 尝试花费 -->
+                <div class="demo-box">
+                    <h3 data-i18n="timelock.step2.title">💸 第二步：尝试花费</h3>
+                    <p class="demo-desc" data-i18n="timelock.step2.desc">尝试从时间锁地址花费资金。如果当前区块高度低于解锁高度，交易将被拒绝。</p>
+
+                    <div class="spend-simulation" id="spend-simulation" style="display: none;">
+                        <div class="spend-info">
+                            <div class="spend-field">
+                                <label data-i18n="timelock.from">发送地址：</label>
+                                <code id="spend-from"></code>
+                            </div>
+                            <div class="spend-field">
+                                <label data-i18n="timelock.to">接收地址：</label>
+                                <code>1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</code>
+                            </div>
+                            <div class="spend-field">
+                                <label data-i18n="timelock.amount">金额：</label>
+                                <code>1.0 BTC</code>
+                            </div>
+                        </div>
+
+                        <div class="timelock-check" id="timelock-check">
+                            <div class="check-row">
+                                <span class="check-label" data-i18n="timelock.current">当前区块：</span>
+                                <span class="check-value" id="check-current"></span>
+                            </div>
+                            <div class="check-row">
+                                <span class="check-label" data-i18n="timelock.required">解锁区块：</span>
+                                <span class="check-value" id="check-required"></span>
+                            </div>
+                            <div class="check-row result">
+                                <span class="check-label" data-i18n="timelock.status">状态：</span>
+                                <span class="check-value" id="check-status"></span>
+                            </div>
+                        </div>
+
+                        <button class="btn primary" id="try-spend-btn" data-i18n="timelock.try.spend">✍️ 尝试签名并花费</button>
+
+                        <div class="spend-result" id="spend-result" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- 步骤3: 验证过程 -->
+                <div class="demo-box">
+                    <h3 data-i18n="timelock.step3.title">✅ 第三步：验证过程</h3>
+                    <p class="demo-desc" data-i18n="timelock.step3.desc">观察网络如何验证时间锁交易。</p>
+
+                    <div class="verify-process" id="verify-process" style="display: none;">
+                        <div class="verify-timeline" id="verify-timeline"></div>
+                    </div>
+                </div>
+
+                <!-- 应用场景 -->
+                <div class="card info">
+                    <h4 data-i18n="timelock.usecases.title">💡 时间锁应用场景</h4>
+                    <div class="usecase-grid">
+                        <div class="usecase-item">
+                            <span class="usecase-icon">📅</span>
+                            <div>
+                                <strong data-i18n="timelock.usecase.1">定投锁仓</strong>
+                                <p data-i18n="timelock.usecase.1.desc">将比特币锁定一段时间，避免冲动交易</p>
+                            </div>
+                        </div>
+                        <div class="usecase-item">
+                            <span class="usecase-icon">📜</span>
+                            <div>
+                                <strong data-i18n="timelock.usecase.2">遗产继承</strong>
+                                <p data-i18n="timelock.usecase.2.desc">设置多年后才能花费，作为遗产传给后代</p>
+                            </div>
+                        </div>
+                        <div class="usecase-item">
+                            <span class="usecase-icon">💼</span>
+                            <div>
+                                <strong data-i18n="timelock.usecase.3">员工期权</strong>
+                                <p data-i18n="timelock.usecase.3.desc">按时间分批释放的比特币奖励</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <a href="multisig.html" class="btn secondary" data-i18n="timelock.nav.prev">← 多重签名</a>
+                    <a href="htlc.html" class="btn primary" data-i18n="timelock.nav.next">哈希时间锁 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="timelock.js"></script>
+</body>
+</html>

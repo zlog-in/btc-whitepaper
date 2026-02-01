@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈希时间锁 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📜</span><span data-i18n="nav.group.script">脚本</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="multisig.html" data-i18n="nav.multisig">多重签名</a>
+                        <a href="timelock.html" data-i18n="nav.timelock">时间锁</a>
+                        <a href="htlc.html" class="active" data-i18n="nav.htlc">哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🔗</span>
+                    <div>
+                        <h1 data-i18n="htlc.title">哈希时间锁合约 (HTLC)</h1>
+                        <p class="section-desc" data-i18n="htlc.desc">HTLC 结合了哈希锁和时间锁，支持双路径解锁：通过原像揭示或超时退款。这是闪电网络和跨链原子交换的核心技术。</p>
+                    </div>
+                </div>
+
+                <!-- 区块高度模拟器 -->
+                <div class="demo-box highlight-box">
+                    <h3 data-i18n="htlc.simulator.title">⛏️ 区块高度模拟器</h3>
+                    <p class="demo-desc" data-i18n="htlc.simulator.desc">模拟比特币网络的区块高度，用于测试时间锁条件。</p>
+                    <div class="block-simulator">
+                        <div class="current-block">
+                            <span class="block-label" data-i18n="htlc.current.block">当前区块高度</span>
+                            <span class="block-value" id="current-block-height">840000</span>
+                        </div>
+                        <button class="btn" id="mine-block-btn">⛏️ <span data-i18n="htlc.mine">挖矿 (+1 区块)</span></button>
+                        <button class="btn secondary" id="mine-10-btn">⛏️ +10</button>
+                        <button class="btn secondary" id="mine-100-btn">⛏️ +100</button>
+                    </div>
+                </div>
+
+                <!-- 步骤1: 创建 HTLC -->
+                <div class="demo-box">
+                    <h3 data-i18n="htlc.step1.title">🔐 第一步：创建 HTLC 合约</h3>
+                    <p class="demo-desc" data-i18n="htlc.step1.desc">设置哈希原像、接收方公钥、发送方公钥和超时区块高度，生成 HTLC 脚本。</p>
+
+                    <div class="htlc-parties">
+                        <div class="party-card sender">
+                            <div class="party-header">
+                                <span class="party-icon">👤</span>
+                                <span class="party-name" data-i18n="htlc.sender">发送方 (Alice)</span>
+                            </div>
+                            <div class="party-keys">
+                                <div class="key-row">
+                                    <span class="key-label">🔐 <span data-i18n="htlc.privatekey">私钥</span>:</span>
+                                    <code id="sender-private-key">-</code>
+                                </div>
+                                <div class="key-row">
+                                    <span class="key-label">🔓 <span data-i18n="htlc.publickey">公钥</span>:</span>
+                                    <code id="sender-public-key">-</code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="party-card receiver">
+                            <div class="party-header">
+                                <span class="party-icon">👤</span>
+                                <span class="party-name" data-i18n="htlc.receiver">接收方 (Bob)</span>
+                            </div>
+                            <div class="party-keys">
+                                <div class="key-row">
+                                    <span class="key-label">🔐 <span data-i18n="htlc.privatekey">私钥</span>:</span>
+                                    <code id="receiver-private-key">-</code>
+                                </div>
+                                <div class="key-row">
+                                    <span class="key-label">🔓 <span data-i18n="htlc.publickey">公钥</span>:</span>
+                                    <code id="receiver-public-key">-</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-panel">
+                        <div class="config-row">
+                            <label data-i18n="htlc.timeout.height">超时区块高度：</label>
+                            <input type="number" id="timeout-height" value="840050" min="1" max="10000000">
+                            <span class="config-hint" id="timeout-hint"></span>
+                        </div>
+                        <div class="config-row">
+                            <label data-i18n="htlc.secret">秘密原像 (Secret)：</label>
+                            <input type="text" id="secret-input" placeholder="输入秘密字符串..." value="my_secret_123">
+                        </div>
+                        <button class="btn primary" id="create-htlc-btn" data-i18n="htlc.create">🔗 创建 HTLC 合约</button>
+                    </div>
+
+                    <div class="htlc-creation" id="htlc-creation" style="display: none;">
+                        <div class="creation-step">
+                            <div class="step-badge">1</div>
+                            <div class="step-content">
+                                <h4 data-i18n="htlc.hashlock">哈希锁</h4>
+                                <div class="hash-lock-display">
+                                    <div class="hash-row">
+                                        <span class="hash-label"><span data-i18n="htlc.preimage">原像</span>:</span>
+                                        <code id="htlc-preimage" class="preimage"></code>
+                                    </div>
+                                    <div class="hash-arrow">↓ SHA256</div>
+                                    <div class="hash-row">
+                                        <span class="hash-label"><span data-i18n="htlc.hash">哈希</span>:</span>
+                                        <code id="htlc-hash" class="hash"></code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="creation-step">
+                            <div class="step-badge">2</div>
+                            <div class="step-content">
+                                <h4 data-i18n="htlc.script">HTLC 脚本</h4>
+                                <div class="htlc-paths-display">
+                                    <div class="htlc-path-box success">
+                                        <div class="path-title" data-i18n="htlc.path.success">成功路径</div>
+                                        <div class="path-desc" data-i18n="htlc.path.success.desc">Bob 揭示原像</div>
+                                    </div>
+                                    <div class="htlc-or-box">OR</div>
+                                    <div class="htlc-path-box refund">
+                                        <div class="path-title" data-i18n="htlc.path.refund">退款路径</div>
+                                        <div class="path-desc" data-i18n="htlc.path.refund.desc">Alice 超时取回</div>
+                                    </div>
+                                </div>
+                                <div class="script-display">
+                                    <div class="script-visual" id="htlc-script-visual"></div>
+                                    <div class="script-hex">
+                                        <code id="htlc-script-hex"></code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="creation-step">
+                            <div class="step-badge">3</div>
+                            <div class="step-content">
+                                <h4 data-i18n="htlc.address">P2SH 地址</h4>
+                                <div class="address-display">
+                                    <code class="address-value" id="htlc-address"></code>
+                                    <div class="htlc-status" id="htlc-status"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤2: 选择解锁路径 -->
+                <div class="demo-box">
+                    <h3 data-i18n="htlc.step2.title">💸 第二步：选择解锁路径</h3>
+                    <p class="demo-desc" data-i18n="htlc.step2.desc">HTLC 支持两种解锁方式：接收方揭示原像获取资金，或发送方在超时后取回资金。</p>
+
+                    <div class="path-selector" id="path-selector" style="display: none;">
+                        <div class="path-option success" id="path-success">
+                            <div class="path-header">
+                                <span class="path-icon">✅</span>
+                                <span class="path-title" data-i18n="htlc.path.success">成功路径</span>
+                            </div>
+                            <div class="path-requirement">
+                                <span data-i18n="htlc.require.preimage">需要：原像 + Bob 签名</span>
+                            </div>
+                            <div class="path-condition" id="success-condition">
+                                <span class="condition-icon">🔓</span>
+                                <span data-i18n="htlc.always.available">随时可用</span>
+                            </div>
+                        </div>
+
+                        <div class="path-option refund" id="path-refund">
+                            <div class="path-header">
+                                <span class="path-icon">🔄</span>
+                                <span class="path-title" data-i18n="htlc.path.refund">退款路径</span>
+                            </div>
+                            <div class="path-requirement">
+                                <span data-i18n="htlc.require.timeout">需要：超时 + Alice 签名</span>
+                            </div>
+                            <div class="path-condition" id="refund-condition"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤3: 成功路径 - 揭示原像 -->
+                <div class="demo-box" id="success-path-section" style="display: none;">
+                    <h3 data-i18n="htlc.step3.success.title">✅ 成功路径：揭示原像</h3>
+                    <p class="demo-desc" data-i18n="htlc.step3.success.desc">Bob 需要提供正确的原像和签名来领取资金。</p>
+
+                    <div class="unlock-form">
+                        <div class="form-group">
+                            <label data-i18n="htlc.enter.preimage">输入原像：</label>
+                            <input type="text" id="unlock-preimage" placeholder="输入秘密原像...">
+                            <div class="preimage-hint" id="preimage-hint"></div>
+                        </div>
+                        <button class="btn primary" id="unlock-success-btn" data-i18n="htlc.unlock.success">✍️ Bob 签名并解锁</button>
+                    </div>
+
+                    <div class="verify-timeline" id="success-timeline"></div>
+                    <div class="unlock-result" id="success-result" style="display: none;"></div>
+                </div>
+
+                <!-- 步骤3: 退款路径 - 超时取回 -->
+                <div class="demo-box" id="refund-path-section" style="display: none;">
+                    <h3 data-i18n="htlc.step3.refund.title">🔄 退款路径：超时取回</h3>
+                    <p class="demo-desc" data-i18n="htlc.step3.refund.desc">Alice 需要等待超时区块高度后才能取回资金。</p>
+
+                    <div class="timeout-status" id="timeout-status"></div>
+                    <button class="btn primary" id="unlock-refund-btn" data-i18n="htlc.unlock.refund">✍️ Alice 签名并取回</button>
+
+                    <div class="verify-timeline" id="refund-timeline"></div>
+                    <div class="unlock-result" id="refund-result" style="display: none;"></div>
+                </div>
+
+                <!-- 步骤4: 验证过程 -->
+                <div class="demo-box">
+                    <h3 data-i18n="htlc.step4.title">🔍 第四步：验证过程</h3>
+                    <p class="demo-desc" data-i18n="htlc.step4.desc">观察网络如何验证 HTLC 交易的不同路径。</p>
+
+                    <div class="verify-process" id="verify-process" style="display: none;">
+                        <div class="verify-timeline" id="verify-timeline"></div>
+                    </div>
+                </div>
+
+                <!-- 应用场景 -->
+                <div class="card info">
+                    <h4 data-i18n="htlc.usecases.title">💡 HTLC 应用场景</h4>
+                    <div class="usecase-grid">
+                        <div class="usecase-item">
+                            <span class="usecase-icon">⚡</span>
+                            <div>
+                                <strong data-i18n="htlc.usecase.1">闪电网络</strong>
+                                <p data-i18n="htlc.usecase.1.desc">支付通道中的即时小额支付，无需链上确认</p>
+                            </div>
+                        </div>
+                        <div class="usecase-item">
+                            <span class="usecase-icon">🔄</span>
+                            <div>
+                                <strong data-i18n="htlc.usecase.2">跨链原子交换</strong>
+                                <p data-i18n="htlc.usecase.2.desc">无需信任的跨链资产交换，如 BTC ↔ LTC</p>
+                            </div>
+                        </div>
+                        <div class="usecase-item">
+                            <span class="usecase-icon">🤝</span>
+                            <div>
+                                <strong data-i18n="htlc.usecase.3">条件支付</strong>
+                                <p data-i18n="htlc.usecase.3.desc">只有满足特定条件时才能完成的支付</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <a href="timelock.html" class="btn secondary" data-i18n="htlc.nav.prev">← 时间锁</a>
+                    <a href="utxo.html" class="btn primary" data-i18n="htlc.nav.next">UTXO 模型 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="htlc.js"></script>
+</body>
+</html>
