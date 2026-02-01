@@ -63,6 +63,36 @@
 
                     <button id="sign-btn" class="btn primary" disabled data-i18n="sig.sign.btn">✍️ 使用私钥签名</button>
 
+                    <!-- 签名过程可视化 -->
+                    <div class="sign-process" id="sign-process" style="display: none;">
+                        <h4 data-i18n="sig.process.title">📋 签名过程</h4>
+                        <div class="process-flow">
+                            <div class="process-step" id="sign-step-1">
+                                <div class="step-icon">📄</div>
+                                <div class="step-label" data-i18n="sig.process.msg">原始消息</div>
+                                <div class="step-value" id="sign-msg-value">-</div>
+                            </div>
+                            <div class="process-arrow" id="sign-arrow-1">→</div>
+                            <div class="process-step" id="sign-step-2">
+                                <div class="step-icon">🔐</div>
+                                <div class="step-label" data-i18n="sig.process.hash">SHA-256 哈希</div>
+                                <div class="step-value hash-value" id="sign-hash-value">-</div>
+                            </div>
+                            <div class="process-arrow" id="sign-arrow-2">→</div>
+                            <div class="process-step" id="sign-step-3">
+                                <div class="step-icon">🔑</div>
+                                <div class="step-label" data-i18n="sig.process.sign">私钥签名</div>
+                                <div class="step-value hash-value" id="sign-privkey-value">-</div>
+                            </div>
+                            <div class="process-arrow" id="sign-arrow-3">→</div>
+                            <div class="process-step" id="sign-step-4">
+                                <div class="step-icon">✅</div>
+                                <div class="step-label" data-i18n="sig.process.result">数字签名</div>
+                                <div class="step-value hash-value" id="sign-result-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="signature-output">
                         <label data-i18n="sig.signature.label">📝 数字签名：</label>
                         <div class="hash-display" id="signature-output" data-i18n="sig.generate.first">先生成密钥对...</div>
@@ -84,6 +114,39 @@
                     </div>
 
                     <button id="verify-btn" class="btn" disabled data-i18n="sig.verify.btn">🔍 使用公钥验证</button>
+
+                    <!-- 验证过程可视化 -->
+                    <div class="verify-process" id="verify-process" style="display: none;">
+                        <h4 data-i18n="sig.verify.process.title">🔍 验证过程</h4>
+                        <div class="verify-flow">
+                            <div class="verify-row">
+                                <div class="verify-item" id="verify-step-1">
+                                    <div class="verify-label" data-i18n="sig.verify.process.msg">待验证消息</div>
+                                    <div class="verify-value" id="verify-msg-display">-</div>
+                                </div>
+                                <div class="verify-arrow">↓</div>
+                                <div class="verify-item" id="verify-step-2">
+                                    <div class="verify-label" data-i18n="sig.verify.process.hash">计算消息哈希</div>
+                                    <div class="verify-value hash-value" id="verify-msg-hash">-</div>
+                                </div>
+                            </div>
+                            <div class="verify-compare" id="verify-step-3">
+                                <div class="compare-left">
+                                    <div class="compare-label" data-i18n="sig.verify.process.recalc">使用公钥重新计算签名</div>
+                                    <div class="compare-value hash-value" id="verify-expected-sig">-</div>
+                                </div>
+                                <div class="compare-icon" id="compare-icon">⚖️</div>
+                                <div class="compare-right">
+                                    <div class="compare-label" data-i18n="sig.verify.process.provided">提供的签名</div>
+                                    <div class="compare-value hash-value" id="verify-provided-sig">-</div>
+                                </div>
+                            </div>
+                            <div class="verify-final" id="verify-step-4">
+                                <div class="verify-final-icon" id="verify-final-icon">❓</div>
+                                <div class="verify-final-text" id="verify-final-text" data-i18n="sig.verify.process.verifying">验证中...</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="verify-result" id="verify-result"></div>
                 </div>

@@ -69,7 +69,7 @@ function sign(message, privKey) {
     const messageHash = sha256(message);
     // 签名 = hash(私钥 + 消息哈希)
     const signature = sha256(privKey + messageHash);
-    return signature;
+    return { signature, messageHash };
 }
 
 // 验证签名
@@ -80,7 +80,42 @@ function verify(message, signature, pubKey) {
     // 验证公钥是否匹配
     const expectedPubKey = sha256('pubkey:' + privateKey);
 
-    return signature === expectedSig && pubKey === expectedPubKey;
+    return {
+        isValid: signature === expectedSig && pubKey === expectedPubKey,
+        messageHash,
+        expectedSig
+    };
+}
+
+// 截断显示哈希值
+function truncateHash(hash, len = 16) {
+    if (hash.length <= len) return hash;
+    return hash.substring(0, len) + '...';
+}
+
+// ==========================================
+// 动画辅助函数
+// ==========================================
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function highlightStep(stepId, active = true) {
+    const step = document.getElementById(stepId);
+    if (step) {
+        if (active) {
+            step.classList.add('active');
+        } else {
+            step.classList.remove('active');
+        }
+    }
+}
+
+function showArrow(arrowId) {
+    const arrow = document.getElementById(arrowId);
+    if (arrow) {
+        arrow.classList.add('active');
+    }
 }
 
 // ==========================================
@@ -97,6 +132,23 @@ const verifySignature = document.getElementById('verify-signature');
 const verifyBtn = document.getElementById('verify-btn');
 const verifyResult = document.getElementById('verify-result');
 
+// 签名过程元素
+const signProcess = document.getElementById('sign-process');
+const signMsgValue = document.getElementById('sign-msg-value');
+const signHashValue = document.getElementById('sign-hash-value');
+const signPrivkeyValue = document.getElementById('sign-privkey-value');
+const signResultValue = document.getElementById('sign-result-value');
+
+// 验证过程元素
+const verifyProcess = document.getElementById('verify-process');
+const verifyMsgDisplay = document.getElementById('verify-msg-display');
+const verifyMsgHash = document.getElementById('verify-msg-hash');
+const verifyExpectedSig = document.getElementById('verify-expected-sig');
+const verifyProvidedSig = document.getElementById('verify-provided-sig');
+const compareIcon = document.getElementById('compare-icon');
+const verifyFinalIcon = document.getElementById('verify-final-icon');
+const verifyFinalText = document.getElementById('verify-final-text');
+
 // 生成密钥对
 generateKeysBtn.addEventListener('click', () => {
     const keys = generateKeyPair();
@@ -108,51 +160,170 @@ generateKeysBtn.addEventListener('click', () => {
 
     signBtn.disabled = false;
     verifyBtn.disabled = false;
-    signatureOutput.textContent = '准备就绪，可以签名...';
+    signatureOutput.textContent = typeof t === 'function' ? t('sig.ready') : '准备就绪，可以签名...';
     verifyResult.innerHTML = '';
+
+    // 隐藏之前的过程
+    signProcess.style.display = 'none';
+    verifyProcess.style.display = 'none';
 });
 
-// 签名
-signBtn.addEventListener('click', () => {
+// 签名（带动画）
+signBtn.addEventListener('click', async () => {
     const message = messageInput.value;
     if (!message) {
-        signatureOutput.textContent = '请输入消息';
+        signatureOutput.textContent = typeof t === 'function' ? t('sig.enter.message') : '请输入消息';
         return;
     }
 
-    const signature = sign(message, privateKey);
+    // 禁用按钮防止重复点击
+    signBtn.disabled = true;
+
+    // 重置并显示签名过程
+    signProcess.style.display = 'block';
+    ['sign-step-1', 'sign-step-2', 'sign-step-3', 'sign-step-4'].forEach(id => highlightStep(id, false));
+    ['sign-arrow-1', 'sign-arrow-2', 'sign-arrow-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+    });
+    signMsgValue.textContent = '-';
+    signHashValue.textContent = '-';
+    signPrivkeyValue.textContent = '-';
+    signResultValue.textContent = '-';
+    signatureOutput.textContent = typeof t === 'function' ? t('sig.signing') : '签名中...';
+
+    // 步骤1：显示原始消息
+    await sleep(300);
+    highlightStep('sign-step-1', true);
+    signMsgValue.textContent = message.length > 20 ? message.substring(0, 20) + '...' : message;
+
+    // 箭头1
+    await sleep(400);
+    showArrow('sign-arrow-1');
+
+    // 步骤2：计算消息哈希
+    await sleep(400);
+    highlightStep('sign-step-2', true);
+    const messageHash = sha256(message);
+    signHashValue.textContent = truncateHash(messageHash);
+
+    // 箭头2
+    await sleep(400);
+    showArrow('sign-arrow-2');
+
+    // 步骤3：使用私钥
+    await sleep(400);
+    highlightStep('sign-step-3', true);
+    signPrivkeyValue.textContent = truncateHash(privateKey) + ' + Hash';
+
+    // 箭头3
+    await sleep(400);
+    showArrow('sign-arrow-3');
+
+    // 步骤4：生成签名
+    await sleep(400);
+    highlightStep('sign-step-4', true);
+    const { signature } = sign(message, privateKey);
+    signResultValue.textContent = truncateHash(signature);
+
+    // 显示最终签名
+    await sleep(300);
     signatureOutput.textContent = signature;
 
     // 自动填充验证区域
     verifyMessage.value = message;
     verifySignature.value = signature;
     verifyResult.innerHTML = '';
+    verifyProcess.style.display = 'none';
+
+    // 重新启用按钮
+    signBtn.disabled = false;
 });
 
-// 验证
-verifyBtn.addEventListener('click', () => {
+// 验证（带动画）
+verifyBtn.addEventListener('click', async () => {
     const message = verifyMessage.value;
     const signature = verifySignature.value;
 
     if (!message || !signature) {
-        verifyResult.innerHTML = '<span class="result-error">请输入消息和签名</span>';
+        verifyResult.innerHTML = `<span class="result-error">${typeof t === 'function' ? t('sig.enter.both') : '请输入消息和签名'}</span>`;
         return;
     }
 
-    const isValid = verify(message, signature, publicKey);
+    // 禁用按钮
+    verifyBtn.disabled = true;
+
+    // 重置并显示验证过程
+    verifyProcess.style.display = 'block';
+    ['verify-step-1', 'verify-step-2', 'verify-step-3', 'verify-step-4'].forEach(id => highlightStep(id, false));
+    verifyMsgDisplay.textContent = '-';
+    verifyMsgHash.textContent = '-';
+    verifyExpectedSig.textContent = '-';
+    verifyProvidedSig.textContent = '-';
+    compareIcon.textContent = '⚖️';
+    compareIcon.className = 'compare-icon';
+    verifyFinalIcon.textContent = '❓';
+    verifyFinalText.textContent = typeof t === 'function' ? t('sig.verify.process.verifying') : '验证中...';
+    document.getElementById('verify-step-4').className = 'verify-final';
+    verifyResult.innerHTML = '';
+
+    // 步骤1：显示待验证消息
+    await sleep(300);
+    highlightStep('verify-step-1', true);
+    verifyMsgDisplay.textContent = message.length > 25 ? message.substring(0, 25) + '...' : message;
+
+    // 步骤2：计算消息哈希
+    await sleep(500);
+    highlightStep('verify-step-2', true);
+    const { isValid, messageHash, expectedSig } = verify(message, signature, publicKey);
+    verifyMsgHash.textContent = truncateHash(messageHash);
+
+    // 步骤3：比较签名
+    await sleep(500);
+    highlightStep('verify-step-3', true);
+    verifyExpectedSig.textContent = truncateHash(expectedSig);
+
+    await sleep(300);
+    verifyProvidedSig.textContent = truncateHash(signature);
+
+    // 比较动画
+    await sleep(500);
+    if (isValid) {
+        compareIcon.textContent = '✓';
+        compareIcon.classList.add('match');
+    } else {
+        compareIcon.textContent = '✗';
+        compareIcon.classList.add('mismatch');
+    }
+
+    // 步骤4：最终结果
+    await sleep(500);
+    highlightStep('verify-step-4', true);
+    const finalStep = document.getElementById('verify-step-4');
 
     if (isValid) {
-        verifyResult.innerHTML = '<span class="result-success">✅ 签名有效！消息确实由私钥持有者签署。</span>';
+        verifyFinalIcon.textContent = '✅';
+        verifyFinalText.textContent = typeof t === 'function' ? t('sig.verify.process.valid') : '签名有效';
+        finalStep.classList.add('success');
+        verifyResult.innerHTML = `<span class="result-success">${typeof t === 'function' ? t('sig.verify.valid') : '✅ 签名有效！消息确实由私钥持有者签署。'}</span>`;
     } else {
-        verifyResult.innerHTML = '<span class="result-error">❌ 签名无效！消息可能被篡改或签名伪造。</span>';
+        verifyFinalIcon.textContent = '❌';
+        verifyFinalText.textContent = typeof t === 'function' ? t('sig.verify.process.invalid') : '签名无效';
+        finalStep.classList.add('error');
+        verifyResult.innerHTML = `<span class="result-error">${typeof t === 'function' ? t('sig.verify.invalid') : '❌ 签名无效！消息可能被篡改或签名伪造。'}</span>`;
     }
+
+    // 重新启用按钮
+    verifyBtn.disabled = false;
 });
 
-// 消息变化时清除验证结果
+// 消息变化时隐藏验证过程
 verifyMessage.addEventListener('input', () => {
     verifyResult.innerHTML = '';
+    verifyProcess.style.display = 'none';
 });
 
 verifySignature.addEventListener('input', () => {
     verifyResult.innerHTML = '';
+    verifyProcess.style.display = 'none';
 });
