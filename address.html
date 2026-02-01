@@ -11,16 +11,48 @@
     <nav class="nav">
         <div class="nav-content">
             <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
-            <div class="nav-links">
-                <a href="index.html" data-i18n="nav.home">首页</a>
-                <a href="hash.html" data-i18n="nav.hash">哈希</a>
-                <a href="signature.html" data-i18n="nav.signature">签名</a>
-                <a href="address.html" class="active" data-i18n="nav.address">地址</a>
-                <a href="utxo.html" data-i18n="nav.utxo">UTXO</a>
-                <a href="block.html" data-i18n="nav.block">区块</a>
-                <a href="chain.html" data-i18n="nav.chain">区块链</a>
-                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
-                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="address.html" class="active" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -229,6 +261,235 @@
                                 <span class="meta-item"><strong data-i18n="addr.type.witness">见证版本</strong>: v1</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <h3 data-i18n="addr.p2sh.scripts.title">📜 P2SH 常见脚本类型</h3>
+                    <p class="demo-desc" data-i18n="addr.p2sh.scripts.desc">P2SH 允许将复杂的花费条件编码为地址，以下是几种常见的脚本类型。</p>
+
+                    <div class="script-types-container">
+                        <!-- 多重签名 -->
+                        <div class="script-type-card" id="multisig-card">
+                            <div class="script-header">
+                                <span class="script-icon">👥</span>
+                                <div>
+                                    <h4 data-i18n="addr.p2sh.multisig.title">多重签名 (Multisig)</h4>
+                                    <span class="script-tag" data-i18n="addr.p2sh.multisig.tag">M-of-N</span>
+                                </div>
+                            </div>
+                            <p class="script-desc" data-i18n="addr.p2sh.multisig.desc">需要 M 个签名中的 N 个才能花费，常用于企业资金管理、托管服务等场景。</p>
+
+                            <!-- 真实示例 -->
+                            <div class="script-example">
+                                <div class="example-header">
+                                    <span class="example-badge" data-i18n="addr.p2sh.example">📋 2-of-3 实例</span>
+                                </div>
+                                <div class="example-steps">
+                                    <div class="example-step">
+                                        <div class="example-label">① <span data-i18n="addr.p2sh.step.keys">公钥</span> (33 bytes × 3)</div>
+                                        <div class="example-value">
+                                            <code class="pubkey">02<span class="highlight-a">1e</span>8f5c7...<span class="key-tag">A</span></code>
+                                            <code class="pubkey">03<span class="highlight-b">7d</span>2a9b1...<span class="key-tag">B</span></code>
+                                            <code class="pubkey">02<span class="highlight-c">9c</span>f4d82...<span class="key-tag">C</span></code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">② <span data-i18n="addr.p2sh.step.script">赎回脚本</span></div>
+                                        <div class="example-value">
+                                            <code class="script-hex"><span class="op">52</span><span class="comment">← OP_2</span> <span class="data">21</span><span class="comment">← PUSH33</span> 021e8f... <span class="data">21</span> 037d2a... <span class="data">21</span> 029cf4... <span class="op">53</span><span class="comment">← OP_3</span> <span class="op">ae</span><span class="comment">← OP_CHECKMULTISIG</span></code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">③ HASH160(Script)</div>
+                                        <div class="example-value">
+                                            <code class="hash" id="multisig-example-hash">-</code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">④ <span data-i18n="addr.p2sh.step.address">P2SH 地址</span></div>
+                                        <div class="example-value">
+                                            <code class="address" id="multisig-example-addr">-</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn small" id="run-multisig-example" data-i18n="addr.p2sh.run">▶ 运行实例</button>
+                            </div>
+
+                            <div class="script-use-cases">
+                                <span class="use-case-label" data-i18n="addr.p2sh.usecases">应用场景：</span>
+                                <span class="use-case" data-i18n="addr.p2sh.multisig.use1">企业财务</span>
+                                <span class="use-case" data-i18n="addr.p2sh.multisig.use2">交易所托管</span>
+                                <span class="use-case" data-i18n="addr.p2sh.multisig.use3">家庭基金</span>
+                            </div>
+                        </div>
+
+                        <!-- 时间锁 CLTV -->
+                        <div class="script-type-card" id="timelock-card">
+                            <div class="script-header">
+                                <span class="script-icon">⏰</span>
+                                <div>
+                                    <h4 data-i18n="addr.p2sh.timelock.title">时间锁 (CLTV)</h4>
+                                    <span class="script-tag">CheckLockTimeVerify</span>
+                                </div>
+                            </div>
+                            <p class="script-desc" data-i18n="addr.p2sh.timelock.desc">资金在指定时间或区块高度之前无法被花费，用于定期释放、遗嘱执行等。</p>
+
+                            <!-- 真实示例 -->
+                            <div class="script-example">
+                                <div class="example-header">
+                                    <span class="example-badge" data-i18n="addr.p2sh.timelock.example.title">📋 锁定至区块 #850000</span>
+                                </div>
+                                <div class="example-steps">
+                                    <div class="example-step">
+                                        <div class="example-label">① <span data-i18n="addr.p2sh.step.keys">公钥</span></div>
+                                        <div class="example-value">
+                                            <code class="pubkey">02<span class="highlight-a">3a</span>b8d7e5f6c9...</code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">② <span data-i18n="addr.p2sh.step.script">赎回脚本</span></div>
+                                        <div class="example-value">
+                                            <code class="script-hex"><span class="data">03</span><span class="comment">← PUSH3</span> <span class="highlight-num">50f70c</span><span class="comment">← 850000 (LE)</span> <span class="op">b1</span><span class="comment">← OP_CLTV</span> <span class="op">75</span><span class="comment">← OP_DROP</span> <span class="data">21</span> 023ab8... <span class="op">ac</span><span class="comment">← OP_CHECKSIG</span></code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">③ HASH160(Script)</div>
+                                        <div class="example-value">
+                                            <code class="hash" id="timelock-example-hash">-</code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">④ <span data-i18n="addr.p2sh.step.address">P2SH 地址</span></div>
+                                        <div class="example-value">
+                                            <code class="address" id="timelock-example-addr">-</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn small" id="run-timelock-example" data-i18n="addr.p2sh.run">▶ 运行实例</button>
+                            </div>
+
+                            <div class="script-use-cases">
+                                <span class="use-case-label" data-i18n="addr.p2sh.usecases">应用场景：</span>
+                                <span class="use-case" data-i18n="addr.p2sh.timelock.use1">定投锁仓</span>
+                                <span class="use-case" data-i18n="addr.p2sh.timelock.use2">遗产继承</span>
+                                <span class="use-case" data-i18n="addr.p2sh.timelock.use3">员工期权</span>
+                            </div>
+                        </div>
+
+                        <!-- 哈希时间锁 HTLC -->
+                        <div class="script-type-card" id="htlc-card">
+                            <div class="script-header">
+                                <span class="script-icon">🔐</span>
+                                <div>
+                                    <h4 data-i18n="addr.p2sh.htlc.title">哈希时间锁 (HTLC)</h4>
+                                    <span class="script-tag">Hash Time-Locked Contract</span>
+                                </div>
+                            </div>
+                            <p class="script-desc" data-i18n="addr.p2sh.htlc.desc">结合哈希锁和时间锁，提供原像即可花费，或超时后退款。是闪电网络的核心机制。</p>
+
+                            <!-- 真实示例 -->
+                            <div class="script-example">
+                                <div class="example-header">
+                                    <span class="example-badge" data-i18n="addr.p2sh.htlc.example.title">📋 HTLC 实例 (超时: 144块)</span>
+                                </div>
+
+                                <div class="htlc-paths-diagram">
+                                    <div class="htlc-path-box success">
+                                        <div class="path-title">✅ <span data-i18n="addr.p2sh.htlc.path1">成功路径</span></div>
+                                        <div class="path-desc" data-i18n="addr.p2sh.htlc.path1.cond">提供原像 + Bob签名</div>
+                                    </div>
+                                    <div class="htlc-or-box">OR</div>
+                                    <div class="htlc-path-box refund">
+                                        <div class="path-title">🔙 <span data-i18n="addr.p2sh.htlc.path2">退款路径</span></div>
+                                        <div class="path-desc" data-i18n="addr.p2sh.htlc.path2.cond">超时 + Alice签名</div>
+                                    </div>
+                                </div>
+
+                                <div class="example-steps">
+                                    <div class="example-step">
+                                        <div class="example-label">① <span data-i18n="addr.p2sh.htlc.parties">双方公钥 & 哈希锁</span></div>
+                                        <div class="example-value htlc-keys">
+                                            <code class="pubkey"><span class="key-tag">Alice</span> 02<span class="highlight-a">5c</span>8e3d...</code>
+                                            <code class="pubkey"><span class="key-tag">Bob</span> 03<span class="highlight-b">a1</span>f7b2...</code>
+                                            <code class="hashlock">🔒 H = HASH160(<span class="highlight-secret">secret</span>) = <span id="htlc-example-hashlock">-</span></code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">② <span data-i18n="addr.p2sh.step.script">赎回脚本</span></div>
+                                        <div class="example-value">
+                                            <code class="script-hex htlc-script"><span class="op">63</span><span class="comment">← OP_IF</span> <span class="op">a9</span><span class="comment">← OP_HASH160</span> <span class="data">14</span> <span class="highlight-hash">&lt;H&gt;</span> <span class="op">88</span><span class="comment">← OP_EQUALVERIFY</span> <span class="data">21</span> &lt;PubBob&gt; <span class="op">67</span><span class="comment">← OP_ELSE</span> <span class="data">02</span><span class="highlight-num">9000</span><span class="comment">← 144</span> <span class="op">b1</span><span class="comment">← OP_CLTV</span> <span class="op">75</span><span class="comment">← OP_DROP</span> <span class="data">21</span> &lt;PubAlice&gt; <span class="op">68</span><span class="comment">← OP_ENDIF</span> <span class="op">ac</span><span class="comment">← OP_CHECKSIG</span></code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">③ HASH160(Script)</div>
+                                        <div class="example-value">
+                                            <code class="hash" id="htlc-example-hash">-</code>
+                                        </div>
+                                    </div>
+                                    <div class="example-step">
+                                        <div class="example-label">④ <span data-i18n="addr.p2sh.step.address">P2SH 地址</span></div>
+                                        <div class="example-value">
+                                            <code class="address" id="htlc-example-addr">-</code>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn small" id="run-htlc-example" data-i18n="addr.p2sh.run">▶ 运行实例</button>
+                            </div>
+
+                            <div class="script-use-cases">
+                                <span class="use-case-label" data-i18n="addr.p2sh.usecases">应用场景：</span>
+                                <span class="use-case" data-i18n="addr.p2sh.htlc.use1">闪电网络</span>
+                                <span class="use-case" data-i18n="addr.p2sh.htlc.use2">原子交换</span>
+                                <span class="use-case" data-i18n="addr.p2sh.htlc.use3">跨链桥</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p2sh-generation-flow">
+                        <h4 data-i18n="addr.p2sh.flow.title">🔄 P2SH 地址生成原理</h4>
+                        <div class="flow-steps">
+                            <div class="flow-step">
+                                <span class="flow-num">1</span>
+                                <div class="flow-content">
+                                    <strong data-i18n="addr.p2sh.flow.step1">编写赎回脚本</strong>
+                                    <p data-i18n="addr.p2sh.flow.step1.desc">定义花费条件（多签/时间锁等）</p>
+                                </div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <span class="flow-num">2</span>
+                                <div class="flow-content">
+                                    <strong data-i18n="addr.p2sh.flow.step2">计算脚本哈希</strong>
+                                    <p data-i18n="addr.p2sh.flow.step2.desc">HASH160(RedeemScript)</p>
+                                </div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <span class="flow-num">3</span>
+                                <div class="flow-content">
+                                    <strong data-i18n="addr.p2sh.flow.step3">添加版本前缀</strong>
+                                    <p data-i18n="addr.p2sh.flow.step3.desc">0x05 + ScriptHash</p>
+                                </div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <span class="flow-num">4</span>
+                                <div class="flow-content">
+                                    <strong data-i18n="addr.p2sh.flow.step4">Base58Check 编码</strong>
+                                    <p data-i18n="addr.p2sh.flow.step4.desc">生成以 "3" 开头的地址</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card info" style="margin-top: 1.5rem;">
+                        <h4 data-i18n="addr.p2sh.benefit.title">💡 P2SH 的优势</h4>
+                        <ul>
+                            <li><strong data-i18n="addr.p2sh.benefit.1">发送方简化</strong> — <span data-i18n="addr.p2sh.benefit.1.desc">发送方只需向普通地址转账，无需了解复杂的脚本逻辑</span></li>
+                            <li><strong data-i18n="addr.p2sh.benefit.2">手续费转移</strong> — <span data-i18n="addr.p2sh.benefit.2.desc">复杂脚本的存储费用由花费者而非发送者承担</span></li>
+                            <li><strong data-i18n="addr.p2sh.benefit.3">隐私保护</strong> — <span data-i18n="addr.p2sh.benefit.3.desc">花费条件在花费前保持隐藏，只暴露脚本哈希</span></li>
+                        </ul>
                     </div>
                 </div>
 

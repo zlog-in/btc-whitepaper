@@ -672,3 +672,224 @@ validateInput.addEventListener('input', () => {
     validateResult.innerHTML = '';
     addressBreakdown.style.display = 'none';
 });
+
+// ==========================================
+// P2SH 脚本地址生成演示
+// ==========================================
+
+// 将数字编码为最小脚本push格式
+function encodeScriptNum(num) {
+    if (num === 0) return '00';
+    if (num >= 1 && num <= 16) return (0x50 + num).toString(16);
+
+    // 将数字编码为小端字节
+    const bytes = [];
+    let n = num;
+    while (n > 0) {
+        bytes.push(n & 0xff);
+        n = n >> 8;
+    }
+    // 如果最高位设置了，需要添加0x00防止被解释为负数
+    if (bytes.length > 0 && (bytes[bytes.length - 1] & 0x80)) {
+        bytes.push(0x00);
+    }
+    const lenHex = bytes.length.toString(16).padStart(2, '0');
+    const bytesHex = bytes.map(b => b.toString(16).padStart(2, '0')).join('');
+    return lenHex + bytesHex;
+}
+
+// 构建多签赎回脚本
+function buildMultisigRedeemScript(m, pubKeys) {
+    let script = '';
+    // OP_M
+    script += (0x50 + m).toString(16);
+    // 压入每个公钥
+    for (const pk of pubKeys) {
+        script += '21'; // PUSH 33 bytes
+        script += pk;
+    }
+    // OP_N
+    script += (0x50 + pubKeys.length).toString(16);
+    // OP_CHECKMULTISIG
+    script += 'ae';
+    return script;
+}
+
+// 构建时间锁赎回脚本
+function buildTimelockRedeemScript(lockHeight, pubKey) {
+    let script = '';
+    // <lockHeight>
+    script += encodeScriptNum(lockHeight);
+    // OP_CHECKLOCKTIMEVERIFY
+    script += 'b1';
+    // OP_DROP
+    script += '75';
+    // <pubKey>
+    script += '21' + pubKey;
+    // OP_CHECKSIG
+    script += 'ac';
+    return script;
+}
+
+// 构建 HTLC 赎回脚本
+function buildHTLCRedeemScript(hashLock, receiverPubKey, senderPubKey, timeout) {
+    let script = '';
+    // OP_IF
+    script += '63';
+    // OP_HASH160
+    script += 'a9';
+    // <hashLock> (20 bytes)
+    script += '14' + hashLock;
+    // OP_EQUALVERIFY
+    script += '88';
+    // <receiverPubKey>
+    script += '21' + receiverPubKey;
+    // OP_ELSE
+    script += '67';
+    // <timeout>
+    script += encodeScriptNum(timeout);
+    // OP_CHECKLOCKTIMEVERIFY
+    script += 'b1';
+    // OP_DROP
+    script += '75';
+    // <senderPubKey>
+    script += '21' + senderPubKey;
+    // OP_ENDIF
+    script += '68';
+    // OP_CHECKSIG
+    script += 'ac';
+    return script;
+}
+
+// HASH160 = RIPEMD160(SHA256(data))
+function hash160(hexData) {
+    const sha256Hash = sha256Bytes(hexToBytes(hexData));
+    return ripemd160(sha256Hash);
+}
+
+// 生成 P2SH 地址
+function createP2SHAddress(redeemScriptHex) {
+    const scriptHash = hash160(redeemScriptHex);
+    return base58Check(hexToBytes(scriptHash), 0x05);
+}
+
+// ==========================================
+// 固定的示例数据（用于演示真实脚本生成过程）
+// ==========================================
+const EXAMPLE_DATA = {
+    // 2-of-3 多签示例的三个公钥
+    multisig: {
+        pubKeyA: '021e8f5c7a3b9d2e4f6c8a0b1d3e5f7a9c2b4d6e8f0a1c3e5d7b9a0c2e4f6a8b0d',
+        pubKeyB: '037d2a9b1c4e6f8d0a2c4e6f8a0b2d4e6f8a0c2e4d6b8a0c2e4f6d8a0b2c4e6f8a',
+        pubKeyC: '029cf4d82a6b8e0c2d4f6a8c0e2b4d6f8a0c2e4d6b8f0a2c4e6d8b0a2c4e6f8a0c'
+    },
+    // 时间锁示例
+    timelock: {
+        pubKey: '023ab8d7e5f6c9a1b3d5e7f9a0c2b4d6e8f0a2c4e6b8d0a2c4f6e8a0b2d4c6e8f0',
+        lockHeight: 850000
+    },
+    // HTLC 示例
+    htlc: {
+        alicePubKey: '025c8e3d7f9a1b4c6d8e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0b2c4d',
+        bobPubKey: '03a1f7b2c4d6e8f0a2b4c6d8e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0',
+        secret: '7365637265745f70726569696d6167655f666f725f68746c635f64656d6f5f31',  // "secret_preimage_for_htlc_demo_1" in hex
+        timeout: 144
+    }
+};
+
+// ==========================================
+// 多签实例演示
+// ==========================================
+const runMultisigExample = document.getElementById('run-multisig-example');
+
+if (runMultisigExample) {
+    runMultisigExample.addEventListener('click', async () => {
+        runMultisigExample.disabled = true;
+        runMultisigExample.textContent = '⏳ ...';
+
+        const { pubKeyA, pubKeyB, pubKeyC } = EXAMPLE_DATA.multisig;
+        const pubKeys = [pubKeyA, pubKeyB, pubKeyC];
+
+        // 步骤3：构建脚本并计算 HASH160
+        await sleep(300);
+        const redeemScript = buildMultisigRedeemScript(2, pubKeys);
+        const scriptHash = hash160(redeemScript);
+        document.getElementById('multisig-example-hash').textContent = scriptHash;
+        document.getElementById('multisig-example-hash').classList.add('highlight-animated');
+
+        // 步骤4：生成 P2SH 地址
+        await sleep(500);
+        const address = createP2SHAddress(redeemScript);
+        document.getElementById('multisig-example-addr').textContent = address;
+        document.getElementById('multisig-example-addr').classList.add('highlight-animated');
+
+        runMultisigExample.textContent = typeof t === 'function' ? t('addr.p2sh.run') : '▶ 运行实例';
+        runMultisigExample.disabled = false;
+    });
+}
+
+// ==========================================
+// 时间锁实例演示
+// ==========================================
+const runTimelockExample = document.getElementById('run-timelock-example');
+
+if (runTimelockExample) {
+    runTimelockExample.addEventListener('click', async () => {
+        runTimelockExample.disabled = true;
+        runTimelockExample.textContent = '⏳ ...';
+
+        const { pubKey, lockHeight } = EXAMPLE_DATA.timelock;
+
+        // 步骤3：构建脚本并计算 HASH160
+        await sleep(300);
+        const redeemScript = buildTimelockRedeemScript(lockHeight, pubKey);
+        const scriptHash = hash160(redeemScript);
+        document.getElementById('timelock-example-hash').textContent = scriptHash;
+        document.getElementById('timelock-example-hash').classList.add('highlight-animated');
+
+        // 步骤4：生成 P2SH 地址
+        await sleep(500);
+        const address = createP2SHAddress(redeemScript);
+        document.getElementById('timelock-example-addr').textContent = address;
+        document.getElementById('timelock-example-addr').classList.add('highlight-animated');
+
+        runTimelockExample.textContent = typeof t === 'function' ? t('addr.p2sh.run') : '▶ 运行实例';
+        runTimelockExample.disabled = false;
+    });
+}
+
+// ==========================================
+// HTLC 实例演示
+// ==========================================
+const runHTLCExample = document.getElementById('run-htlc-example');
+
+if (runHTLCExample) {
+    runHTLCExample.addEventListener('click', async () => {
+        runHTLCExample.disabled = true;
+        runHTLCExample.textContent = '⏳ ...';
+
+        const { alicePubKey, bobPubKey, secret, timeout } = EXAMPLE_DATA.htlc;
+
+        // 计算哈希锁 (HASH160 of secret)
+        await sleep(200);
+        const hashLock = hash160(secret);
+        document.getElementById('htlc-example-hashlock').textContent = hashLock.slice(0, 12) + '...';
+        document.getElementById('htlc-example-hashlock').classList.add('highlight-animated');
+
+        // 步骤3：构建脚本并计算 HASH160
+        await sleep(400);
+        const redeemScript = buildHTLCRedeemScript(hashLock, bobPubKey, alicePubKey, timeout);
+        const scriptHash = hash160(redeemScript);
+        document.getElementById('htlc-example-hash').textContent = scriptHash;
+        document.getElementById('htlc-example-hash').classList.add('highlight-animated');
+
+        // 步骤4：生成 P2SH 地址
+        await sleep(500);
+        const address = createP2SHAddress(redeemScript);
+        document.getElementById('htlc-example-addr').textContent = address;
+        document.getElementById('htlc-example-addr').classList.add('highlight-animated');
+
+        runHTLCExample.textContent = typeof t === 'function' ? t('addr.p2sh.run') : '▶ 运行实例';
+        runHTLCExample.disabled = false;
+    });
+}

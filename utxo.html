@@ -11,16 +11,48 @@
     <nav class="nav">
         <div class="nav-content">
             <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
-            <div class="nav-links">
-                <a href="index.html" data-i18n="nav.home">首页</a>
-                <a href="hash.html" data-i18n="nav.hash">哈希</a>
-                <a href="signature.html" data-i18n="nav.signature">签名</a>
-                <a href="address.html" data-i18n="nav.address">地址</a>
-                <a href="utxo.html" class="active" data-i18n="nav.utxo">UTXO</a>
-                <a href="block.html" data-i18n="nav.block">区块</a>
-                <a href="chain.html" data-i18n="nav.chain">区块链</a>
-                <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
-                <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" class="active" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多重签名 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📜</span><span data-i18n="nav.group.script">脚本</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="multisig.html" class="active" data-i18n="nav.multisig">多重签名</a>
+                        <a href="timelock.html" data-i18n="nav.timelock">时间锁</a>
+                        <a href="htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">👥</span>
+                    <div>
+                        <h1 data-i18n="multisig.title">多重签名 (Multisig)</h1>
+                        <p class="section-desc" data-i18n="multisig.desc">多重签名要求 M-of-N 个私钥签名才能花费资金，常用于企业资金管理、交易所托管等需要多方授权的场景。</p>
+                    </div>
+                </div>
+
+                <!-- 步骤1: 生成密钥对 -->
+                <div class="demo-box">
+                    <h3 data-i18n="multisig.step1.title">🔑 第一步：生成参与方密钥对</h3>
+                    <p class="demo-desc" data-i18n="multisig.step1.desc">为每个参与方生成独立的私钥和公钥。在实际应用中，每个参与方应自行保管私钥。</p>
+
+                    <div class="config-panel">
+                        <label data-i18n="multisig.config">配置 M-of-N：</label>
+                        <div class="config-row">
+                            <span data-i18n="multisig.required">需要</span>
+                            <select id="multisig-m">
+                                <option value="1">1</option>
+                                <option value="2" selected>2</option>
+                                <option value="3">3</option>
+                            </select>
+                            <span data-i18n="multisig.of">个签名，共</span>
+                            <select id="multisig-n">
+                                <option value="2">2</option>
+                                <option value="3" selected>3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <span data-i18n="multisig.participants">个参与方</span>
+                        </div>
+                        <button class="btn primary" id="generate-keys-btn" data-i18n="multisig.generate.keys">🎲 生成密钥对</button>
+                    </div>
+
+                    <div class="keys-container" id="keys-container" style="display: none;">
+                        <div class="keys-grid" id="keys-grid"></div>
+                    </div>
+                </div>
+
+                <!-- 步骤2: 构建脚本和地址 -->
+                <div class="demo-box">
+                    <h3 data-i18n="multisig.step2.title">📜 第二步：构建赎回脚本与地址</h3>
+                    <p class="demo-desc" data-i18n="multisig.step2.desc">将所有公钥组合成多签赎回脚本，然后哈希生成 P2SH 地址。</p>
+
+                    <div class="script-build-process" id="script-process" style="display: none;">
+                        <div class="process-step">
+                            <div class="process-label" data-i18n="multisig.script.label">赎回脚本 (RedeemScript)</div>
+                            <div class="process-content">
+                                <div class="script-visual" id="script-visual"></div>
+                                <div class="script-hex" id="script-hex"></div>
+                            </div>
+                        </div>
+                        <div class="process-arrow">↓ HASH160</div>
+                        <div class="process-step">
+                            <div class="process-label" data-i18n="multisig.hash.label">脚本哈希</div>
+                            <div class="process-content">
+                                <code class="hash-value" id="script-hash-value"></code>
+                            </div>
+                        </div>
+                        <div class="process-arrow">↓ Base58Check (0x05)</div>
+                        <div class="process-step highlight">
+                            <div class="process-label" data-i18n="multisig.address.label">P2SH 多签地址</div>
+                            <div class="process-content">
+                                <code class="address-value" id="p2sh-address"></code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤3: 签名交易 -->
+                <div class="demo-box">
+                    <h3 data-i18n="multisig.step3.title">✍️ 第三步：签名交易</h3>
+                    <p class="demo-desc" data-i18n="multisig.step3.desc">模拟从多签地址花费资金。每个参与方使用自己的私钥签名，收集足够签名后才能广播交易。</p>
+
+                    <div class="tx-simulation" id="tx-simulation" style="display: none;">
+                        <div class="tx-info">
+                            <div class="tx-field">
+                                <label data-i18n="multisig.tx.from">发送地址：</label>
+                                <code id="tx-from"></code>
+                            </div>
+                            <div class="tx-field">
+                                <label data-i18n="multisig.tx.to">接收地址：</label>
+                                <input type="text" id="tx-to" value="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" readonly>
+                            </div>
+                            <div class="tx-field">
+                                <label data-i18n="multisig.tx.amount">金额：</label>
+                                <input type="text" id="tx-amount" value="0.5 BTC" readonly>
+                            </div>
+                            <div class="tx-field">
+                                <label data-i18n="multisig.tx.hash">交易哈希 (待签名)：</label>
+                                <code id="tx-hash"></code>
+                            </div>
+                        </div>
+
+                        <div class="signing-panel">
+                            <h4 data-i18n="multisig.signing.title">选择签名方</h4>
+                            <p class="signing-hint" id="signing-hint"></p>
+                            <div class="signers-grid" id="signers-grid"></div>
+                        </div>
+
+                        <div class="signatures-collected" id="signatures-collected">
+                            <h4 data-i18n="multisig.signatures.title">已收集的签名</h4>
+                            <div class="signatures-list" id="signatures-list"></div>
+                            <div class="signature-status" id="signature-status"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤4: 验证与广播 -->
+                <div class="demo-box">
+                    <h3 data-i18n="multisig.step4.title">✅ 第四步：验证与广播</h3>
+                    <p class="demo-desc" data-i18n="multisig.step4.desc">验证所有签名是否有效，满足 M-of-N 条件后即可广播交易。</p>
+
+                    <div class="verify-panel" id="verify-panel" style="display: none;">
+                        <div class="verify-steps" id="verify-steps"></div>
+                        <button class="btn primary" id="broadcast-btn" disabled data-i18n="multisig.broadcast">📡 广播交易</button>
+                        <div class="broadcast-result" id="broadcast-result" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- 应用场景 -->
+                <div class="card info">
+                    <h4 data-i18n="multisig.usecases.title">💡 多重签名应用场景</h4>
+                    <div class="usecase-grid">
+                        <div class="usecase-item">
+                            <span class="usecase-icon">🏢</span>
+                            <div>
+                                <strong data-i18n="multisig.usecase.1">企业财务</strong>
+                                <p data-i18n="multisig.usecase.1.desc">3-of-5 多签，需要财务、CEO、董事会中3人同意才能转账</p>
+                            </div>
+                        </div>
+                        <div class="usecase-item">
+                            <span class="usecase-icon">🏦</span>
+                            <div>
+                                <strong data-i18n="multisig.usecase.2">交易所托管</strong>
+                                <p data-i18n="multisig.usecase.2.desc">2-of-3 多签，用户、交易所、第三方仲裁各持一把钥匙</p>
+                            </div>
+                        </div>
+                        <div class="usecase-item">
+                            <span class="usecase-icon">👨‍👩‍👧</span>
+                            <div>
+                                <strong data-i18n="multisig.usecase.3">家庭基金</strong>
+                                <p data-i18n="multisig.usecase.3.desc">2-of-3 多签，夫妻各持一把钥匙，律师持备份钥匙</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <a href="address.html" class="btn secondary" data-i18n="multisig.nav.prev">← 比特币地址</a>
+                    <a href="timelock.html" class="btn primary" data-i18n="multisig.nav.next">时间锁 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="multisig.js"></script>
+</body>
+</html>
