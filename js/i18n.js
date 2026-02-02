@@ -12,7 +12,9 @@ const translations = {
         'nav.group.block': '区块',
         'nav.group.consensus': '共识',
         'nav.hash': '哈希函数',
+        'nav.sha256': '└ SHA-256 过程',
         'nav.signature': '数字签名',
+        'nav.ecdsa': '└ ECDSA 过程',
         'nav.address': '比特币地址',
         'nav.utxo': 'UTXO 模型',
         'nav.block': '区块结构',
@@ -186,7 +188,6 @@ const translations = {
         'sha256.circuit.legend.k': '轮常量 K[0..63]',
 
         // SHA-256 子页面
-        'nav.sha256': '└ SHA-256 过程',
         'sha256.page.title': 'SHA-256 计算过程',
         'sha256.page.desc': '逐步观察 SHA-256 的完整计算过程，包括消息填充、消息调度、压缩函数和最终哈希生成。',
         'sha256.input.label': '输入任意内容：',
@@ -251,7 +252,6 @@ const translations = {
         'sig.nav.next': '比特币地址 →',
 
         // ECDSA 子页面
-        'nav.ecdsa': '└ ECDSA 过程',
         'ecdsa.page.title': 'ECDSA 数字签名算法',
         'ecdsa.page.desc': '深入了解椭圆曲线数字签名算法的数学原理，包括密钥生成、签名过程和验证过程的完整计算流程。',
         'ecdsa.circuit.title': 'ECDSA 算法结构 (secp256k1)',
@@ -776,7 +776,9 @@ const translations = {
         'nav.group.block': 'Blocks',
         'nav.group.consensus': 'Consensus',
         'nav.hash': 'Hash Function',
+        'nav.sha256': '└ SHA-256 Process',
         'nav.signature': 'Digital Signature',
+        'nav.ecdsa': '└ ECDSA Process',
         'nav.address': 'Bitcoin Address',
         'nav.utxo': 'UTXO Model',
         'nav.block': 'Block Structure',
@@ -950,7 +952,6 @@ const translations = {
         'sha256.circuit.legend.k': 'Round Constants K[0..63]',
 
         // SHA-256 Sub-page
-        'nav.sha256': '└ SHA-256 Process',
         'sha256.page.title': 'SHA-256 Computation Process',
         'sha256.page.desc': 'Step-by-step visualization of the complete SHA-256 computation, including message padding, message schedule, compression function, and final hash generation.',
         'sha256.input.label': 'Enter any content:',
@@ -1015,7 +1016,6 @@ const translations = {
         'sig.nav.next': 'Bitcoin Address →',
 
         // ECDSA Sub-page
-        'nav.ecdsa': '└ ECDSA Process',
         'ecdsa.page.title': 'ECDSA Digital Signature Algorithm',
         'ecdsa.page.desc': 'Explore the mathematical principles of Elliptic Curve Digital Signature Algorithm, including key generation, signing process, and verification process.',
         'ecdsa.circuit.title': 'ECDSA Algorithm Structure (secp256k1)',
