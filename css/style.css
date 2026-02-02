@@ -7993,6 +7993,120 @@ body.menu-open {
     100% { transform: scale(1); }
 }
 
+/* Nodes not in verification path */
+.node-rect.not-in-path {
+    fill: var(--bg) !important;
+    stroke: var(--border) !important;
+    stroke-width: 1 !important;
+    opacity: 0.4;
+}
+
+.tree-line.not-in-path {
+    stroke: var(--border) !important;
+    stroke-width: 1 !important;
+    opacity: 0.3;
+}
+
+/* Proof Data Section */
+.proof-data-section {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.08));
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.proof-data-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.proof-data-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.proof-data-item {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+}
+
+.proof-data-item .data-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+}
+
+.proof-data-item .data-value {
+    font-size: 0.9rem;
+}
+
+.proof-data-item .data-value code {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.8rem;
+    background: var(--bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    color: #3b82f6;
+}
+
+.proof-data-item .data-value.root-value code {
+    color: var(--primary);
+    background: rgba(247, 147, 26, 0.1);
+}
+
+/* Proof Path Data */
+.proof-path-data {
+    border-color: rgba(251, 191, 36, 0.4);
+    background: rgba(251, 191, 36, 0.05);
+}
+
+.proof-hashes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.proof-hash-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg);
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.proof-hash-level {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.proof-hash-pos {
+    color: #fbbf24;
+    font-weight: 500;
+}
+
+.proof-hash-item code {
+    font-family: 'SF Mono', Monaco, monospace;
+    color: #fbbf24;
+}
+
+.proof-data-note {
+    font-size: 0.8rem;
+    color: var(--success);
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border);
+    margin-top: 0.5rem;
+}
+
 /* Verification Animation Step Display */
 .verify-anim-step {
     background: var(--card-bg);

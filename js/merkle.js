@@ -537,10 +537,13 @@ function renderProof(tree, txIndex, proof) {
     const detailsContainer = document.getElementById('proof-details');
     const pathContainer = document.getElementById('proof-path');
     const calcContainer = document.getElementById('proof-calc');
+    const proofDataSection = document.getElementById('proof-data-section');
+    const proofVisual = document.getElementById('proof-visual');
     const svg = document.querySelector('.merkle-svg');
 
     if (!proof) {
         detailsContainer.style.display = 'none';
+        proofDataSection.style.display = 'none';
         return;
     }
 
@@ -552,12 +555,74 @@ function renderProof(tree, txIndex, proof) {
     // 清除之前的高亮
     const allRects = document.querySelectorAll('.merkle-svg .node-rect');
     allRects.forEach(rect => {
-        rect.classList.remove('proof-target', 'proof-sibling', 'proof-path', 'verify-current', 'verify-sibling', 'verify-result');
+        rect.classList.remove('proof-target', 'proof-sibling', 'proof-path', 'verify-current', 'verify-sibling', 'verify-result', 'verify-success', 'verify-fail', 'not-in-path');
     });
 
     const allLines = document.querySelectorAll('.merkle-svg .tree-line');
     allLines.forEach(line => {
-        line.classList.remove('proof-line', 'verify-line');
+        line.classList.remove('proof-line', 'verify-line', 'not-in-path');
+    });
+
+    // 准备验证数据
+    const targetNode = tree.levels[0][txIndex];
+    const tx = transactions[txIndex];
+
+    // 显示验证所需数据
+    proofDataSection.style.display = 'block';
+    document.getElementById('verify-tx-data').innerHTML = `<strong>${tx}</strong> → <code>${targetNode.hash.substring(0, 16)}...</code>`;
+    document.getElementById('verify-root-data').innerHTML = `<code>${tree.root.hash.substring(0, 24)}...</code>`;
+
+    // 显示证明路径数据
+    let proofDataHtml = '<div class="proof-hashes">';
+    proof.forEach((step, idx) => {
+        const posLabel = step.position === 'left' ? '左' : '右';
+        proofDataHtml += `
+            <div class="proof-hash-item">
+                <span class="proof-hash-level">第${idx + 1}层</span>
+                <span class="proof-hash-pos">${posLabel}兄弟:</span>
+                <code>${step.hash.substring(0, 12)}...</code>
+            </div>
+        `;
+    });
+    proofDataHtml += '</div>';
+    proofDataHtml += `<div class="proof-data-note">💡 只需 ${proof.length} 个哈希值即可验证，无需完整的 ${tree.levels[0].length} 笔交易数据</div>`;
+    document.getElementById('verify-proof-data').innerHTML = proofDataHtml;
+
+    // 收集验证路径上的节点ID
+    const pathNodeIds = new Set();
+    const pathLineParents = new Set();
+
+    pathNodeIds.add(targetNode.id);
+    pathNodeIds.add(tree.root.id);
+
+    let currentIndex = txIndex;
+    proof.forEach((step, idx) => {
+        pathNodeIds.add(step.siblingId);
+        const parentLevel = idx + 1;
+        const parentIndex = Math.floor(txIndex / Math.pow(2, parentLevel));
+        const parentNode = tree.levels[parentLevel] ? tree.levels[parentLevel][parentIndex] : null;
+        if (parentNode) {
+            pathNodeIds.add(parentNode.id);
+            pathLineParents.add(parentNode.id);
+        }
+    });
+
+    // 将不在路径上的节点变暗
+    allRects.forEach(rect => {
+        const nodeGroup = rect.closest('.merkle-node-group');
+        if (nodeGroup) {
+            const nodeId = nodeGroup.getAttribute('data-id');
+            if (!pathNodeIds.has(nodeId)) {
+                rect.classList.add('not-in-path');
+            }
+        }
+    });
+
+    allLines.forEach(line => {
+        const parentId = line.getAttribute('data-parent');
+        if (!pathLineParents.has(parentId)) {
+            line.classList.add('not-in-path');
+        }
     });
 
     // 显示证明详情容器
@@ -566,8 +631,6 @@ function renderProof(tree, txIndex, proof) {
     calcContainer.innerHTML = '';
 
     // 准备验证步骤数据
-    const targetNode = tree.levels[0][txIndex];
-    const tx = transactions[txIndex];
     let currentHash = targetNode.hash;
     let currentNodeId = targetNode.id;
 
