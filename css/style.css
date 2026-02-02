@@ -6916,6 +6916,17 @@ body.menu-open {
     transition: transform 0.2s ease;
 }
 
+.timeline-item:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    top: 0px;
+    right: -8px;
+    font-size: 1rem;
+    color: var(--primary);
+    font-weight: bold;
+    z-index: 2;
+}
+
 .timeline-item:hover {
     transform: translateY(-4px);
 }
