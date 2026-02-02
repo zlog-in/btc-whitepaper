@@ -2838,6 +2838,359 @@ a.concept:hover {
     color: var(--text-muted);
 }
 
+/* ==========================================
+   UTXO 现金类比样式
+   ========================================== */
+
+/* 钱包纸币展示 */
+.cash-analogy {
+    margin-top: 1.5rem;
+}
+
+.analogy-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.analogy-section h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+}
+
+.wallet-bills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.bill {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.bill:hover {
+    transform: translateY(-2px);
+}
+
+.bill-100 { background: linear-gradient(135deg, #fecaca, #fee2e2); color: #991b1b; border: 2px solid #f87171; }
+.bill-70 { background: linear-gradient(135deg, #c7d2fe, #e0e7ff); color: #3730a3; border: 2px solid #818cf8; }
+.bill-50 { background: linear-gradient(135deg, #bbf7d0, #dcfce7); color: #166534; border: 2px solid #4ade80; }
+.bill-30 { background: linear-gradient(135deg, #fef08a, #fef9c3); color: #854d0e; border: 2px solid #facc15; }
+.bill-20 { background: linear-gradient(135deg, #bfdbfe, #dbeafe); color: #1e40af; border: 2px solid #60a5fa; }
+.bill-10 { background: linear-gradient(135deg, #e9d5ff, #f3e8ff); color: #6b21a8; border: 2px solid #c084fc; }
+
+.bill.selected {
+    box-shadow: 0 0 0 3px var(--primary), 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+}
+
+.bill.recipient { border-style: dashed; }
+.bill.change { border-style: dotted; }
+
+.wallet-total {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+.wallet-total strong {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.total-note {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* 现金与UTXO对比 */
+.analogy-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.comparison-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    min-width: 180px;
+    border: 2px solid var(--border);
+}
+
+.comparison-item.btc {
+    border-color: var(--primary);
+    background: rgba(247, 147, 26, 0.05);
+}
+
+.comparison-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.comparison-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.comparison-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.comparison-equals {
+    font-size: 2rem;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* 找零演示 */
+.change-demo {
+    margin-top: 1rem;
+}
+
+.change-scenario {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.scenario-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.scenario-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.scenario-step {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.step-visual {
+    margin-bottom: 0.5rem;
+}
+
+.step-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.step-desc {
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.step-desc p {
+    margin: 0.25rem 0;
+}
+
+.scenario-arrow {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    padding: 0.25rem 0;
+}
+
+/* 找零过程可视化 */
+.change-process {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.process-input,
+.process-output {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.process-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.process-arrow {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.process-outputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* 比特币对应表 */
+.btc-equivalent {
+    background: rgba(247, 147, 26, 0.05);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.btc-equivalent h4 {
+    margin: 0 0 1rem 0;
+    color: var(--primary);
+}
+
+.equivalent-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.equiv-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    align-items: center;
+}
+
+.equiv-row.header {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+.equiv-row.highlight {
+    background: rgba(247, 147, 26, 0.15);
+    border: 1px dashed var(--primary);
+}
+
+/* 规则网格 */
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.rule-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.rule-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.rule-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.rule-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.rule-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.rule-desc strong {
+    color: var(--primary);
+}
+
+/* 为什么用UTXO */
+.why-utxo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.why-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.why-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.why-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--text);
+}
+
+.why-item p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* UTXO 响应式 */
 @media (max-width: 768px) {
     .tx-builder {
         flex-direction: column;
