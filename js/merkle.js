@@ -98,6 +98,7 @@ function buildMerkleTree(txList) {
         label: tx,
         index: index,
         isLeaf: true,
+        isDuplicate: false,
         id: `leaf-${index}`
     }));
 
@@ -111,10 +112,33 @@ function buildMerkleTree(txList) {
     let levelNum = 0;
     while (currentLevel.length > 1) {
         const nextLevel = [];
+        // 如果当前层节点数为奇数，添加虚拟复制节点
+        let levelWithDuplicates = [...currentLevel];
+        let duplicateNode = null;
 
-        for (let i = 0; i < currentLevel.length; i += 2) {
-            const left = currentLevel[i];
-            const right = currentLevel[i + 1] || currentLevel[i]; // 奇数时复制最后一个
+        if (currentLevel.length % 2 === 1) {
+            const lastNode = currentLevel[currentLevel.length - 1];
+            duplicateNode = {
+                ...lastNode,
+                id: `${lastNode.id}-dup`,
+                isDuplicate: true,
+                originalId: lastNode.id,
+                label: lastNode.isLeaf ? `${lastNode.label} (复制)` : `${lastNode.label || 'H'} (复制)`
+            };
+            levelWithDuplicates.push(duplicateNode);
+
+            // 记录复制步骤
+            buildSteps.push({
+                type: 'duplicate',
+                originalNode: { ...lastNode },
+                duplicateNode: { ...duplicateNode },
+                levelIndex: levelNum
+            });
+        }
+
+        for (let i = 0; i < levelWithDuplicates.length; i += 2) {
+            const left = levelWithDuplicates[i];
+            const right = levelWithDuplicates[i + 1];
 
             const combinedHash = sha256(left.hash + right.hash);
             const parentNode = {
@@ -124,6 +148,7 @@ function buildMerkleTree(txList) {
                 leftId: left.id,
                 rightId: right.id,
                 isLeaf: false,
+                isDuplicate: false,
                 id: `node-${levelNum + 1}-${nextLevel.length}`
             };
             nextLevel.push(parentNode);
@@ -134,10 +159,12 @@ function buildMerkleTree(txList) {
                 leftNode: { ...left },
                 rightNode: { ...right },
                 parentNode: { ...parentNode },
-                isDuplicate: !currentLevel[i + 1]
+                hasDuplicate: right.isDuplicate
             });
         }
 
+        // 保存包含复制节点的层级用于渲染
+        levels[levelNum] = levelWithDuplicates;
         levels.push(nextLevel);
         currentLevel = nextLevel;
         levelNum++;
@@ -217,14 +244,36 @@ function renderMerkleTree(tree, containerId, animated = true) {
             rect.setAttribute("width", nodeWidth);
             rect.setAttribute("height", nodeHeight);
             rect.setAttribute("rx", "6");
-            rect.setAttribute("class", node.isLeaf ? "node-rect leaf" : (levelIndex === tree.levels.length - 1 ? "node-rect root" : "node-rect"));
+
+            // 设置节点样式类
+            let rectClass = "node-rect";
+            if (node.isDuplicate) {
+                rectClass += " duplicate";
+            } else if (node.isLeaf) {
+                rectClass += " leaf";
+            } else if (levelIndex === tree.levels.length - 1) {
+                rectClass += " root";
+            }
+            rect.setAttribute("class", rectClass);
             nodeGroup.appendChild(rect);
 
             // 节点标签
             const label = document.createElementNS(svgNS, "text");
-            label.setAttribute("class", "node-label");
+            label.setAttribute("class", node.isDuplicate ? "node-label duplicate-label" : "node-label");
             label.setAttribute("y", "-8");
-            label.textContent = node.isLeaf ? node.label : (levelIndex === tree.levels.length - 1 ? "Root" : `H${levelIndex}`);
+
+            let labelText;
+            if (node.isDuplicate) {
+                // 复制节点显示 "复制" 标签
+                labelText = "复制";
+            } else if (node.isLeaf) {
+                labelText = node.label;
+            } else if (levelIndex === tree.levels.length - 1) {
+                labelText = "Root";
+            } else {
+                labelText = `H${levelIndex}`;
+            }
+            label.textContent = labelText;
             nodeGroup.appendChild(label);
 
             // 哈希值
@@ -338,6 +387,51 @@ function animateBuild(tree, svg) {
             stepIndex++;
             animationTimer = setTimeout(showStep, delay + step.nodes.length * 150);
 
+        } else if (step.type === 'duplicate') {
+            // 显示复制节点
+            const originalGroup = svg.querySelector(`[data-id="${step.originalNode.id}"]`);
+            const duplicateGroup = svg.querySelector(`[data-id="${step.duplicateNode.id}"]`);
+
+            // 高亮原节点
+            if (originalGroup) {
+                originalGroup.querySelector('.node-rect').classList.add('highlight-left');
+            }
+
+            calcDisplay.innerHTML = `
+                <div class="calc-step-info">
+                    <span class="calc-step-num">步骤 ${stepIndex + 1}</span>
+                    <span class="calc-step-desc">节点数为奇数，复制最后一个节点</span>
+                </div>
+                <div class="calc-duplicate">
+                    <div class="duplicate-source">
+                        <span class="source-label">原节点:</span>
+                        <span class="source-hash">${step.originalNode.hash.substring(0, 12)}...</span>
+                    </div>
+                    <div class="duplicate-arrow">→ 复制</div>
+                    <div class="duplicate-target">
+                        <span class="target-label">虚拟节点:</span>
+                        <span class="target-hash">${step.duplicateNode.hash.substring(0, 12)}...</span>
+                    </div>
+                </div>
+            `;
+
+            // 显示复制节点
+            setTimeout(() => {
+                if (duplicateGroup) {
+                    duplicateGroup.style.transition = 'opacity 0.5s ease';
+                    duplicateGroup.style.opacity = '1';
+                    duplicateGroup.querySelector('.node-rect').classList.add('new-duplicate');
+                }
+
+                setTimeout(() => {
+                    if (originalGroup) originalGroup.querySelector('.node-rect').classList.remove('highlight-left');
+                    if (duplicateGroup) duplicateGroup.querySelector('.node-rect').classList.remove('new-duplicate');
+                }, 500);
+            }, 400);
+
+            stepIndex++;
+            animationTimer = setTimeout(showStep, delay + 600);
+
         } else if (step.type === 'combine') {
             // 高亮子节点
             const leftGroup = svg.querySelector(`[data-id="${step.leftNode.id}"]`);
@@ -348,22 +442,23 @@ function animateBuild(tree, svg) {
             if (leftGroup) {
                 leftGroup.querySelector('.node-rect').classList.add('highlight-left');
             }
-            if (rightGroup && step.leftNode.id !== step.rightNode.id) {
+            if (rightGroup) {
                 rightGroup.querySelector('.node-rect').classList.add('highlight-right');
             }
 
             // 显示计算过程
             const levelNum = parseInt(step.parentNode.id.split('-')[1]) || 0;
+            const rightLabel = step.hasDuplicate ? '(复制) ' + step.rightNode.hash.substring(0, 8) + '...' : step.rightNode.hash.substring(0, 10) + '...';
             calcDisplay.innerHTML = `
                 <div class="calc-step-info">
                     <span class="calc-step-num">步骤 ${stepIndex + 1}</span>
-                    <span class="calc-step-desc">合并节点计算父哈希</span>
+                    <span class="calc-step-desc">合并节点计算父哈希${step.hasDuplicate ? ' (使用复制节点)' : ''}</span>
                 </div>
                 <div class="calc-combine">
                     <div class="calc-children">
                         <span class="child-hash left">${step.leftNode.hash.substring(0, 10)}...</span>
                         <span class="calc-plus">+</span>
-                        <span class="child-hash right">${step.isDuplicate ? '(复制)' : step.rightNode.hash.substring(0, 10) + '...'}</span>
+                        <span class="child-hash right ${step.hasDuplicate ? 'duplicate' : ''}">${rightLabel}</span>
                     </div>
                     <div class="calc-arrow">↓ SHA256</div>
                     <div class="parent-hash">${step.parentNode.hash.substring(0, 16)}...</div>
