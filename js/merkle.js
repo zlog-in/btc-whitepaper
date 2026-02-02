@@ -2,7 +2,7 @@
 // Merkle Tree 演示
 // ==========================================
 
-// SHA-256 哈希函数 (简化版，复用 hash.js 的逻辑)
+// SHA-256 哈希函数
 function sha256(message) {
     function utf8Encode(str) {
         const bytes = [];
@@ -84,51 +84,74 @@ function sha256(message) {
 // 全局状态
 let merkleTree = null;
 let transactions = [];
+let animationTimer = null;
 
-// 构建 Merkle Tree
+// 构建 Merkle Tree (返回构建步骤用于动画)
 function buildMerkleTree(txList) {
     if (txList.length === 0) return null;
+
+    const buildSteps = []; // 记录每一步的构建过程
 
     // 叶子节点层
     let currentLevel = txList.map((tx, index) => ({
         hash: sha256(tx),
         label: tx,
         index: index,
-        isLeaf: true
+        isLeaf: true,
+        id: `leaf-${index}`
     }));
 
     const levels = [currentLevel];
+    buildSteps.push({
+        type: 'leaves',
+        nodes: currentLevel.map(n => ({ ...n }))
+    });
 
     // 逐层向上构建
+    let levelNum = 0;
     while (currentLevel.length > 1) {
         const nextLevel = [];
 
         for (let i = 0; i < currentLevel.length; i += 2) {
             const left = currentLevel[i];
-            // 如果是奇数，复制最后一个
-            const right = currentLevel[i + 1] || currentLevel[i];
+            const right = currentLevel[i + 1] || currentLevel[i]; // 奇数时复制最后一个
 
             const combinedHash = sha256(left.hash + right.hash);
-            nextLevel.push({
+            const parentNode = {
                 hash: combinedHash,
                 left: left,
                 right: right,
-                isLeaf: false
+                leftId: left.id,
+                rightId: right.id,
+                isLeaf: false,
+                id: `node-${levelNum + 1}-${nextLevel.length}`
+            };
+            nextLevel.push(parentNode);
+
+            // 记录构建步骤
+            buildSteps.push({
+                type: 'combine',
+                leftNode: { ...left },
+                rightNode: { ...right },
+                parentNode: { ...parentNode },
+                isDuplicate: !currentLevel[i + 1]
             });
         }
 
         levels.push(nextLevel);
         currentLevel = nextLevel;
+        levelNum++;
     }
 
     return {
         root: currentLevel[0],
-        levels: levels
+        levels: levels,
+        buildSteps: buildSteps
     };
 }
 
-// 渲染 Merkle Tree
-function renderMerkleTree(tree, containerId) {
+// 渲染静态树结构
+function renderMerkleTree(tree, containerId, animated = true) {
     const container = document.getElementById(containerId);
     if (!tree) {
         container.innerHTML = '<div class="merkle-placeholder">No tree to display</div>';
@@ -137,110 +160,247 @@ function renderMerkleTree(tree, containerId) {
 
     container.innerHTML = '';
 
-    // 创建树容器
-    const treeWrapper = document.createElement('div');
-    treeWrapper.className = 'merkle-tree-wrapper';
+    // 计算布局
+    const nodeWidth = 90;
+    const nodeHeight = 50;
+    const levelGap = 80;
+    const nodeGap = 20;
 
-    // 从顶层到底层渲染
-    const reversedLevels = [...tree.levels].reverse();
-    const totalLevels = reversedLevels.length;
+    const totalLevels = tree.levels.length;
+    const maxNodesInLevel = tree.levels[0].length;
+    const totalWidth = maxNodesInLevel * nodeWidth + (maxNodesInLevel - 1) * nodeGap;
+    const totalHeight = totalLevels * nodeHeight + (totalLevels - 1) * levelGap;
 
-    reversedLevels.forEach((level, levelIndex) => {
-        const levelDiv = document.createElement('div');
-        levelDiv.className = 'merkle-level';
-        levelDiv.dataset.level = levelIndex;
+    // 创建 SVG 容器
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("width", Math.max(totalWidth + 40, 400));
+    svg.setAttribute("height", totalHeight + 60);
+    svg.setAttribute("class", "merkle-svg");
 
-        const isRoot = levelIndex === 0;
-        const isLeaf = levelIndex === totalLevels - 1;
+    // 连接线组 (放在节点下面)
+    const linesGroup = document.createElementNS(svgNS, "g");
+    linesGroup.setAttribute("class", "merkle-lines");
+    svg.appendChild(linesGroup);
 
-        if (isRoot) levelDiv.classList.add('root-level');
-        if (isLeaf) levelDiv.classList.add('leaf-level');
+    // 节点组
+    const nodesGroup = document.createElementNS(svgNS, "g");
+    nodesGroup.setAttribute("class", "merkle-nodes");
+    svg.appendChild(nodesGroup);
+
+    // 计算每个节点的位置
+    const nodePositions = {};
+
+    // 从底层到顶层渲染 (levels[0] 是叶子层)
+    tree.levels.forEach((level, levelIndex) => {
+        const y = totalHeight - levelIndex * (nodeHeight + levelGap) - nodeHeight / 2 + 20;
+        const levelWidth = level.length * nodeWidth + (level.length - 1) * nodeGap;
+        const startX = (Math.max(totalWidth + 40, 400) - levelWidth) / 2;
 
         level.forEach((node, nodeIndex) => {
-            // 创建节点包装器（包含连接线）
-            const nodeWrapper = document.createElement('div');
-            nodeWrapper.className = 'merkle-node-wrapper';
+            const x = startX + nodeIndex * (nodeWidth + nodeGap) + nodeWidth / 2;
+            nodePositions[node.id] = { x, y, node };
 
-            // 添加向上的连接线（除了根节点）
-            if (!isRoot) {
-                const connectorUp = document.createElement('div');
-                connectorUp.className = 'connector-up';
-                nodeWrapper.appendChild(connectorUp);
+            // 创建节点组
+            const nodeGroup = document.createElementNS(svgNS, "g");
+            nodeGroup.setAttribute("class", "merkle-node-group");
+            nodeGroup.setAttribute("data-id", node.id);
+            nodeGroup.setAttribute("transform", `translate(${x}, ${y})`);
+            if (animated) {
+                nodeGroup.style.opacity = "0";
             }
 
-            // 创建节点
-            const nodeDiv = document.createElement('div');
-            nodeDiv.className = 'merkle-node';
-            nodeDiv.dataset.hash = node.hash;
-            nodeDiv.dataset.level = levelIndex;
-            nodeDiv.dataset.index = nodeIndex;
+            // 节点背景
+            const rect = document.createElementNS(svgNS, "rect");
+            rect.setAttribute("x", -nodeWidth / 2);
+            rect.setAttribute("y", -nodeHeight / 2);
+            rect.setAttribute("width", nodeWidth);
+            rect.setAttribute("height", nodeHeight);
+            rect.setAttribute("rx", "6");
+            rect.setAttribute("class", node.isLeaf ? "node-rect leaf" : (levelIndex === tree.levels.length - 1 ? "node-rect root" : "node-rect"));
+            nodeGroup.appendChild(rect);
 
-            if (isRoot) nodeDiv.classList.add('root-node');
-            if (node.isLeaf) {
-                nodeDiv.classList.add('leaf-node');
-                nodeDiv.dataset.txIndex = node.index;
-            }
+            // 节点标签
+            const label = document.createElementNS(svgNS, "text");
+            label.setAttribute("class", "node-label");
+            label.setAttribute("y", "-8");
+            label.textContent = node.isLeaf ? node.label : (levelIndex === tree.levels.length - 1 ? "Root" : `H${levelIndex}`);
+            nodeGroup.appendChild(label);
 
-            const labelSpan = document.createElement('span');
-            labelSpan.className = 'node-label';
-            if (node.isLeaf) {
-                labelSpan.textContent = node.label;
-            } else if (isRoot) {
-                labelSpan.textContent = 'Root';
-            } else {
-                labelSpan.textContent = `H${totalLevels - 1 - levelIndex}`;
-            }
+            // 哈希值
+            const hashText = document.createElementNS(svgNS, "text");
+            hashText.setAttribute("class", "node-hash");
+            hashText.setAttribute("y", "12");
+            hashText.textContent = node.hash.substring(0, 8) + "...";
+            nodeGroup.appendChild(hashText);
 
-            const hashSpan = document.createElement('span');
-            hashSpan.className = 'node-hash';
-            hashSpan.textContent = node.hash.substring(0, 8) + '...';
-            hashSpan.title = node.hash;
-
-            nodeDiv.appendChild(labelSpan);
-            nodeDiv.appendChild(hashSpan);
-            nodeWrapper.appendChild(nodeDiv);
-
-            // 添加向下的连接线（除了叶子节点）
-            if (!isLeaf) {
-                const connectorDown = document.createElement('div');
-                connectorDown.className = 'connector-down';
-
-                // 左分支
-                const branchLeft = document.createElement('div');
-                branchLeft.className = 'branch branch-left';
-                connectorDown.appendChild(branchLeft);
-
-                // 右分支
-                const branchRight = document.createElement('div');
-                branchRight.className = 'branch branch-right';
-                connectorDown.appendChild(branchRight);
-
-                nodeWrapper.appendChild(connectorDown);
-            }
-
-            levelDiv.appendChild(nodeWrapper);
+            nodesGroup.appendChild(nodeGroup);
         });
-
-        treeWrapper.appendChild(levelDiv);
     });
 
-    container.appendChild(treeWrapper);
+    // 绘制连接线
+    tree.levels.forEach((level, levelIndex) => {
+        if (levelIndex === 0) return; // 叶子层没有子节点
 
-    // 添加公式说明
-    const formulaDiv = document.createElement('div');
-    formulaDiv.className = 'merkle-formula';
-    formulaDiv.innerHTML = `
-        <div class="formula-item">
-            <span class="formula-label">Parent</span>
-            <span class="formula-eq">=</span>
-            <span class="formula-fn">SHA256(</span>
-            <span class="formula-child left-child">Left Child</span>
-            <span class="formula-concat">+</span>
-            <span class="formula-child right-child">Right Child</span>
-            <span class="formula-fn">)</span>
-        </div>
-    `;
-    container.appendChild(formulaDiv);
+        level.forEach((node) => {
+            const parentPos = nodePositions[node.id];
+            const leftPos = nodePositions[node.leftId];
+            const rightPos = nodePositions[node.rightId];
+
+            if (leftPos) {
+                const line = document.createElementNS(svgNS, "line");
+                line.setAttribute("x1", parentPos.x);
+                line.setAttribute("y1", parentPos.y + nodeHeight / 2);
+                line.setAttribute("x2", leftPos.x);
+                line.setAttribute("y2", leftPos.y - nodeHeight / 2);
+                line.setAttribute("class", "tree-line");
+                line.setAttribute("data-parent", node.id);
+                line.setAttribute("data-child", node.leftId);
+                if (animated) {
+                    line.style.opacity = "0";
+                }
+                linesGroup.appendChild(line);
+            }
+
+            if (rightPos && node.leftId !== node.rightId) {
+                const line = document.createElementNS(svgNS, "line");
+                line.setAttribute("x1", parentPos.x);
+                line.setAttribute("y1", parentPos.y + nodeHeight / 2);
+                line.setAttribute("x2", rightPos.x);
+                line.setAttribute("y2", rightPos.y - nodeHeight / 2);
+                line.setAttribute("class", "tree-line");
+                line.setAttribute("data-parent", node.id);
+                line.setAttribute("data-child", node.rightId);
+                if (animated) {
+                    line.style.opacity = "0";
+                }
+                linesGroup.appendChild(line);
+            }
+        });
+    });
+
+    container.appendChild(svg);
+
+    // 添加计算过程显示区域
+    const calcDisplay = document.createElement('div');
+    calcDisplay.className = 'merkle-calc-display';
+    calcDisplay.id = 'merkle-calc-display';
+    container.appendChild(calcDisplay);
+
+    // 如果需要动画，开始动画
+    if (animated) {
+        animateBuild(tree, svg);
+    }
+}
+
+// 动画展示构建过程
+function animateBuild(tree, svg) {
+    const calcDisplay = document.getElementById('merkle-calc-display');
+    let stepIndex = 0;
+    const steps = tree.buildSteps;
+    const delay = 800;
+
+    // 清除之前的动画
+    if (animationTimer) {
+        clearTimeout(animationTimer);
+    }
+
+    function showStep() {
+        if (stepIndex >= steps.length) {
+            calcDisplay.innerHTML = '<div class="calc-complete">✓ Merkle Tree 构建完成！根哈希: <code>' + tree.root.hash.substring(0, 16) + '...</code></div>';
+            return;
+        }
+
+        const step = steps[stepIndex];
+
+        if (step.type === 'leaves') {
+            // 显示所有叶子节点
+            step.nodes.forEach((node, i) => {
+                setTimeout(() => {
+                    const nodeGroup = svg.querySelector(`[data-id="${node.id}"]`);
+                    if (nodeGroup) {
+                        nodeGroup.style.transition = 'opacity 0.3s ease';
+                        nodeGroup.style.opacity = '1';
+                    }
+                }, i * 150);
+            });
+
+            calcDisplay.innerHTML = `
+                <div class="calc-step-info">
+                    <span class="calc-step-num">步骤 1</span>
+                    <span class="calc-step-desc">计算每个交易的哈希值，形成叶子节点</span>
+                </div>
+                <div class="calc-formula-list">
+                    ${step.nodes.map(n => `<div class="calc-item"><span class="calc-input">${n.label}</span> → <span class="calc-output">${n.hash.substring(0, 12)}...</span></div>`).join('')}
+                </div>
+            `;
+
+            stepIndex++;
+            animationTimer = setTimeout(showStep, delay + step.nodes.length * 150);
+
+        } else if (step.type === 'combine') {
+            // 高亮子节点
+            const leftGroup = svg.querySelector(`[data-id="${step.leftNode.id}"]`);
+            const rightGroup = svg.querySelector(`[data-id="${step.rightNode.id}"]`);
+            const parentGroup = svg.querySelector(`[data-id="${step.parentNode.id}"]`);
+
+            // 高亮子节点
+            if (leftGroup) {
+                leftGroup.querySelector('.node-rect').classList.add('highlight-left');
+            }
+            if (rightGroup && step.leftNode.id !== step.rightNode.id) {
+                rightGroup.querySelector('.node-rect').classList.add('highlight-right');
+            }
+
+            // 显示计算过程
+            const levelNum = parseInt(step.parentNode.id.split('-')[1]) || 0;
+            calcDisplay.innerHTML = `
+                <div class="calc-step-info">
+                    <span class="calc-step-num">步骤 ${stepIndex + 1}</span>
+                    <span class="calc-step-desc">合并节点计算父哈希</span>
+                </div>
+                <div class="calc-combine">
+                    <div class="calc-children">
+                        <span class="child-hash left">${step.leftNode.hash.substring(0, 10)}...</span>
+                        <span class="calc-plus">+</span>
+                        <span class="child-hash right">${step.isDuplicate ? '(复制)' : step.rightNode.hash.substring(0, 10) + '...'}</span>
+                    </div>
+                    <div class="calc-arrow">↓ SHA256</div>
+                    <div class="parent-hash">${step.parentNode.hash.substring(0, 16)}...</div>
+                </div>
+            `;
+
+            // 延迟后显示父节点和连接线
+            setTimeout(() => {
+                // 显示连接线
+                const lines = svg.querySelectorAll(`[data-parent="${step.parentNode.id}"]`);
+                lines.forEach(line => {
+                    line.style.transition = 'opacity 0.3s ease';
+                    line.style.opacity = '1';
+                });
+
+                // 显示父节点
+                if (parentGroup) {
+                    parentGroup.style.transition = 'opacity 0.3s ease';
+                    parentGroup.style.opacity = '1';
+                    parentGroup.querySelector('.node-rect').classList.add('new-node');
+                }
+
+                // 移除高亮
+                setTimeout(() => {
+                    if (leftGroup) leftGroup.querySelector('.node-rect').classList.remove('highlight-left');
+                    if (rightGroup) rightGroup.querySelector('.node-rect').classList.remove('highlight-right');
+                    if (parentGroup) parentGroup.querySelector('.node-rect').classList.remove('new-node');
+                }, 400);
+
+            }, 500);
+
+            stepIndex++;
+            animationTimer = setTimeout(showStep, delay + 600);
+        }
+    }
+
+    showStep();
 }
 
 // 获取 Merkle Proof
@@ -257,7 +417,6 @@ function getMerkleProof(tree, txIndex) {
         const isLeft = currentIndex % 2 === 0;
         const siblingIndex = isLeft ? currentIndex + 1 : currentIndex - 1;
 
-        // 处理奇数情况
         const sibling = siblingIndex < currentLevel.length
             ? currentLevel[siblingIndex]
             : currentLevel[currentIndex];
@@ -265,6 +424,7 @@ function getMerkleProof(tree, txIndex) {
         proof.push({
             hash: sibling.hash,
             position: isLeft ? 'right' : 'left',
+            siblingId: sibling.id,
             siblingIndex: siblingIndex < currentLevel.length ? siblingIndex : currentIndex
         });
 
@@ -276,41 +436,46 @@ function getMerkleProof(tree, txIndex) {
 
 // 渲染证明路径
 function renderProof(tree, txIndex, proof) {
-    const container = document.getElementById('proof-visual');
     const detailsContainer = document.getElementById('proof-details');
     const pathContainer = document.getElementById('proof-path');
     const calcContainer = document.getElementById('proof-calc');
 
     if (!proof) {
-        container.innerHTML = '<div class="proof-placeholder">无法生成证明</div>';
         detailsContainer.style.display = 'none';
         return;
     }
 
-    // 高亮树中的路径
-    const allNodes = document.querySelectorAll('.merkle-node');
-    allNodes.forEach(node => {
-        node.classList.remove('in-proof', 'proof-sibling', 'proof-target');
+    // 清除之前的高亮
+    const allRects = document.querySelectorAll('.merkle-svg .node-rect');
+    allRects.forEach(rect => {
+        rect.classList.remove('proof-target', 'proof-sibling', 'proof-path');
     });
 
-    // 高亮目标交易
-    const targetNode = document.querySelector(`.merkle-node[data-index="${txIndex}"]`);
-    if (targetNode) {
-        targetNode.classList.add('proof-target');
+    const allLines = document.querySelectorAll('.merkle-svg .tree-line');
+    allLines.forEach(line => {
+        line.classList.remove('proof-line');
+    });
+
+    // 高亮目标节点
+    const targetNode = tree.levels[0][txIndex];
+    const targetGroup = document.querySelector(`[data-id="${targetNode.id}"]`);
+    if (targetGroup) {
+        targetGroup.querySelector('.node-rect').classList.add('proof-target');
     }
 
-    // 高亮证明路径中的兄弟节点
-    let currentHash = tree.levels[0][txIndex].hash;
-    proof.forEach((step, idx) => {
-        // 找到并高亮兄弟节点
-        const siblingNodes = document.querySelectorAll(`.merkle-node[data-hash="${step.hash}"]`);
-        siblingNodes.forEach(node => node.classList.add('proof-sibling'));
+    // 高亮证明路径
+    proof.forEach(step => {
+        const siblingGroup = document.querySelector(`[data-id="${step.siblingId}"]`);
+        if (siblingGroup) {
+            siblingGroup.querySelector('.node-rect').classList.add('proof-sibling');
+        }
     });
 
     // 高亮根节点
-    const rootNode = document.querySelector('.root-node');
-    if (rootNode) {
-        rootNode.classList.add('in-proof');
+    const rootNode = tree.levels[tree.levels.length - 1][0];
+    const rootGroup = document.querySelector(`[data-id="${rootNode.id}"]`);
+    if (rootGroup) {
+        rootGroup.querySelector('.node-rect').classList.add('proof-path');
     }
 
     // 显示证明详情
@@ -318,50 +483,64 @@ function renderProof(tree, txIndex, proof) {
 
     // 渲染证明路径
     const tx = transactions[txIndex];
-    let pathHtml = `<div class="proof-step proof-start">
-        <span class="step-label">Target:</span>
-        <span class="step-value">${tx}</span>
-        <span class="step-hash">${tree.levels[0][txIndex].hash.substring(0, 16)}...</span>
-    </div>`;
+    let pathHtml = `
+        <div class="proof-step proof-start">
+            <span class="step-marker">●</span>
+            <span class="step-label">验证目标:</span>
+            <span class="step-value">${tx}</span>
+            <span class="step-hash">${targetNode.hash.substring(0, 12)}...</span>
+        </div>
+    `;
 
     proof.forEach((step, idx) => {
-        pathHtml += `<div class="proof-step">
-            <span class="step-label">+ ${step.position === 'left' ? 'Left' : 'Right'}:</span>
-            <span class="step-hash">${step.hash.substring(0, 16)}...</span>
-        </div>`;
+        pathHtml += `
+            <div class="proof-step">
+                <span class="step-marker">○</span>
+                <span class="step-label">兄弟节点 (${step.position === 'left' ? '左' : '右'}):</span>
+                <span class="step-hash sibling-hash">${step.hash.substring(0, 12)}...</span>
+            </div>
+        `;
     });
 
-    pathHtml += `<div class="proof-step proof-end">
-        <span class="step-label">= Root:</span>
-        <span class="step-hash">${tree.root.hash.substring(0, 16)}...</span>
-    </div>`;
+    pathHtml += `
+        <div class="proof-step proof-end">
+            <span class="step-marker">★</span>
+            <span class="step-label">Merkle Root:</span>
+            <span class="step-hash root-hash">${tree.root.hash.substring(0, 12)}...</span>
+        </div>
+    `;
 
     pathContainer.innerHTML = pathHtml;
 
     // 渲染计算过程
-    let calcHtml = '<div class="calc-steps">';
-    currentHash = tree.levels[0][txIndex].hash;
+    let calcHtml = '<div class="calc-verify-steps">';
+    let currentHash = targetNode.hash;
 
     proof.forEach((step, idx) => {
         const leftHash = step.position === 'left' ? step.hash : currentHash;
         const rightHash = step.position === 'left' ? currentHash : step.hash;
         const newHash = sha256(leftHash + rightHash);
 
-        calcHtml += `<div class="calc-step">
-            <div class="calc-formula">
-                <span class="calc-fn">SHA256(</span>
-                <span class="calc-left ${step.position === 'left' ? 'sibling' : 'current'}">${leftHash.substring(0, 8)}...</span>
-                <span class="calc-concat"> + </span>
-                <span class="calc-right ${step.position === 'right' ? 'sibling' : 'current'}">${rightHash.substring(0, 8)}...</span>
-                <span class="calc-fn">)</span>
+        calcHtml += `
+            <div class="verify-step">
+                <div class="verify-inputs">
+                    <span class="hash-box ${step.position === 'left' ? 'sibling' : 'current'}">${leftHash.substring(0, 8)}...</span>
+                    <span class="hash-plus">+</span>
+                    <span class="hash-box ${step.position === 'right' ? 'sibling' : 'current'}">${rightHash.substring(0, 8)}...</span>
+                </div>
+                <div class="verify-arrow">↓ SHA256</div>
+                <div class="verify-result">${newHash.substring(0, 12)}...</div>
             </div>
-            <div class="calc-result">= ${newHash.substring(0, 16)}...</div>
-        </div>`;
+        `;
 
         currentHash = newHash;
     });
 
     calcHtml += '</div>';
+    calcHtml += `<div class="verify-final ${currentHash === tree.root.hash ? 'success' : 'fail'}">
+        ${currentHash === tree.root.hash ? '✓ 验证成功！哈希值匹配 Merkle Root' : '✗ 验证失败！哈希值不匹配'}
+    </div>`;
+
     calcContainer.innerHTML = calcHtml;
 }
 
@@ -372,7 +551,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const verifySelect = document.getElementById('verify-tx-select');
     const verifyBtn = document.getElementById('verify-btn');
 
-    // 构建树按钮
     buildBtn.addEventListener('click', function() {
         const txText = txsInput.value.trim();
         transactions = txText.split('\n').filter(tx => tx.trim() !== '');
@@ -382,26 +560,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        if (transactions.length > 8) {
+            alert('为了更好的展示效果，请输入不超过8个交易');
+            return;
+        }
+
         merkleTree = buildMerkleTree(transactions);
-        renderMerkleTree(merkleTree, 'merkle-tree');
+        renderMerkleTree(merkleTree, 'merkle-tree', true);
 
         // 更新验证选择框
         verifySelect.innerHTML = '';
         transactions.forEach((tx, idx) => {
             const option = document.createElement('option');
             option.value = idx;
-            option.textContent = `${tx} (${merkleTree.levels[0][idx].hash.substring(0, 8)}...)`;
+            option.textContent = `${tx}`;
             verifySelect.appendChild(option);
         });
 
         verifyBtn.disabled = false;
 
         // 重置证明显示
-        document.getElementById('proof-visual').innerHTML = '<div class="proof-placeholder">选择交易后点击按钮查看证明路径...</div>';
         document.getElementById('proof-details').style.display = 'none';
     });
 
-    // 验证按钮
     verifyBtn.addEventListener('click', function() {
         const txIndex = parseInt(verifySelect.value);
         if (isNaN(txIndex) || !merkleTree) return;

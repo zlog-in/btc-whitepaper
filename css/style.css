@@ -7523,3 +7523,344 @@ body.menu-open {
         font-size: 0.75rem;
     }
 }
+
+/* ==========================================
+   Merkle Tree SVG Visualization
+   ========================================== */
+
+.merkle-svg {
+    display: block;
+    margin: 0 auto;
+}
+
+.merkle-lines {
+    pointer-events: none;
+}
+
+.tree-line {
+    stroke: var(--primary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    transition: opacity 0.3s ease, stroke 0.3s ease;
+}
+
+.tree-line.proof-line {
+    stroke: #3b82f6;
+    stroke-width: 3;
+}
+
+.merkle-node-group {
+    transition: opacity 0.3s ease;
+}
+
+.node-rect {
+    fill: var(--bg);
+    stroke: var(--border);
+    stroke-width: 2;
+    transition: all 0.3s ease;
+}
+
+.node-rect.leaf {
+    fill: rgba(16, 185, 129, 0.15);
+    stroke: var(--success);
+}
+
+.node-rect.root {
+    fill: var(--primary);
+    stroke: var(--primary);
+}
+
+.node-label {
+    fill: var(--text);
+    font-size: 10px;
+    font-weight: 600;
+    text-anchor: middle;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.node-rect.root + .node-label,
+.node-rect.root ~ .node-label {
+    fill: white;
+}
+
+.node-hash {
+    fill: var(--text-muted);
+    font-size: 8px;
+    text-anchor: middle;
+    font-family: 'SF Mono', Monaco, monospace;
+}
+
+.node-rect.root + .node-label + .node-hash,
+.node-rect.root ~ .node-hash {
+    fill: rgba(255, 255, 255, 0.85);
+}
+
+/* SVG Animation Highlights */
+.node-rect.highlight-left {
+    fill: rgba(59, 130, 246, 0.3);
+    stroke: #3b82f6;
+    stroke-width: 3;
+}
+
+.node-rect.highlight-right {
+    fill: rgba(251, 191, 36, 0.3);
+    stroke: #fbbf24;
+    stroke-width: 3;
+}
+
+.node-rect.new-node {
+    fill: rgba(247, 147, 26, 0.3);
+    stroke: var(--primary);
+    stroke-width: 3;
+    animation: nodeAppear 0.4s ease;
+}
+
+@keyframes nodeAppear {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* SVG Proof Highlighting */
+.node-rect.proof-target {
+    fill: rgba(59, 130, 246, 0.25);
+    stroke: #3b82f6;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+}
+
+.node-rect.proof-sibling {
+    fill: rgba(251, 191, 36, 0.25);
+    stroke: #fbbf24;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+}
+
+.node-rect.proof-path {
+    filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.6));
+}
+
+/* Calculation Display */
+.merkle-calc-display {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    min-height: 80px;
+}
+
+.calc-step-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.calc-step-num {
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.calc-step-desc {
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.calc-formula-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.calc-item {
+    background: var(--card-bg);
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.75rem;
+}
+
+.calc-input {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.calc-output {
+    color: var(--primary);
+}
+
+.calc-combine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.calc-children {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.8rem;
+}
+
+.child-hash {
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+}
+
+.child-hash.left {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.child-hash.right {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.calc-plus {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.calc-arrow {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.parent-hash {
+    color: var(--primary);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.calc-complete {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--success);
+    font-weight: 600;
+}
+
+.calc-complete code {
+    background: var(--card-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    color: var(--primary);
+}
+
+/* Proof Verification Styles */
+.calc-verify-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.verify-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.verify-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.8rem;
+}
+
+.hash-box {
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+}
+
+.hash-box.current {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.hash-box.sibling {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.hash-plus {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+.verify-arrow {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.verify-result {
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.verify-final {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    text-align: center;
+    font-weight: 600;
+}
+
+.verify-final.success {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.verify-final.fail {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+/* Merkle SVG Responsive */
+@media (max-width: 768px) {
+    .merkle-svg {
+        min-width: max-content;
+    }
+
+    .merkle-calc-display {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .calc-children {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .verify-inputs {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
