@@ -572,6 +572,9 @@ function renderProof(tree, txIndex, proof) {
     document.getElementById('verify-tx-data').innerHTML = `<strong>${tx}</strong> → <code>${targetNode.hash.substring(0, 16)}...</code>`;
     document.getElementById('verify-root-data').innerHTML = `<code>${tree.root.hash.substring(0, 24)}...</code>`;
 
+    // 滚动到验证数据区域
+    proofDataSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
     // 显示证明路径数据
     let proofDataHtml = '<div class="proof-hashes">';
     proof.forEach((step, idx) => {
