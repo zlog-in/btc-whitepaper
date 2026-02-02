@@ -137,34 +137,48 @@ function renderMerkleTree(tree, containerId) {
 
     container.innerHTML = '';
 
+    // 创建树容器
+    const treeWrapper = document.createElement('div');
+    treeWrapper.className = 'merkle-tree-wrapper';
+
     // 从顶层到底层渲染
     const reversedLevels = [...tree.levels].reverse();
+    const totalLevels = reversedLevels.length;
 
     reversedLevels.forEach((level, levelIndex) => {
         const levelDiv = document.createElement('div');
         levelDiv.className = 'merkle-level';
+        levelDiv.dataset.level = levelIndex;
 
         const isRoot = levelIndex === 0;
-        const isLeaf = levelIndex === reversedLevels.length - 1;
+        const isLeaf = levelIndex === totalLevels - 1;
 
-        if (isRoot) {
-            levelDiv.classList.add('root-level');
-        }
-        if (isLeaf) {
-            levelDiv.classList.add('leaf-level');
-        }
+        if (isRoot) levelDiv.classList.add('root-level');
+        if (isLeaf) levelDiv.classList.add('leaf-level');
 
         level.forEach((node, nodeIndex) => {
+            // 创建节点包装器（包含连接线）
+            const nodeWrapper = document.createElement('div');
+            nodeWrapper.className = 'merkle-node-wrapper';
+
+            // 添加向上的连接线（除了根节点）
+            if (!isRoot) {
+                const connectorUp = document.createElement('div');
+                connectorUp.className = 'connector-up';
+                nodeWrapper.appendChild(connectorUp);
+            }
+
+            // 创建节点
             const nodeDiv = document.createElement('div');
             nodeDiv.className = 'merkle-node';
             nodeDiv.dataset.hash = node.hash;
+            nodeDiv.dataset.level = levelIndex;
+            nodeDiv.dataset.index = nodeIndex;
 
-            if (isRoot) {
-                nodeDiv.classList.add('root-node');
-            }
+            if (isRoot) nodeDiv.classList.add('root-node');
             if (node.isLeaf) {
                 nodeDiv.classList.add('leaf-node');
-                nodeDiv.dataset.index = node.index;
+                nodeDiv.dataset.txIndex = node.index;
             }
 
             const labelSpan = document.createElement('span');
@@ -174,7 +188,7 @@ function renderMerkleTree(tree, containerId) {
             } else if (isRoot) {
                 labelSpan.textContent = 'Root';
             } else {
-                labelSpan.textContent = `H${levelIndex}-${nodeIndex}`;
+                labelSpan.textContent = `H${totalLevels - 1 - levelIndex}`;
             }
 
             const hashSpan = document.createElement('span');
@@ -184,19 +198,49 @@ function renderMerkleTree(tree, containerId) {
 
             nodeDiv.appendChild(labelSpan);
             nodeDiv.appendChild(hashSpan);
-            levelDiv.appendChild(nodeDiv);
+            nodeWrapper.appendChild(nodeDiv);
+
+            // 添加向下的连接线（除了叶子节点）
+            if (!isLeaf) {
+                const connectorDown = document.createElement('div');
+                connectorDown.className = 'connector-down';
+
+                // 左分支
+                const branchLeft = document.createElement('div');
+                branchLeft.className = 'branch branch-left';
+                connectorDown.appendChild(branchLeft);
+
+                // 右分支
+                const branchRight = document.createElement('div');
+                branchRight.className = 'branch branch-right';
+                connectorDown.appendChild(branchRight);
+
+                nodeWrapper.appendChild(connectorDown);
+            }
+
+            levelDiv.appendChild(nodeWrapper);
         });
 
-        container.appendChild(levelDiv);
-
-        // 添加连接线（除了最后一层）
-        if (levelIndex < reversedLevels.length - 1) {
-            const connectorDiv = document.createElement('div');
-            connectorDiv.className = 'merkle-connectors';
-            connectorDiv.innerHTML = '<span class="connector-arrow">↑</span>'.repeat(level.length);
-            container.appendChild(connectorDiv);
-        }
+        treeWrapper.appendChild(levelDiv);
     });
+
+    container.appendChild(treeWrapper);
+
+    // 添加公式说明
+    const formulaDiv = document.createElement('div');
+    formulaDiv.className = 'merkle-formula';
+    formulaDiv.innerHTML = `
+        <div class="formula-item">
+            <span class="formula-label">Parent</span>
+            <span class="formula-eq">=</span>
+            <span class="formula-fn">SHA256(</span>
+            <span class="formula-child left-child">Left Child</span>
+            <span class="formula-concat">+</span>
+            <span class="formula-child right-child">Right Child</span>
+            <span class="formula-fn">)</span>
+        </div>
+    `;
+    container.appendChild(formulaDiv);
 }
 
 // 获取 Merkle Proof
