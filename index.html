@@ -6,7 +6,7 @@
     <title>比特币白皮书 · 交互式指南</title>
     <meta name="description" content="通过交互式演示理解比特币白皮书的核心概念：哈希函数、区块结构、区块链和工作量证明">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="nav">
@@ -20,11 +20,11 @@
                         <span class="expand-icon">▶</span>
                     </div>
                     <div class="nav-group-links">
-                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
-                        <a href="sha256.html" class="sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
-                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
-                        <a href="ecdsa.html" class="sub-link" data-i18n="nav.ecdsa">└ ECDSA 过程</a>
-                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                        <a href="pages/hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="pages/sha256.html" class="sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
+                        <a href="pages/signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="pages/ecdsa.html" class="sub-link" data-i18n="nav.ecdsa">└ ECDSA 过程</a>
+                        <a href="pages/address.html" data-i18n="nav.address">比特币地址</a>
                     </div>
                 </div>
                 <div class="nav-group expanded">
@@ -33,9 +33,9 @@
                         <span class="expand-icon">▶</span>
                     </div>
                     <div class="nav-group-links">
-                        <a href="multisig.html" data-i18n="nav.multisig">多重签名</a>
-                        <a href="timelock.html" data-i18n="nav.timelock">时间锁</a>
-                        <a href="htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
+                        <a href="pages/multisig.html" data-i18n="nav.multisig">多重签名</a>
+                        <a href="pages/timelock.html" data-i18n="nav.timelock">时间锁</a>
+                        <a href="pages/htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
                     </div>
                 </div>
                 <div class="nav-group expanded">
@@ -44,7 +44,7 @@
                         <span class="expand-icon">▶</span>
                     </div>
                     <div class="nav-group-links">
-                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                        <a href="pages/utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
                     </div>
                 </div>
                 <div class="nav-group expanded">
@@ -53,8 +53,8 @@
                         <span class="expand-icon">▶</span>
                     </div>
                     <div class="nav-group-links">
-                        <a href="block.html" data-i18n="nav.block">区块结构</a>
-                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                        <a href="pages/block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="pages/chain.html" data-i18n="nav.chain">区块链</a>
                     </div>
                 </div>
                 <div class="nav-group expanded">
@@ -63,8 +63,8 @@
                         <span class="expand-icon">▶</span>
                     </div>
                     <div class="nav-group-links">
-                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
-                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                        <a href="pages/pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="pages/p2p.html" data-i18n="nav.p2p">P2P 网络</a>
                     </div>
                 </div>
             </div>
@@ -85,22 +85,22 @@
                 <div class="concepts-section">
                     <h3 class="concepts-label" data-i18n="home.section.crypto">🔧 密码学基础</h3>
                     <div class="concepts">
-                        <a href="hash.html" class="concept">
+                        <a href="pages/hash.html" class="concept">
                             <span class="emoji">🔐</span>
                             <h4 data-i18n="home.hash.title">哈希函数</h4>
                             <p data-i18n="home.hash.desc">将任意数据转换为固定长度的指纹</p>
                         </a>
-                        <a href="signature.html" class="concept">
+                        <a href="pages/signature.html" class="concept">
                             <span class="emoji">✍️</span>
                             <h4 data-i18n="home.signature.title">数字签名</h4>
                             <p data-i18n="home.signature.desc">证明交易由所有者授权发起</p>
                         </a>
-                        <a href="address.html" class="concept">
+                        <a href="pages/address.html" class="concept">
                             <span class="emoji">📫</span>
                             <h4 data-i18n="home.address.title">比特币地址</h4>
                             <p data-i18n="home.address.desc">从公钥派生的接收标识符</p>
                         </a>
-                        <a href="utxo.html" class="concept">
+                        <a href="pages/utxo.html" class="concept">
                             <span class="emoji">💰</span>
                             <h4 data-i18n="home.utxo.title">UTXO 模型</h4>
                             <p data-i18n="home.utxo.desc">基于未花费输出的余额追踪</p>
@@ -111,12 +111,12 @@
                 <div class="concepts-section">
                     <h3 class="concepts-label" data-i18n="home.section.data">📊 数据结构</h3>
                     <div class="concepts">
-                        <a href="block.html" class="concept">
+                        <a href="pages/block.html" class="concept">
                             <span class="emoji">📦</span>
                             <h4 data-i18n="home.block.title">区块结构</h4>
                             <p data-i18n="home.block.desc">交易数据的打包与组织方式</p>
                         </a>
-                        <a href="chain.html" class="concept">
+                        <a href="pages/chain.html" class="concept">
                             <span class="emoji">⛓️</span>
                             <h4 data-i18n="home.chain.title">区块链</h4>
                             <p data-i18n="home.chain.desc">通过哈希指针连接的不可篡改账本</p>
@@ -127,12 +127,12 @@
                 <div class="concepts-section">
                     <h3 class="concepts-label" data-i18n="home.section.network">🌐 网络与共识</h3>
                     <div class="concepts">
-                        <a href="pow.html" class="concept">
+                        <a href="pages/pow.html" class="concept">
                             <span class="emoji">⛏️</span>
                             <h4 data-i18n="home.pow.title">工作量证明</h4>
                             <p data-i18n="home.pow.desc">通过计算消耗来保证网络安全</p>
                         </a>
-                        <a href="p2p.html" class="concept">
+                        <a href="pages/p2p.html" class="concept">
                             <span class="emoji">🌐</span>
                             <h4 data-i18n="home.p2p.title">P2P 网络</h4>
                             <p data-i18n="home.p2p.desc">去中心化的点对点网络架构</p>
@@ -187,6 +187,6 @@
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="i18n.js"></script>
+    <script src="js/i18n.js"></script>
 </body>
 </html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈希函数 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="../index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="../index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" class="active" data-i18n="nav.hash">哈希函数</a>
+                        <a href="sha256.html" class="sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="ecdsa.html" class="sub-link" data-i18n="nav.ecdsa">└ ECDSA 过程</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📜</span><span data-i18n="nav.group.script">脚本</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="multisig.html" data-i18n="nav.multisig">多重签名</a>
+                        <a href="timelock.html" data-i18n="nav.timelock">时间锁</a>
+                        <a href="htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🔐</span>
+                    <div>
+                        <h1 data-i18n="hash.title">密码学哈希函数</h1>
+                        <p class="section-desc" data-i18n="hash.desc">SHA-256 将任意长度的输入转换为固定256位的输出。输入的微小变化会导致输出的巨大改变。</p>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <div class="input-group">
+                        <label data-i18n="hash.input.label">输入任意内容：</label>
+                        <textarea id="hash-input" placeholder="在这里输入文字...">Hello, Bitcoin!</textarea>
+                        <button id="hash-calc-btn" class="btn primary" style="margin-top: 1rem;" data-i18n="hash.calc.btn">🔢 计算哈希</button>
+                    </div>
+                    <div class="hash-output">
+                        <label data-i18n="hash.binary.label">SHA-256 哈希值（二进制 256位）：</label>
+                        <div class="hash-display binary" id="hash-binary" data-i18n="hash.click.calc">点击按钮计算...</div>
+                    </div>
+                    <div class="hash-output">
+                        <label data-i18n="hash.hex.label">SHA-256 哈希值（十六进制 64字符）：</label>
+                        <div class="hash-display" id="hash-output" data-i18n="hash.click.calc">点击按钮计算...</div>
+                    </div>
+                    <div class="hash-visual" id="hash-visual"></div>
+
+                    <!-- 链接到 SHA-256 详细页面 -->
+                    <div class="sha256-link-box">
+                        <a href="sha256.html" class="sha256-link">
+                            <span class="link-icon">🔬</span>
+                            <span class="link-content">
+                                <span class="link-title" data-i18n="hash.sha256.link.title">深入了解 SHA-256 计算过程</span>
+                                <span class="link-desc" data-i18n="hash.sha256.link.desc">查看消息填充、消息调度、64轮压缩函数的完整可视化演示</span>
+                            </span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card info">
+                    <h4 data-i18n="hash.features.title">🎯 哈希函数特性</h4>
+                    <ul>
+                        <li><strong data-i18n="hash.feature.1">确定性</strong> — <span data-i18n="hash.feature.1.desc">相同输入永远产生相同输出</span></li>
+                        <li><strong data-i18n="hash.feature.2">快速计算</strong> — <span data-i18n="hash.feature.2.desc">可以快速计算任意输入的哈希</span></li>
+                        <li><strong data-i18n="hash.feature.3">单向性</strong> — <span data-i18n="hash.feature.3.desc">无法从哈希值反推原始输入</span></li>
+                        <li><strong data-i18n="hash.feature.4">雪崩效应</strong> — <span data-i18n="hash.feature.4.desc">输入微小变化导致输出剧烈变化</span></li>
+                        <li><strong data-i18n="hash.feature.5">抗碰撞</strong> — <span data-i18n="hash.feature.5.desc">几乎不可能找到两个不同输入产生相同输出</span></li>
+                    </ul>
+                </div>
+
+                <div class="page-nav">
+                    <a href="../index.html" class="btn secondary" data-i18n="hash.nav.prev">← 返回首页</a>
+                    <a href="signature.html" class="btn primary" data-i18n="hash.nav.next">数字签名 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="../js/i18n.js"></script>
+    <script src="../js/hash.js"></script>
+</body>
+</html>
