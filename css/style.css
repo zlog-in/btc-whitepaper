@@ -6999,3 +6999,424 @@ body.menu-open {
         font-size: 0.65rem;
     }
 }
+
+/* ==========================================
+   Merkle Tree Visualization
+   ========================================== */
+
+.merkle-build-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.merkle-input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.merkle-input-section textarea {
+    font-family: 'SF Mono', Monaco, monospace;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    resize: vertical;
+}
+
+.merkle-input-section textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.merkle-tree-container {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    min-height: 200px;
+    overflow-x: auto;
+}
+
+.merkle-placeholder,
+.proof-placeholder {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.merkle-level {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.merkle-level.root-level {
+    margin-bottom: 0.5rem;
+}
+
+.merkle-level.leaf-level {
+    margin-top: 0.5rem;
+}
+
+.merkle-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    min-width: 80px;
+    transition: all 0.3s ease;
+}
+
+.merkle-node.root-node {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.merkle-node.root-node .node-hash {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.merkle-node.leaf-node {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+}
+
+.merkle-node.proof-target {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.merkle-node.proof-sibling {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: #fbbf24;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+.merkle-node.in-proof {
+    box-shadow: 0 0 12px rgba(247, 147, 26, 0.5);
+}
+
+.node-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.node-hash {
+    font-size: 0.65rem;
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--text-muted);
+}
+
+.merkle-connectors {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--primary);
+    font-size: 1rem;
+    padding: 0.25rem 0;
+}
+
+.connector-arrow {
+    min-width: 80px;
+    text-align: center;
+}
+
+.merkle-steps {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.merkle-steps h4 {
+    margin-bottom: 1rem;
+}
+
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.step-num {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Merkle Verify Demo */
+.merkle-verify-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.verify-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.verify-controls select {
+    padding: 0.5rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    min-width: 200px;
+}
+
+.proof-visualization {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+    min-height: 100px;
+}
+
+.proof-details {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+}
+
+.proof-details h4 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.proof-path {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.proof-step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.8rem;
+}
+
+.proof-step.proof-start {
+    border-left: 3px solid #3b82f6;
+}
+
+.proof-step.proof-end {
+    border-left: 3px solid var(--primary);
+    background: rgba(247, 147, 26, 0.1);
+}
+
+.step-label {
+    color: var(--text-muted);
+    min-width: 70px;
+}
+
+.step-value {
+    font-weight: bold;
+    color: var(--text);
+}
+
+.step-hash {
+    color: var(--primary);
+}
+
+.calc-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.calc-step {
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.75rem;
+}
+
+.calc-formula {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.calc-fn {
+    color: var(--text-muted);
+}
+
+.calc-left.sibling,
+.calc-right.sibling {
+    color: #fbbf24;
+}
+
+.calc-left.current,
+.calc-right.current {
+    color: #3b82f6;
+}
+
+.calc-concat {
+    color: var(--text-muted);
+}
+
+.calc-result {
+    margin-top: 0.5rem;
+    color: var(--success);
+    font-weight: bold;
+}
+
+/* Merkle Benefits */
+.merkle-benefits {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.merkle-benefits h4 {
+    margin-bottom: 1rem;
+}
+
+.benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.benefit-icon {
+    font-size: 1.5rem;
+}
+
+.benefit-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.benefit-content strong {
+    font-size: 0.9rem;
+}
+
+.benefit-content span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Complexity Table */
+.complexity-table {
+    overflow-x: auto;
+}
+
+.complexity-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.complexity-table th,
+.complexity-table td {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.complexity-table th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+.complexity-table tr:nth-child(even) {
+    background: var(--card-bg);
+}
+
+.complexity-table td:last-child {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.table-note {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Merkle responsive */
+@media (max-width: 768px) {
+    .merkle-level {
+        gap: 0.5rem;
+    }
+
+    .merkle-node {
+        min-width: 60px;
+        padding: 0.4rem 0.5rem;
+    }
+
+    .node-label {
+        font-size: 0.7rem;
+    }
+
+    .node-hash {
+        font-size: 0.55rem;
+    }
+
+    .connector-arrow {
+        min-width: 60px;
+    }
+
+    .verify-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .verify-controls select {
+        min-width: auto;
+    }
+
+    .benefit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .calc-formula {
+        font-size: 0.65rem;
+    }
+}

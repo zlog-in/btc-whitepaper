@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merkle Tree · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="../css/style.css?v=20260202g">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="../index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="../index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="sha256.html" class="sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
+                        <a href="merkle.html" class="sub-link active" data-i18n="nav.merkle">└ Merkle Tree</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="ecdsa.html" class="sub-link" data-i18n="nav.ecdsa">└ ECDSA 过程</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📍</span><span data-i18n="nav.group.address">地址</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                        <a href="multisig.html" class="sub-link" data-i18n="nav.multisig">└ 多重签名</a>
+                        <a href="timelock.html" class="sub-link" data-i18n="nav.timelock">└ 时间锁</a>
+                        <a href="htlc.html" class="sub-link" data-i18n="nav.htlc">└ 哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🌳</span>
+                    <div>
+                        <h1 data-i18n="merkle.title">Merkle Tree (默克尔树)</h1>
+                        <p class="section-desc" data-i18n="merkle.desc">Merkle Tree 是一种哈希树结构，用于高效验证大量数据的完整性。比特币用它来组织区块中的所有交易。</p>
+                    </div>
+                </div>
+
+                <!-- 生成原理 -->
+                <div class="demo-box">
+                    <h3 data-i18n="merkle.build.title">🔨 生成原理</h3>
+                    <p class="demo-desc" data-i18n="merkle.build.desc">从底层交易开始，两两配对计算哈希，逐层向上直到生成唯一的根哈希 (Merkle Root)。</p>
+
+                    <div class="merkle-build-demo">
+                        <div class="merkle-input-section">
+                            <label data-i18n="merkle.txs.label">交易列表 (每行一个):</label>
+                            <textarea id="merkle-txs" rows="4" placeholder="TX1&#10;TX2&#10;TX3&#10;TX4">TX1
+TX2
+TX3
+TX4</textarea>
+                            <button id="build-tree-btn" class="btn primary" data-i18n="merkle.build.btn">🌳 构建 Merkle Tree</button>
+                        </div>
+
+                        <div class="merkle-tree-container" id="merkle-tree">
+                            <div class="merkle-placeholder" data-i18n="merkle.placeholder">点击按钮构建树...</div>
+                        </div>
+                    </div>
+
+                    <div class="merkle-steps">
+                        <h4 data-i18n="merkle.steps.title">构建步骤:</h4>
+                        <div class="step-list" id="build-steps">
+                            <div class="step-item">
+                                <span class="step-num">1</span>
+                                <span data-i18n="merkle.step.1">对每个交易计算哈希，形成叶子节点</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-num">2</span>
+                                <span data-i18n="merkle.step.2">将相邻的两个哈希拼接后再次哈希</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-num">3</span>
+                                <span data-i18n="merkle.step.3">如果节点数为奇数，复制最后一个节点</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-num">4</span>
+                                <span data-i18n="merkle.step.4">重复步骤2-3，直到只剩一个根节点</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 验证原理 -->
+                <div class="demo-box">
+                    <h3 data-i18n="merkle.verify.title">🔍 验证原理 (Merkle Proof)</h3>
+                    <p class="demo-desc" data-i18n="merkle.verify.desc">只需要少量的哈希值，就能证明某个交易存在于区块中，无需下载整个区块的所有交易。</p>
+
+                    <div class="merkle-verify-demo">
+                        <div class="verify-controls">
+                            <label data-i18n="merkle.verify.select">选择要验证的交易:</label>
+                            <select id="verify-tx-select">
+                                <option value="" data-i18n="merkle.verify.first">请先构建树</option>
+                            </select>
+                            <button id="verify-btn" class="btn primary" disabled data-i18n="merkle.verify.btn">🔍 生成证明路径</button>
+                        </div>
+
+                        <div class="proof-visualization" id="proof-visual">
+                            <div class="proof-placeholder" data-i18n="merkle.proof.placeholder">选择交易后点击按钮查看证明路径...</div>
+                        </div>
+
+                        <div class="proof-details" id="proof-details" style="display: none;">
+                            <h4 data-i18n="merkle.proof.title">证明路径 (Merkle Proof):</h4>
+                            <div class="proof-path" id="proof-path"></div>
+                            <div class="proof-calculation" id="proof-calc"></div>
+                        </div>
+                    </div>
+
+                    <div class="merkle-benefits">
+                        <h4 data-i18n="merkle.benefits.title">Merkle Proof 的优势:</h4>
+                        <div class="benefit-grid">
+                            <div class="benefit-item">
+                                <span class="benefit-icon">📉</span>
+                                <div class="benefit-content">
+                                    <strong data-i18n="merkle.benefit.1">数据量小</strong>
+                                    <span data-i18n="merkle.benefit.1.desc">验证 1000 笔交易只需 ~10 个哈希</span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">⚡</span>
+                                <div class="benefit-content">
+                                    <strong data-i18n="merkle.benefit.2">验证快速</strong>
+                                    <span data-i18n="merkle.benefit.2.desc">时间复杂度 O(log n)</span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">📱</span>
+                                <div class="benefit-content">
+                                    <strong data-i18n="merkle.benefit.3">轻节点友好</strong>
+                                    <span data-i18n="merkle.benefit.3.desc">SPV 钱包无需完整区块数据</span>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">🔒</span>
+                                <div class="benefit-content">
+                                    <strong data-i18n="merkle.benefit.4">防篡改</strong>
+                                    <span data-i18n="merkle.benefit.4.desc">任何修改都会改变 Merkle Root</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 复杂度对比 -->
+                <div class="demo-box">
+                    <h3 data-i18n="merkle.complexity.title">📊 复杂度对比</h3>
+                    <div class="complexity-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-i18n="merkle.table.txCount">交易数量</th>
+                                    <th data-i18n="merkle.table.fullVerify">完整验证</th>
+                                    <th data-i18n="merkle.table.merkleProof">Merkle Proof</th>
+                                    <th data-i18n="merkle.table.savings">节省</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>8</td>
+                                    <td>8 <span data-i18n="merkle.table.hashes">个哈希</span></td>
+                                    <td>3 <span data-i18n="merkle.table.hashes">个哈希</span></td>
+                                    <td>62.5%</td>
+                                </tr>
+                                <tr>
+                                    <td>256</td>
+                                    <td>256 <span data-i18n="merkle.table.hashes">个哈希</span></td>
+                                    <td>8 <span data-i18n="merkle.table.hashes">个哈希</span></td>
+                                    <td>96.9%</td>
+                                </tr>
+                                <tr>
+                                    <td>4,096</td>
+                                    <td>4,096 <span data-i18n="merkle.table.hashes">个哈希</span></td>
+                                    <td>12 <span data-i18n="merkle.table.hashes">个哈希</span></td>
+                                    <td>99.7%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="table-note" data-i18n="merkle.table.note">公式: Merkle Proof 需要 log₂(n) 个哈希来验证 n 笔交易中的任意一笔</p>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <a href="sha256.html" class="btn secondary" data-i18n="merkle.nav.prev">← SHA-256 过程</a>
+                    <a href="signature.html" class="btn primary" data-i18n="merkle.nav.next">数字签名 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="../js/i18n.js?v=20260202g"></script>
+    <script src="../js/merkle.js?v=20260202g"></script>
+</body>
+</html>

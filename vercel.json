@@ -5,6 +5,7 @@
   "redirects": [
     { "source": "/hash.html", "destination": "/pages/hash.html", "permanent": true },
     { "source": "/sha256.html", "destination": "/pages/sha256.html", "permanent": true },
+    { "source": "/merkle.html", "destination": "/pages/merkle.html", "permanent": true },
     { "source": "/signature.html", "destination": "/pages/signature.html", "permanent": true },
     { "source": "/ecdsa.html", "destination": "/pages/ecdsa.html", "permanent": true },
     { "source": "/address.html", "destination": "/pages/address.html", "permanent": true },
@@ -18,6 +19,7 @@
     { "source": "/p2p.html", "destination": "/pages/p2p.html", "permanent": true },
     { "source": "/hash", "destination": "/pages/hash", "permanent": true },
     { "source": "/sha256", "destination": "/pages/sha256", "permanent": true },
+    { "source": "/merkle", "destination": "/pages/merkle", "permanent": true },
     { "source": "/signature", "destination": "/pages/signature", "permanent": true },
     { "source": "/ecdsa", "destination": "/pages/ecdsa", "permanent": true },
     { "source": "/address", "destination": "/pages/address", "permanent": true },
