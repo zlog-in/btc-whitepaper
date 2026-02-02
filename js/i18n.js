@@ -104,7 +104,7 @@ const translations = {
         'home.history.9': '接近 $20,000',
         'home.history.10': '第三次减半：12.5→6.25 BTC',
         'home.history.11': '萨尔瓦多法定货币',
-        'home.history.12': '历史最高 $69,000',
+        'home.history.12': '价格达到 $69,000',
         'home.history.13': '比特币 ETF 获批',
         'home.history.14': '第四次减半：6.25→3.125 BTC',
 
@@ -884,7 +884,7 @@ const translations = {
         'home.history.9': 'Near $20,000',
         'home.history.10': '3rd Halving: 12.5→6.25 BTC',
         'home.history.11': 'El Salvador Legal Tender',
-        'home.history.12': 'ATH $69,000',
+        'home.history.12': 'Price Reached $69,000',
         'home.history.13': 'Bitcoin ETF Approved',
         'home.history.14': '4th Halving: 6.25→3.125 BTC',
 
