@@ -529,114 +529,270 @@ function getMerkleProof(tree, txIndex) {
     return proof;
 }
 
-// 渲染证明路径
+// 验证动画计时器
+let verifyAnimationTimer = null;
+
+// 渲染证明路径（带动画）
 function renderProof(tree, txIndex, proof) {
     const detailsContainer = document.getElementById('proof-details');
     const pathContainer = document.getElementById('proof-path');
     const calcContainer = document.getElementById('proof-calc');
+    const svg = document.querySelector('.merkle-svg');
 
     if (!proof) {
         detailsContainer.style.display = 'none';
         return;
     }
 
+    // 清除之前的动画
+    if (verifyAnimationTimer) {
+        clearTimeout(verifyAnimationTimer);
+    }
+
     // 清除之前的高亮
     const allRects = document.querySelectorAll('.merkle-svg .node-rect');
     allRects.forEach(rect => {
-        rect.classList.remove('proof-target', 'proof-sibling', 'proof-path');
+        rect.classList.remove('proof-target', 'proof-sibling', 'proof-path', 'verify-current', 'verify-sibling', 'verify-result');
     });
 
     const allLines = document.querySelectorAll('.merkle-svg .tree-line');
     allLines.forEach(line => {
-        line.classList.remove('proof-line');
+        line.classList.remove('proof-line', 'verify-line');
     });
 
-    // 高亮目标节点
-    const targetNode = tree.levels[0][txIndex];
-    const targetGroup = document.querySelector(`[data-id="${targetNode.id}"]`);
-    if (targetGroup) {
-        targetGroup.querySelector('.node-rect').classList.add('proof-target');
-    }
-
-    // 高亮证明路径
-    proof.forEach(step => {
-        const siblingGroup = document.querySelector(`[data-id="${step.siblingId}"]`);
-        if (siblingGroup) {
-            siblingGroup.querySelector('.node-rect').classList.add('proof-sibling');
-        }
-    });
-
-    // 高亮根节点
-    const rootNode = tree.levels[tree.levels.length - 1][0];
-    const rootGroup = document.querySelector(`[data-id="${rootNode.id}"]`);
-    if (rootGroup) {
-        rootGroup.querySelector('.node-rect').classList.add('proof-path');
-    }
-
-    // 显示证明详情
+    // 显示证明详情容器
     detailsContainer.style.display = 'block';
+    pathContainer.innerHTML = '';
+    calcContainer.innerHTML = '';
 
-    // 渲染证明路径
+    // 准备验证步骤数据
+    const targetNode = tree.levels[0][txIndex];
     const tx = transactions[txIndex];
-    let pathHtml = `
-        <div class="proof-step proof-start">
-            <span class="step-marker">●</span>
-            <span class="step-label">验证目标:</span>
-            <span class="step-value">${tx}</span>
-            <span class="step-hash">${targetNode.hash.substring(0, 12)}...</span>
-        </div>
-    `;
+    let currentHash = targetNode.hash;
+    let currentNodeId = targetNode.id;
 
-    proof.forEach((step, idx) => {
-        pathHtml += `
-            <div class="proof-step">
-                <span class="step-marker">○</span>
-                <span class="step-label">兄弟节点 (${step.position === 'left' ? '左' : '右'}):</span>
-                <span class="step-hash sibling-hash">${step.hash.substring(0, 12)}...</span>
-            </div>
-        `;
+    const verifySteps = [];
+
+    // 步骤0: 显示验证目标
+    verifySteps.push({
+        type: 'target',
+        node: targetNode,
+        tx: tx
     });
 
-    pathHtml += `
-        <div class="proof-step proof-end">
-            <span class="step-marker">★</span>
-            <span class="step-label">Merkle Root:</span>
-            <span class="step-hash root-hash">${tree.root.hash.substring(0, 12)}...</span>
-        </div>
-    `;
-
-    pathContainer.innerHTML = pathHtml;
-
-    // 渲染计算过程
-    let calcHtml = '<div class="calc-verify-steps">';
-    let currentHash = targetNode.hash;
-
+    // 构建验证步骤
     proof.forEach((step, idx) => {
         const leftHash = step.position === 'left' ? step.hash : currentHash;
         const rightHash = step.position === 'left' ? currentHash : step.hash;
         const newHash = sha256(leftHash + rightHash);
 
-        calcHtml += `
-            <div class="verify-step">
-                <div class="verify-inputs">
-                    <span class="hash-box ${step.position === 'left' ? 'sibling' : 'current'}">${leftHash.substring(0, 8)}...</span>
-                    <span class="hash-plus">+</span>
-                    <span class="hash-box ${step.position === 'right' ? 'sibling' : 'current'}">${rightHash.substring(0, 8)}...</span>
-                </div>
-                <div class="verify-arrow">↓ SHA256</div>
-                <div class="verify-result">${newHash.substring(0, 12)}...</div>
-            </div>
-        `;
+        // 找到父节点
+        const parentLevel = idx + 1;
+        const parentIndex = Math.floor(txIndex / Math.pow(2, parentLevel));
+        const parentNode = tree.levels[parentLevel] ? tree.levels[parentLevel][parentIndex] : null;
+
+        verifySteps.push({
+            type: 'verify',
+            stepNum: idx + 1,
+            currentNodeId: currentNodeId,
+            siblingId: step.siblingId,
+            siblingPosition: step.position,
+            leftHash: leftHash,
+            rightHash: rightHash,
+            resultHash: newHash,
+            parentNode: parentNode
+        });
 
         currentHash = newHash;
+        if (parentNode) {
+            currentNodeId = parentNode.id;
+        }
     });
 
-    calcHtml += '</div>';
-    calcHtml += `<div class="verify-final ${currentHash === tree.root.hash ? 'success' : 'fail'}">
-        ${currentHash === tree.root.hash ? '✓ 验证成功！哈希值匹配 Merkle Root' : '✗ 验证失败！哈希值不匹配'}
-    </div>`;
+    // 步骤最后: 验证根哈希
+    verifySteps.push({
+        type: 'final',
+        computedHash: currentHash,
+        rootHash: tree.root.hash,
+        success: currentHash === tree.root.hash
+    });
 
-    calcContainer.innerHTML = calcHtml;
+    // 开始动画
+    animateVerification(verifySteps, tree, svg, pathContainer, calcContainer);
+}
+
+// 动画展示验证过程
+function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
+    let stepIndex = 0;
+    const delay = 1000;
+
+    function showStep() {
+        if (stepIndex >= steps.length) {
+            return;
+        }
+
+        const step = steps[stepIndex];
+
+        if (step.type === 'target') {
+            // 显示验证目标
+            const targetGroup = svg.querySelector(`[data-id="${step.node.id}"]`);
+            if (targetGroup) {
+                targetGroup.querySelector('.node-rect').classList.add('verify-current');
+            }
+
+            pathContainer.innerHTML = `
+                <div class="verify-anim-step active">
+                    <div class="verify-step-header">
+                        <span class="verify-step-num">开始验证</span>
+                        <span class="verify-step-title">选择要验证的交易</span>
+                    </div>
+                    <div class="verify-step-content">
+                        <div class="verify-target-info">
+                            <span class="target-label">交易内容:</span>
+                            <span class="target-value">${step.tx}</span>
+                        </div>
+                        <div class="verify-target-hash">
+                            <span class="hash-label">交易哈希:</span>
+                            <code>${step.node.hash.substring(0, 16)}...</code>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            calcContainer.innerHTML = `
+                <div class="verify-calc-current">
+                    <span class="calc-label">当前哈希值:</span>
+                    <code class="current-hash">${step.node.hash.substring(0, 20)}...</code>
+                </div>
+            `;
+
+            stepIndex++;
+            verifyAnimationTimer = setTimeout(showStep, delay);
+
+        } else if (step.type === 'verify') {
+            // 清除之前的高亮，保留路径
+            const allRects = svg.querySelectorAll('.node-rect');
+            allRects.forEach(rect => {
+                rect.classList.remove('verify-current', 'verify-sibling');
+            });
+
+            // 高亮当前节点和兄弟节点
+            const currentGroup = svg.querySelector(`[data-id="${step.currentNodeId}"]`);
+            const siblingGroup = svg.querySelector(`[data-id="${step.siblingId}"]`);
+
+            if (currentGroup) {
+                currentGroup.querySelector('.node-rect').classList.add('verify-current');
+            }
+
+            setTimeout(() => {
+                if (siblingGroup) {
+                    siblingGroup.querySelector('.node-rect').classList.add('verify-sibling');
+                }
+            }, 300);
+
+            // 更新路径显示
+            pathContainer.innerHTML = `
+                <div class="verify-anim-step active">
+                    <div class="verify-step-header">
+                        <span class="verify-step-num">第 ${step.stepNum} 层</span>
+                        <span class="verify-step-title">获取兄弟节点并合并</span>
+                    </div>
+                    <div class="verify-step-content">
+                        <div class="verify-pair">
+                            <div class="pair-node ${step.siblingPosition === 'right' ? 'current' : 'sibling'}">
+                                <span class="pair-label">${step.siblingPosition === 'right' ? '当前' : '兄弟(左)'}</span>
+                                <code>${step.leftHash.substring(0, 10)}...</code>
+                            </div>
+                            <span class="pair-plus">+</span>
+                            <div class="pair-node ${step.siblingPosition === 'left' ? 'current' : 'sibling'}">
+                                <span class="pair-label">${step.siblingPosition === 'left' ? '当前' : '兄弟(右)'}</span>
+                                <code>${step.rightHash.substring(0, 10)}...</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 延迟显示计算结果
+            setTimeout(() => {
+                calcContainer.innerHTML = `
+                    <div class="verify-calc-process">
+                        <div class="calc-inputs">
+                            <code class="${step.siblingPosition === 'right' ? 'hash-current' : 'hash-sibling'}">${step.leftHash.substring(0, 8)}...</code>
+                            <span class="calc-op">||</span>
+                            <code class="${step.siblingPosition === 'left' ? 'hash-current' : 'hash-sibling'}">${step.rightHash.substring(0, 8)}...</code>
+                        </div>
+                        <div class="calc-arrow-down">↓ SHA256</div>
+                        <div class="verify-calc-current">
+                            <span class="calc-label">计算结果:</span>
+                            <code class="current-hash result-new">${step.resultHash.substring(0, 20)}...</code>
+                        </div>
+                    </div>
+                `;
+
+                // 高亮连接线和父节点
+                if (step.parentNode) {
+                    const parentGroup = svg.querySelector(`[data-id="${step.parentNode.id}"]`);
+                    if (parentGroup) {
+                        parentGroup.querySelector('.node-rect').classList.add('verify-result');
+                    }
+
+                    // 高亮连接线
+                    const lines = svg.querySelectorAll(`[data-parent="${step.parentNode.id}"]`);
+                    lines.forEach(line => {
+                        line.classList.add('verify-line');
+                    });
+                }
+            }, 500);
+
+            stepIndex++;
+            verifyAnimationTimer = setTimeout(showStep, delay + 800);
+
+        } else if (step.type === 'final') {
+            // 清除之前的高亮
+            const allRects = svg.querySelectorAll('.node-rect');
+            allRects.forEach(rect => {
+                rect.classList.remove('verify-current', 'verify-sibling');
+            });
+
+            // 高亮根节点
+            const rootGroup = svg.querySelector(`[data-id="${tree.root.id}"]`);
+            if (rootGroup) {
+                rootGroup.querySelector('.node-rect').classList.add(step.success ? 'verify-success' : 'verify-fail');
+            }
+
+            pathContainer.innerHTML = `
+                <div class="verify-anim-step active final">
+                    <div class="verify-step-header">
+                        <span class="verify-step-num">最终验证</span>
+                        <span class="verify-step-title">比较 Merkle Root</span>
+                    </div>
+                    <div class="verify-step-content">
+                        <div class="verify-compare">
+                            <div class="compare-item">
+                                <span class="compare-label">计算得到:</span>
+                                <code>${step.computedHash.substring(0, 16)}...</code>
+                            </div>
+                            <div class="compare-vs">${step.success ? '=' : '≠'}</div>
+                            <div class="compare-item">
+                                <span class="compare-label">Merkle Root:</span>
+                                <code>${step.rootHash.substring(0, 16)}...</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            calcContainer.innerHTML = `
+                <div class="verify-final-result ${step.success ? 'success' : 'fail'}">
+                    <span class="result-icon">${step.success ? '✓' : '✗'}</span>
+                    <span class="result-text">${step.success ? '验证成功！交易确实存在于此 Merkle Tree 中' : '验证失败！哈希值不匹配'}</span>
+                </div>
+            `;
+        }
+    }
+
+    showStep();
 }
 
 // 初始化
