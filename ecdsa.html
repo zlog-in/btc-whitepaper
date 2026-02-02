@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECDSA 签名过程 · 比特币白皮书</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo" data-i18n="nav.logo">₿ Bitcoin Whitepaper</a>
+            <a href="index.html" class="nav-home" data-i18n="nav.home">🏠 首页</a>
+            <div class="nav-groups">
+                <div class="nav-group expanded has-active">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🔐</span><span data-i18n="nav.group.crypto">密码学</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="sha256.html" class="sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
+                        <a href="signature.html" data-i18n="nav.signature">数字签名</a>
+                        <a href="ecdsa.html" class="active sub-link" data-i18n="nav.ecdsa">└ ECDSA 过程</a>
+                        <a href="address.html" data-i18n="nav.address">比特币地址</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📜</span><span data-i18n="nav.group.script">脚本</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="multisig.html" data-i18n="nav.multisig">多重签名</a>
+                        <a href="timelock.html" data-i18n="nav.timelock">时间锁</a>
+                        <a href="htlc.html" data-i18n="nav.htlc">哈希时间锁</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">💰</span><span data-i18n="nav.group.tx">交易</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="utxo.html" data-i18n="nav.utxo">UTXO 模型</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">📦</span><span data-i18n="nav.group.block">区块</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="block.html" data-i18n="nav.block">区块结构</a>
+                        <a href="chain.html" data-i18n="nav.chain">区块链</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <div class="nav-group-title">
+                        <span><span class="group-icon">🌐</span><span data-i18n="nav.group.consensus">共识</span></span>
+                        <span class="expand-icon">▶</span>
+                    </div>
+                    <div class="nav-group-links">
+                        <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
+                        <a href="p2p.html" data-i18n="nav.p2p">P2P 网络</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="page-header">
+                    <span class="page-icon">🔏</span>
+                    <div>
+                        <h1 data-i18n="ecdsa.page.title">ECDSA 数字签名算法</h1>
+                        <p class="section-desc" data-i18n="ecdsa.page.desc">深入了解椭圆曲线数字签名算法的数学原理，包括密钥生成、签名过程和验证过程的完整计算流程。</p>
+                    </div>
+                </div>
+
+                <!-- ECDSA 算法结构图 -->
+                <div class="demo-box ecdsa-demo">
+                    <div class="ecdsa-circuit">
+                        <div class="circuit-title" data-i18n="ecdsa.circuit.title">ECDSA 算法结构 (secp256k1)</div>
+
+                        <div class="ecdsa-overview">
+                            <!-- 曲线参数 -->
+                            <div class="curve-params">
+                                <div class="param-title" data-i18n="ecdsa.curve.title">椭圆曲线参数</div>
+                                <div class="param-equation">y² = x³ + 7 (mod p)</div>
+                                <div class="param-list">
+                                    <div class="param-item">
+                                        <span class="param-name">p</span>
+                                        <span class="param-desc" data-i18n="ecdsa.curve.p">有限域素数</span>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">G</span>
+                                        <span class="param-desc" data-i18n="ecdsa.curve.g">生成点</span>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">n</span>
+                                        <span class="param-desc" data-i18n="ecdsa.curve.n">曲线阶</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 三列布局：密钥生成、签名、验证 -->
+                            <div class="ecdsa-columns">
+                                <!-- 密钥生成 -->
+                                <div class="ecdsa-column" data-step="keygen">
+                                    <div class="column-header">
+                                        <span class="column-icon">🔑</span>
+                                        <span class="column-title" data-i18n="ecdsa.keygen.title">密钥生成</span>
+                                    </div>
+                                    <div class="column-steps">
+                                        <div class="math-step">
+                                            <div class="step-num">1</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">d ∈ [1, n-1]</div>
+                                                <div class="step-desc" data-i18n="ecdsa.keygen.step1">随机选择私钥</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">2</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">Q = d × G</div>
+                                                <div class="step-desc" data-i18n="ecdsa.keygen.step2">计算公钥点</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="step-result">
+                                            <span class="result-label" data-i18n="ecdsa.keygen.result">公钥</span>
+                                            <span class="result-value">Q = (Qₓ, Qᵧ)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 签名过程 -->
+                                <div class="ecdsa-column" data-step="sign">
+                                    <div class="column-header">
+                                        <span class="column-icon">✍️</span>
+                                        <span class="column-title" data-i18n="ecdsa.sign.title">签名过程</span>
+                                    </div>
+                                    <div class="column-steps">
+                                        <div class="math-step">
+                                            <div class="step-num">1</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">z = SHA256(m)</div>
+                                                <div class="step-desc" data-i18n="ecdsa.sign.step1">计算消息哈希</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">2</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">k ∈ [1, n-1]</div>
+                                                <div class="step-desc" data-i18n="ecdsa.sign.step2">生成随机数 k</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">3</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">R = k × G</div>
+                                                <div class="step-desc" data-i18n="ecdsa.sign.step3">计算曲线点 R</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">4</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">r = Rₓ mod n</div>
+                                                <div class="step-desc" data-i18n="ecdsa.sign.step4">取 R 的 x 坐标</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">5</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">s = k⁻¹(z + rd) mod n</div>
+                                                <div class="step-desc" data-i18n="ecdsa.sign.step5">计算签名 s</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="step-result">
+                                            <span class="result-label" data-i18n="ecdsa.sign.result">签名</span>
+                                            <span class="result-value">(r, s)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 验证过程 -->
+                                <div class="ecdsa-column" data-step="verify">
+                                    <div class="column-header">
+                                        <span class="column-icon">✅</span>
+                                        <span class="column-title" data-i18n="ecdsa.verify.title">验证过程</span>
+                                    </div>
+                                    <div class="column-steps">
+                                        <div class="math-step">
+                                            <div class="step-num">1</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">z = SHA256(m)</div>
+                                                <div class="step-desc" data-i18n="ecdsa.verify.step1">计算消息哈希</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">2</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">u₁ = zs⁻¹ mod n</div>
+                                                <div class="step-desc" data-i18n="ecdsa.verify.step2">计算 u₁</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">3</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">u₂ = rs⁻¹ mod n</div>
+                                                <div class="step-desc" data-i18n="ecdsa.verify.step3">计算 u₂</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step">
+                                            <div class="step-num">4</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">P = u₁G + u₂Q</div>
+                                                <div class="step-desc" data-i18n="ecdsa.verify.step4">计算验证点</div>
+                                            </div>
+                                        </div>
+                                        <div class="step-arrow">↓</div>
+                                        <div class="math-step verify-check">
+                                            <div class="step-num">5</div>
+                                            <div class="step-content">
+                                                <div class="step-formula">Pₓ mod n = r ?</div>
+                                                <div class="step-desc" data-i18n="ecdsa.verify.step5">验证等式</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="demo-box ecdsa-input-box" style="margin-top: 2rem;">
+                    <h3 data-i18n="ecdsa.demo.title">🔬 交互式演示</h3>
+                    <p class="demo-desc" data-i18n="ecdsa.demo.desc">生成密钥对，输入消息，观察 ECDSA 签名和验证的完整数学计算过程。</p>
+
+                    <div class="ecdsa-controls">
+                        <button id="ecdsa-generate-keys" class="btn primary" data-i18n="ecdsa.btn.generate">🔑 生成密钥对</button>
+                        <div class="ecdsa-message-input">
+                            <label data-i18n="ecdsa.input.label">消息：</label>
+                            <input type="text" id="ecdsa-message" value="Hello Bitcoin!" placeholder="输入要签名的消息">
+                        </div>
+                        <button id="ecdsa-sign-btn" class="btn primary" disabled data-i18n="ecdsa.btn.sign">✍️ 签名</button>
+                        <button id="ecdsa-verify-btn" class="btn" disabled data-i18n="ecdsa.btn.verify">✅ 验证</button>
+                    </div>
+                </div>
+
+                <!-- 计算过程展示 -->
+                <div class="demo-box ecdsa-demo" id="ecdsa-process" style="display: none; margin-top: 2rem;">
+                    <!-- 步骤导航 -->
+                    <div class="ecdsa-steps">
+                        <button class="ecdsa-step-btn active" data-step="keygen" data-i18n="ecdsa.tab.keygen">1. 密钥生成</button>
+                        <button class="ecdsa-step-btn" data-step="sign" data-i18n="ecdsa.tab.sign">2. 签名过程</button>
+                        <button class="ecdsa-step-btn" data-step="verify" data-i18n="ecdsa.tab.verify">3. 验证过程</button>
+                    </div>
+
+                    <!-- 密钥生成面板 -->
+                    <div class="ecdsa-panel" id="keygen-panel">
+                        <div class="panel-header">
+                            <h4 data-i18n="ecdsa.keygen.panel.title">密钥生成</h4>
+                            <p class="panel-desc" data-i18n="ecdsa.keygen.panel.desc">通过椭圆曲线点乘法从私钥计算公钥</p>
+                        </div>
+
+                        <div class="math-display" id="keygen-display">
+                            <div class="math-row" id="keygen-step-1">
+                                <div class="math-label" data-i18n="ecdsa.math.privkey">私钥 d:</div>
+                                <div class="math-value" id="display-privkey">-</div>
+                            </div>
+                            <div class="math-row" id="keygen-step-2">
+                                <div class="math-label" data-i18n="ecdsa.math.generator">生成点 G:</div>
+                                <div class="math-value coord-value" id="display-G">
+                                    <div>Gₓ = <span id="display-Gx">-</span></div>
+                                    <div>Gᵧ = <span id="display-Gy">-</span></div>
+                                </div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">Q = d × G</div>
+                                <div class="op-desc" data-i18n="ecdsa.math.scalar">椭圆曲线标量乘法</div>
+                            </div>
+                            <div class="math-row result-row" id="keygen-step-3">
+                                <div class="math-label" data-i18n="ecdsa.math.pubkey">公钥 Q:</div>
+                                <div class="math-value coord-value" id="display-Q">
+                                    <div>Qₓ = <span id="display-Qx">-</span></div>
+                                    <div>Qᵧ = <span id="display-Qy">-</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 签名过程面板 -->
+                    <div class="ecdsa-panel" id="sign-panel" style="display: none;">
+                        <div class="panel-header">
+                            <h4 data-i18n="ecdsa.sign.panel.title">签名过程</h4>
+                            <p class="panel-desc" data-i18n="ecdsa.sign.panel.desc">使用私钥对消息哈希进行签名，生成 (r, s) 签名对</p>
+                        </div>
+
+                        <div class="math-display" id="sign-display">
+                            <div class="math-row" id="sign-step-1">
+                                <div class="math-label" data-i18n="ecdsa.math.message">消息 m:</div>
+                                <div class="math-value" id="display-message">-</div>
+                            </div>
+                            <div class="math-row" id="sign-step-2">
+                                <div class="math-label" data-i18n="ecdsa.math.hash">哈希 z = SHA256(m):</div>
+                                <div class="math-value hash-value" id="display-hash">-</div>
+                            </div>
+                            <div class="math-row" id="sign-step-3">
+                                <div class="math-label" data-i18n="ecdsa.math.nonce">随机数 k:</div>
+                                <div class="math-value" id="display-k">-</div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">R = k × G</div>
+                            </div>
+                            <div class="math-row" id="sign-step-4">
+                                <div class="math-label" data-i18n="ecdsa.math.pointR">曲线点 R:</div>
+                                <div class="math-value coord-value" id="display-R">
+                                    <div>Rₓ = <span id="display-Rx">-</span></div>
+                                    <div>Rᵧ = <span id="display-Ry">-</span></div>
+                                </div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">r = Rₓ mod n</div>
+                            </div>
+                            <div class="math-row" id="sign-step-5">
+                                <div class="math-label" data-i18n="ecdsa.math.sigR">签名 r:</div>
+                                <div class="math-value" id="display-sig-r">-</div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">s = k⁻¹ × (z + r × d) mod n</div>
+                            </div>
+                            <div class="math-row" id="sign-step-6">
+                                <div class="math-label">k⁻¹ mod n:</div>
+                                <div class="math-value" id="display-k-inv">-</div>
+                            </div>
+                            <div class="math-row" id="sign-step-7">
+                                <div class="math-label">z + r × d:</div>
+                                <div class="math-value" id="display-z-plus-rd">-</div>
+                            </div>
+                            <div class="math-row result-row" id="sign-step-8">
+                                <div class="math-label" data-i18n="ecdsa.math.sigS">签名 s:</div>
+                                <div class="math-value" id="display-sig-s">-</div>
+                            </div>
+                            <div class="signature-result">
+                                <div class="sig-label" data-i18n="ecdsa.math.signature">最终签名 (r, s):</div>
+                                <div class="sig-values">
+                                    <div class="sig-component">
+                                        <span class="sig-name">r =</span>
+                                        <span class="sig-value" id="final-r">-</span>
+                                    </div>
+                                    <div class="sig-component">
+                                        <span class="sig-name">s =</span>
+                                        <span class="sig-value" id="final-s">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 验证过程面板 -->
+                    <div class="ecdsa-panel" id="verify-panel" style="display: none;">
+                        <div class="panel-header">
+                            <h4 data-i18n="ecdsa.verify.panel.title">验证过程</h4>
+                            <p class="panel-desc" data-i18n="ecdsa.verify.panel.desc">使用公钥验证签名的有效性</p>
+                        </div>
+
+                        <div class="math-display" id="verify-display">
+                            <div class="math-row" id="verify-step-1">
+                                <div class="math-label" data-i18n="ecdsa.math.hash">哈希 z:</div>
+                                <div class="math-value hash-value" id="verify-display-hash">-</div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">s⁻¹ mod n</div>
+                            </div>
+                            <div class="math-row" id="verify-step-2">
+                                <div class="math-label">s⁻¹:</div>
+                                <div class="math-value" id="display-s-inv">-</div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">u₁ = z × s⁻¹ mod n</div>
+                            </div>
+                            <div class="math-row" id="verify-step-3">
+                                <div class="math-label">u₁:</div>
+                                <div class="math-value" id="display-u1">-</div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">u₂ = r × s⁻¹ mod n</div>
+                            </div>
+                            <div class="math-row" id="verify-step-4">
+                                <div class="math-label">u₂:</div>
+                                <div class="math-value" id="display-u2">-</div>
+                            </div>
+                            <div class="math-operation">
+                                <div class="op-formula">P = u₁ × G + u₂ × Q</div>
+                                <div class="op-desc" data-i18n="ecdsa.math.pointadd">椭圆曲线点加法</div>
+                            </div>
+                            <div class="math-row" id="verify-step-5">
+                                <div class="math-label">u₁ × G:</div>
+                                <div class="math-value coord-value" id="display-u1G">
+                                    <div>x = <span id="display-u1Gx">-</span></div>
+                                    <div>y = <span id="display-u1Gy">-</span></div>
+                                </div>
+                            </div>
+                            <div class="math-row" id="verify-step-6">
+                                <div class="math-label">u₂ × Q:</div>
+                                <div class="math-value coord-value" id="display-u2Q">
+                                    <div>x = <span id="display-u2Qx">-</span></div>
+                                    <div>y = <span id="display-u2Qy">-</span></div>
+                                </div>
+                            </div>
+                            <div class="math-row" id="verify-step-7">
+                                <div class="math-label" data-i18n="ecdsa.math.pointP">验证点 P:</div>
+                                <div class="math-value coord-value" id="display-P">
+                                    <div>Pₓ = <span id="display-Px">-</span></div>
+                                    <div>Pᵧ = <span id="display-Py">-</span></div>
+                                </div>
+                            </div>
+                            <div class="verify-comparison" id="verify-step-8">
+                                <div class="compare-item">
+                                    <div class="compare-label">Pₓ mod n =</div>
+                                    <div class="compare-value" id="display-Px-mod-n">-</div>
+                                </div>
+                                <div class="compare-icon" id="verify-compare-icon">?</div>
+                                <div class="compare-item">
+                                    <div class="compare-label">r =</div>
+                                    <div class="compare-value" id="display-r-verify">-</div>
+                                </div>
+                            </div>
+                            <div class="verify-result-box" id="verify-result-box">
+                                <div class="verify-icon" id="verify-icon">❓</div>
+                                <div class="verify-text" id="verify-text" data-i18n="ecdsa.verify.waiting">等待验证...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数学原理说明 -->
+                <div class="card info" style="margin-top: 2rem;">
+                    <h4 data-i18n="ecdsa.math.title">📐 ECDSA 数学原理</h4>
+                    <ul>
+                        <li><strong data-i18n="ecdsa.math.curve">椭圆曲线</strong> — <span data-i18n="ecdsa.math.curve.desc">secp256k1 曲线方程 y² = x³ + 7，定义在有限域 𝔽ₚ 上</span></li>
+                        <li><strong data-i18n="ecdsa.math.scalar.title">标量乘法</strong> — <span data-i18n="ecdsa.math.scalar.desc">Q = d × G 通过反复的点加法实现，是单向函数</span></li>
+                        <li><strong data-i18n="ecdsa.math.mod">模运算</strong> — <span data-i18n="ecdsa.math.mod.desc">所有运算在曲线阶 n 下进行模运算</span></li>
+                        <li><strong data-i18n="ecdsa.math.inverse">模逆元</strong> — <span data-i18n="ecdsa.math.inverse.desc">k⁻¹ 满足 k × k⁻¹ ≡ 1 (mod n)，使用扩展欧几里得算法计算</span></li>
+                    </ul>
+                </div>
+
+                <div class="page-nav">
+                    <a href="signature.html" class="btn secondary" data-i18n="ecdsa.nav.prev">← 数字签名</a>
+                    <a href="address.html" class="btn primary" data-i18n="ecdsa.nav.next">比特币地址 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="ecdsa-demo.js"></script>
+</body>
+</html>

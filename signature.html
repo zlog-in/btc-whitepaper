@@ -20,7 +20,9 @@
                     </div>
                     <div class="nav-group-links">
                         <a href="hash.html" data-i18n="nav.hash">哈希函数</a>
+                        <a href="sha256.html" class="sub-link" data-i18n="nav.sha256">└ SHA-256 过程</a>
                         <a href="signature.html" class="active" data-i18n="nav.signature">数字签名</a>
+                        <a href="ecdsa.html" class="sub-link" data-i18n="nav.ecdsa">└ ECDSA 过程</a>
                         <a href="address.html" data-i18n="nav.address">比特币地址</a>
                     </div>
                 </div>
@@ -209,6 +211,18 @@
                 <div class="card highlight">
                     <h4 data-i18n="sig.bitcoin.title">₿ 在比特币中的应用</h4>
                     <p data-i18n="sig.bitcoin.desc">当你发起一笔比特币交易时，你的钱包会使用私钥对交易进行签名。网络中的其他节点使用你的公钥（从比特币地址派生）验证签名，确认这笔交易确实由你授权。</p>
+                </div>
+
+                <!-- ECDSA 子页面链接 -->
+                <div class="sha256-link-box">
+                    <a href="ecdsa.html" class="sha256-link">
+                        <span class="link-icon">🔏</span>
+                        <span class="link-content">
+                            <span class="link-title" data-i18n="sig.ecdsa.link.title">深入了解 ECDSA 算法</span>
+                            <span class="link-desc" data-i18n="sig.ecdsa.link.desc">查看椭圆曲线点乘法、签名生成和验证的完整数学计算过程</span>
+                        </span>
+                        <span class="link-arrow">→</span>
+                    </a>
                 </div>
 
                 <div class="page-nav">
