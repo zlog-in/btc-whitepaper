@@ -56,13 +56,24 @@ body {
 }
 
 .logo {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--primary);
     text-decoration: none;
     padding: 0 1.25rem;
     margin-bottom: 1.5rem;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.logo-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.logo-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
 }
 
 /* 首页链接 */

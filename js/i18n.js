@@ -6,6 +6,7 @@ const translations = {
     zh: {
         // 导航
         'nav.logo': '₿ 比特币白皮书',
+        'nav.subtitle': '交互式学习指南',
         'nav.home': '🏠 首页',
         'nav.group.crypto': '密码学',
         'nav.group.address': '地址',
@@ -826,6 +827,7 @@ const translations = {
     en: {
         // Navigation
         'nav.logo': '₿ Bitcoin Whitepaper',
+        'nav.subtitle': 'Interactive Learning Guide',
         'nav.home': '🏠 Home',
         'nav.group.crypto': 'Cryptography',
         'nav.group.address': 'Address',
