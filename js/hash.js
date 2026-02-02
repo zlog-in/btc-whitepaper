@@ -155,3 +155,335 @@ function updateHashDemo() {
 }
 
 document.getElementById('hash-calc-btn').addEventListener('click', updateHashDemo);
+
+// ==========================================
+// 哈希函数特性 - 交互式演示
+// ==========================================
+
+// Demo 1: 确定性 (Deterministic)
+(function() {
+    const input = document.getElementById('det-input');
+    const output = document.getElementById('det-output');
+    const runBtn = document.getElementById('det-run-btn');
+    const countEl = document.getElementById('det-count');
+    const resultEl = document.getElementById('det-result');
+
+    if (!runBtn) return;
+
+    let count = 0;
+    let lastHash = null;
+
+    runBtn.addEventListener('click', function() {
+        const text = input.textContent;
+        const hash = sha256(text);
+        count++;
+
+        output.textContent = hash;
+
+        const lang = document.documentElement.lang || 'zh-CN';
+        const isZh = lang.startsWith('zh');
+
+        countEl.textContent = isZh ? `计算次数: ${count}` : `Runs: ${count}`;
+
+        if (lastHash === null) {
+            lastHash = hash;
+            resultEl.textContent = '';
+        } else if (lastHash === hash) {
+            resultEl.textContent = isZh ? '✓ 结果相同！' : '✓ Same result!';
+            resultEl.className = 'demo-result success';
+        }
+
+        // 动画效果
+        output.style.transform = 'scale(1.02)';
+        setTimeout(() => output.style.transform = 'scale(1)', 200);
+    });
+})();
+
+// Demo 2: 快速计算 (Fast)
+(function() {
+    const countEl = document.getElementById('fast-count');
+    const rateEl = document.getElementById('fast-rate');
+    const inputEl = document.getElementById('fast-input');
+    const outputEl = document.getElementById('fast-output');
+    const startBtn = document.getElementById('fast-start-btn');
+    const stopBtn = document.getElementById('fast-stop-btn');
+
+    if (!startBtn) return;
+
+    let running = false;
+    let totalCount = 0;
+    let intervalId = null;
+    let rateIntervalId = null;
+    let lastCount = 0;
+
+    function runBatch() {
+        if (!running) return;
+
+        const batchSize = 100;
+        for (let i = 0; i < batchSize; i++) {
+            const input = `test_${totalCount}_${Math.random()}`;
+            const hash = sha256(input);
+            totalCount++;
+
+            if (i === batchSize - 1) {
+                inputEl.textContent = input;
+                outputEl.textContent = hash;
+            }
+        }
+
+        countEl.textContent = totalCount.toLocaleString();
+
+        if (running) {
+            requestAnimationFrame(runBatch);
+        }
+    }
+
+    function updateRate() {
+        const rate = totalCount - lastCount;
+        rateEl.textContent = rate.toLocaleString();
+        lastCount = totalCount;
+    }
+
+    startBtn.addEventListener('click', function() {
+        running = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        lastCount = totalCount;
+
+        runBatch();
+        rateIntervalId = setInterval(updateRate, 1000);
+    });
+
+    stopBtn.addEventListener('click', function() {
+        running = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+
+        if (rateIntervalId) {
+            clearInterval(rateIntervalId);
+            rateIntervalId = null;
+        }
+    });
+})();
+
+// Demo 3: 单向性 (One-way)
+(function() {
+    const inputEl = document.getElementById('oneway-input');
+    const outputEl = document.getElementById('oneway-output');
+    const unknownEl = document.getElementById('oneway-unknown');
+    const demoBtn = document.getElementById('oneway-demo-btn');
+    const resultEl = document.getElementById('oneway-result');
+
+    if (!demoBtn) return;
+
+    // 初始化显示
+    const secretWord = 'Secret';
+    const hash = sha256(secretWord);
+    outputEl.textContent = hash.substring(0, 6) + '...';
+
+    let attempts = 0;
+    let searching = false;
+    let animationId = null;
+
+    demoBtn.addEventListener('click', function() {
+        if (searching) return;
+
+        searching = true;
+        attempts = 0;
+
+        const lang = document.documentElement.lang || 'zh-CN';
+        const isZh = lang.startsWith('zh');
+
+        function tryGuess() {
+            if (attempts > 50) {
+                unknownEl.textContent = '???';
+                resultEl.textContent = isZh ? '✗ 无法反推！' : '✗ Cannot reverse!';
+                resultEl.className = 'demo-result fail';
+                searching = false;
+                return;
+            }
+
+            // 显示随机尝试
+            const chars = 'abcdefghijklmnopqrstuvwxyz';
+            let guess = '';
+            for (let i = 0; i < 6; i++) {
+                guess += chars[Math.floor(Math.random() * chars.length)];
+            }
+
+            unknownEl.textContent = guess;
+            attempts++;
+
+            animationId = setTimeout(tryGuess, 50);
+        }
+
+        resultEl.textContent = isZh ? '尝试反推中...' : 'Trying to reverse...';
+        resultEl.className = 'demo-result';
+        tryGuess();
+    });
+})();
+
+// Demo 4: 雪崩效应 (Avalanche)
+(function() {
+    const input1 = document.getElementById('avalanche-input1');
+    const input2 = document.getElementById('avalanche-input2');
+    const hash1El = document.getElementById('avalanche-hash1');
+    const hash2El = document.getElementById('avalanche-hash2');
+    const inputDiffEl = document.getElementById('avalanche-input-diff');
+    const bitsDiffEl = document.getElementById('avalanche-bits-diff');
+    const percentEl = document.getElementById('avalanche-percent');
+    const visualEl = document.getElementById('avalanche-visual');
+    const calcBtn = document.getElementById('avalanche-calc-btn');
+
+    if (!calcBtn) return;
+
+    function countBitDiff(hash1, hash2) {
+        let diff = 0;
+        const bits1 = hexToBinary(hash1);
+        const bits2 = hexToBinary(hash2);
+
+        for (let i = 0; i < bits1.length; i++) {
+            if (bits1[i] !== bits2[i]) diff++;
+        }
+        return { diff, bits1, bits2 };
+    }
+
+    function levenshtein(a, b) {
+        const matrix = [];
+        for (let i = 0; i <= b.length; i++) {
+            matrix[i] = [i];
+        }
+        for (let j = 0; j <= a.length; j++) {
+            matrix[0][j] = j;
+        }
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
+                if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
+                    );
+                }
+            }
+        }
+        return matrix[b.length][a.length];
+    }
+
+    calcBtn.addEventListener('click', function() {
+        const text1 = input1.value;
+        const text2 = input2.value;
+
+        const hash1 = sha256(text1);
+        const hash2 = sha256(text2);
+
+        hash1El.textContent = hash1;
+        hash2El.textContent = hash2;
+
+        // 输入差异
+        const inputDiff = levenshtein(text1, text2);
+
+        const lang = document.documentElement.lang || 'zh-CN';
+        const isZh = lang.startsWith('zh');
+
+        inputDiffEl.textContent = isZh ? `${inputDiff} 字符` : `${inputDiff} char(s)`;
+
+        // 位差异
+        const { diff, bits1, bits2 } = countBitDiff(hash1, hash2);
+        bitsDiffEl.textContent = `${diff} / 256 ${isZh ? '位' : 'bits'}`;
+
+        // 百分比
+        const percent = ((diff / 256) * 100).toFixed(1);
+        percentEl.textContent = `${percent}%`;
+
+        // 可视化
+        visualEl.innerHTML = '';
+        for (let i = 0; i < 256; i++) {
+            const bit = document.createElement('div');
+            bit.className = 'avalanche-bit ' + (bits1[i] === bits2[i] ? 'same' : 'diff');
+            bit.style.animationDelay = `${i * 2}ms`;
+            visualEl.appendChild(bit);
+        }
+    });
+
+    // 输入变化时自动对比
+    input1.addEventListener('input', () => calcBtn.click());
+    input2.addEventListener('input', () => calcBtn.click());
+})();
+
+// Demo 5: 抗碰撞 (Collision)
+(function() {
+    const targetEl = document.getElementById('collision-target');
+    const tryingEl = document.getElementById('collision-trying');
+    const resultEl = document.getElementById('collision-result');
+    const attemptsEl = document.getElementById('collision-attempts');
+    const foundEl = document.getElementById('collision-found');
+    const startBtn = document.getElementById('collision-start-btn');
+    const stopBtn = document.getElementById('collision-stop-btn');
+
+    if (!startBtn) return;
+
+    let running = false;
+    let attempts = 0;
+    let found = 0;
+    let target = '';
+
+    function generateTarget() {
+        const chars = '0123456789abcdef';
+        let t = '';
+        for (let i = 0; i < 6; i++) {
+            t += chars[Math.floor(Math.random() * 16)];
+        }
+        return t;
+    }
+
+    function search() {
+        if (!running) return;
+
+        const batchSize = 50;
+        for (let i = 0; i < batchSize; i++) {
+            const input = `search_${attempts}_${Math.random()}`;
+            const hash = sha256(input);
+            attempts++;
+
+            tryingEl.textContent = input.substring(0, 30);
+            resultEl.textContent = hash;
+
+            // 检查前6位是否匹配
+            if (hash.substring(0, 6) === target) {
+                found++;
+                foundEl.textContent = found;
+                resultEl.innerHTML = `<span style="color: var(--success); font-weight: bold;">${hash.substring(0, 6)}</span>${hash.substring(6)}`;
+
+                // 生成新目标
+                target = generateTarget();
+                targetEl.textContent = target;
+            }
+        }
+
+        attemptsEl.textContent = attempts.toLocaleString();
+
+        if (running) {
+            requestAnimationFrame(search);
+        }
+    }
+
+    startBtn.addEventListener('click', function() {
+        running = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+
+        // 生成新目标
+        target = generateTarget();
+        targetEl.textContent = target;
+
+        search();
+    });
+
+    stopBtn.addEventListener('click', function() {
+        running = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    });
+})();

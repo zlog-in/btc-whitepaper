@@ -110,15 +110,208 @@
                     </div>
                 </div>
 
-                <div class="card info">
-                    <h4 data-i18n="hash.features.title">🎯 哈希函数特性</h4>
-                    <ul>
-                        <li><strong data-i18n="hash.feature.1">确定性</strong> — <span data-i18n="hash.feature.1.desc">相同输入永远产生相同输出</span></li>
-                        <li><strong data-i18n="hash.feature.2">快速计算</strong> — <span data-i18n="hash.feature.2.desc">可以快速计算任意输入的哈希</span></li>
-                        <li><strong data-i18n="hash.feature.3">单向性</strong> — <span data-i18n="hash.feature.3.desc">无法从哈希值反推原始输入</span></li>
-                        <li><strong data-i18n="hash.feature.4">雪崩效应</strong> — <span data-i18n="hash.feature.4.desc">输入微小变化导致输出剧烈变化</span></li>
-                        <li><strong data-i18n="hash.feature.5">抗碰撞</strong> — <span data-i18n="hash.feature.5.desc">几乎不可能找到两个不同输入产生相同输出</span></li>
-                    </ul>
+                <!-- 哈希函数特性 - 交互式演示 -->
+                <div class="hash-features-section">
+                    <h3 data-i18n="hash.features.title">🎯 哈希函数特性</h3>
+
+                    <!-- 特性1: 确定性 -->
+                    <div class="feature-card" id="feature-deterministic">
+                        <div class="feature-header">
+                            <span class="feature-icon">🎯</span>
+                            <div class="feature-title">
+                                <strong data-i18n="hash.feature.1">确定性</strong>
+                                <span data-i18n="hash.feature.1.desc">相同输入永远产生相同输出</span>
+                            </div>
+                        </div>
+                        <div class="feature-demo">
+                            <div class="demo-deterministic">
+                                <div class="demo-input-box">
+                                    <span class="demo-label" data-i18n="hash.demo.input">输入</span>
+                                    <span class="demo-value" id="det-input">Bitcoin</span>
+                                </div>
+                                <div class="demo-arrow">→</div>
+                                <div class="demo-hash-box">
+                                    <span class="demo-label">SHA-256</span>
+                                    <span class="demo-value hash-value" id="det-output">---</span>
+                                </div>
+                            </div>
+                            <div class="demo-controls">
+                                <button class="btn small" id="det-run-btn" data-i18n="hash.demo.run">▶ 计算</button>
+                                <span class="demo-count" id="det-count" data-i18n="hash.demo.times">计算次数: 0</span>
+                                <span class="demo-result" id="det-result"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 特性2: 快速计算 -->
+                    <div class="feature-card" id="feature-fast">
+                        <div class="feature-header">
+                            <span class="feature-icon">⚡</span>
+                            <div class="feature-title">
+                                <strong data-i18n="hash.feature.2">快速计算</strong>
+                                <span data-i18n="hash.feature.2.desc">可以快速计算任意输入的哈希</span>
+                            </div>
+                        </div>
+                        <div class="feature-demo">
+                            <div class="demo-fast">
+                                <div class="fast-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="fast-count">0</span>
+                                        <span class="stat-label" data-i18n="hash.demo.hashes">次哈希</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="fast-rate">0</span>
+                                        <span class="stat-label" data-i18n="hash.demo.perSecond">次/秒</span>
+                                    </div>
+                                </div>
+                                <div class="fast-display">
+                                    <div class="fast-input" id="fast-input">---</div>
+                                    <div class="fast-output" id="fast-output">---</div>
+                                </div>
+                            </div>
+                            <div class="demo-controls">
+                                <button class="btn small" id="fast-start-btn" data-i18n="hash.demo.start">▶ 开始</button>
+                                <button class="btn small secondary" id="fast-stop-btn" disabled data-i18n="hash.demo.stop">⏹ 停止</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 特性3: 单向性 -->
+                    <div class="feature-card" id="feature-oneway">
+                        <div class="feature-header">
+                            <span class="feature-icon">🚫</span>
+                            <div class="feature-title">
+                                <strong data-i18n="hash.feature.3">单向性</strong>
+                                <span data-i18n="hash.feature.3.desc">无法从哈希值反推原始输入</span>
+                            </div>
+                        </div>
+                        <div class="feature-demo">
+                            <div class="demo-oneway">
+                                <div class="oneway-forward">
+                                    <div class="oneway-box input-side">
+                                        <span class="oneway-label" data-i18n="hash.demo.input">输入</span>
+                                        <span class="oneway-value" id="oneway-input">Secret</span>
+                                    </div>
+                                    <div class="oneway-arrow forward">→</div>
+                                    <div class="oneway-box output-side">
+                                        <span class="oneway-label" data-i18n="hash.demo.output">哈希</span>
+                                        <span class="oneway-value" id="oneway-output">2bb80d...</span>
+                                    </div>
+                                </div>
+                                <div class="oneway-reverse">
+                                    <div class="oneway-box output-side">
+                                        <span class="oneway-label" data-i18n="hash.demo.hash">哈希</span>
+                                        <span class="oneway-value">2bb80d...</span>
+                                    </div>
+                                    <div class="oneway-arrow reverse">
+                                        <span class="arrow-x">✗</span>
+                                        <span class="arrow-line">→</span>
+                                    </div>
+                                    <div class="oneway-box input-side unknown">
+                                        <span class="oneway-label" data-i18n="hash.demo.input">输入</span>
+                                        <span class="oneway-value" id="oneway-unknown">???</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="demo-controls">
+                                <button class="btn small" id="oneway-demo-btn" data-i18n="hash.demo.tryReverse">🔄 尝试反推</button>
+                                <span class="demo-result" id="oneway-result"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 特性4: 雪崩效应 -->
+                    <div class="feature-card" id="feature-avalanche">
+                        <div class="feature-header">
+                            <span class="feature-icon">🌊</span>
+                            <div class="feature-title">
+                                <strong data-i18n="hash.feature.4">雪崩效应</strong>
+                                <span data-i18n="hash.feature.4.desc">输入微小变化导致输出剧烈变化</span>
+                            </div>
+                        </div>
+                        <div class="feature-demo">
+                            <div class="demo-avalanche">
+                                <div class="avalanche-row">
+                                    <div class="avalanche-input">
+                                        <span class="avalanche-label" data-i18n="hash.demo.original">原文</span>
+                                        <input type="text" id="avalanche-input1" value="Hello" class="avalanche-text">
+                                    </div>
+                                    <div class="avalanche-output" id="avalanche-hash1">---</div>
+                                </div>
+                                <div class="avalanche-row">
+                                    <div class="avalanche-input">
+                                        <span class="avalanche-label" data-i18n="hash.demo.modified">改动</span>
+                                        <input type="text" id="avalanche-input2" value="Hello!" class="avalanche-text">
+                                    </div>
+                                    <div class="avalanche-output" id="avalanche-hash2">---</div>
+                                </div>
+                                <div class="avalanche-stats">
+                                    <div class="avalanche-stat">
+                                        <span class="stat-label" data-i18n="hash.demo.inputDiff">输入差异</span>
+                                        <span class="stat-value" id="avalanche-input-diff">0 字符</span>
+                                    </div>
+                                    <div class="avalanche-stat highlight">
+                                        <span class="stat-label" data-i18n="hash.demo.bitsDiff">位变化</span>
+                                        <span class="stat-value" id="avalanche-bits-diff">0 / 256 位</span>
+                                    </div>
+                                    <div class="avalanche-stat">
+                                        <span class="stat-label" data-i18n="hash.demo.percent">变化率</span>
+                                        <span class="stat-value" id="avalanche-percent">0%</span>
+                                    </div>
+                                </div>
+                                <div class="avalanche-visual" id="avalanche-visual"></div>
+                            </div>
+                            <div class="demo-controls">
+                                <button class="btn small" id="avalanche-calc-btn" data-i18n="hash.demo.compare">🔍 对比</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 特性5: 抗碰撞 -->
+                    <div class="feature-card" id="feature-collision">
+                        <div class="feature-header">
+                            <span class="feature-icon">🛡️</span>
+                            <div class="feature-title">
+                                <strong data-i18n="hash.feature.5">抗碰撞</strong>
+                                <span data-i18n="hash.feature.5.desc">几乎不可能找到两个不同输入产生相同输出</span>
+                            </div>
+                        </div>
+                        <div class="feature-demo">
+                            <div class="demo-collision">
+                                <div class="collision-target">
+                                    <span class="collision-label" data-i18n="hash.demo.targetHash">目标哈希 (前6位)</span>
+                                    <span class="collision-value" id="collision-target">a1b2c3</span>
+                                </div>
+                                <div class="collision-search">
+                                    <div class="search-item">
+                                        <span class="search-label" data-i18n="hash.demo.trying">尝试</span>
+                                        <span class="search-value" id="collision-trying">---</span>
+                                    </div>
+                                    <div class="search-item">
+                                        <span class="search-label" data-i18n="hash.demo.result">结果</span>
+                                        <span class="search-value" id="collision-result">---</span>
+                                    </div>
+                                </div>
+                                <div class="collision-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="collision-attempts">0</span>
+                                        <span class="stat-label" data-i18n="hash.demo.attempts">次尝试</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-value" id="collision-found">0</span>
+                                        <span class="stat-label" data-i18n="hash.demo.found">次命中</span>
+                                    </div>
+                                </div>
+                                <div class="collision-note" data-i18n="hash.demo.collisionNote">
+                                    注：仅匹配前6位(24比特)，完整匹配256位几乎不可能
+                                </div>
+                            </div>
+                            <div class="demo-controls">
+                                <button class="btn small" id="collision-start-btn" data-i18n="hash.demo.search">🔎 搜索碰撞</button>
+                                <button class="btn small secondary" id="collision-stop-btn" disabled data-i18n="hash.demo.stop">⏹ 停止</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="page-nav">
