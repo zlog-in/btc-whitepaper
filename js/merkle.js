@@ -861,26 +861,35 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
     showStep();
 }
 
+// 生成交易列表
+function generateTransactions(count) {
+    const txList = [];
+    for (let i = 1; i <= count; i++) {
+        txList.push(`TX${i}`);
+    }
+    return txList;
+}
+
+// 更新交易预览
+function updateTxPreview() {
+    const count = parseInt(document.getElementById('tx-count-select').value);
+    const txList = generateTransactions(count);
+    document.getElementById('tx-preview').textContent = txList.join(', ');
+}
+
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
-    const txsInput = document.getElementById('merkle-txs');
+    const txCountSelect = document.getElementById('tx-count-select');
     const buildBtn = document.getElementById('build-tree-btn');
     const verifySelect = document.getElementById('verify-tx-select');
     const verifyBtn = document.getElementById('verify-btn');
 
+    // 监听交易数量变化
+    txCountSelect.addEventListener('change', updateTxPreview);
+
     buildBtn.addEventListener('click', function() {
-        const txText = txsInput.value.trim();
-        transactions = txText.split('\n').filter(tx => tx.trim() !== '');
-
-        if (transactions.length === 0) {
-            alert('请输入至少一个交易');
-            return;
-        }
-
-        if (transactions.length > 8) {
-            alert('为了更好的展示效果，请输入不超过8个交易');
-            return;
-        }
+        const count = parseInt(txCountSelect.value);
+        transactions = generateTransactions(count);
 
         merkleTree = buildMerkleTree(transactions);
         renderMerkleTree(merkleTree, 'merkle-tree', true);
@@ -890,7 +899,7 @@ document.addEventListener('DOMContentLoaded', function() {
         transactions.forEach((tx, idx) => {
             const option = document.createElement('option');
             option.value = idx;
-            option.textContent = `${tx}`;
+            option.textContent = tx;
             verifySelect.appendChild(option);
         });
 
@@ -898,6 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 重置证明显示
         document.getElementById('proof-details').style.display = 'none';
+        document.getElementById('proof-data-section').style.display = 'none';
     });
 
     verifyBtn.addEventListener('click', function() {

@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Merkle Tree · 比特币白皮书</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260202p">
+    <link rel="stylesheet" href="../css/style.css?v=20260202r">
 </head>
 <body>
     <nav class="nav">
@@ -95,12 +95,20 @@
 
                     <div class="merkle-build-demo">
                         <div class="merkle-input-section">
-                            <label data-i18n="merkle.txs.label">交易列表 (每行一个):</label>
-                            <textarea id="merkle-txs" rows="4" placeholder="TX1&#10;TX2&#10;TX3&#10;TX4">TX1
-TX2
-TX3
-TX4</textarea>
-                            <button id="build-tree-btn" class="btn primary" data-i18n="merkle.build.btn">🌳 构建 Merkle Tree</button>
+                            <label data-i18n="merkle.txs.label">选择交易数量:</label>
+                            <div class="tx-count-selector">
+                                <select id="tx-count-select">
+                                    <option value="2">2 笔交易</option>
+                                    <option value="3">3 笔交易 (奇数)</option>
+                                    <option value="4" selected>4 笔交易</option>
+                                    <option value="5">5 笔交易 (奇数)</option>
+                                    <option value="6">6 笔交易</option>
+                                    <option value="7">7 笔交易 (奇数)</option>
+                                    <option value="8">8 笔交易</option>
+                                </select>
+                                <button id="build-tree-btn" class="btn primary" data-i18n="merkle.build.btn">🌳 构建 Merkle Tree</button>
+                            </div>
+                            <div class="tx-preview" id="tx-preview">TX1, TX2, TX3, TX4</div>
                         </div>
 
                         <div class="merkle-tree-container" id="merkle-tree">
@@ -262,6 +270,6 @@ TX4</textarea>
     </footer>
 
     <script src="../js/i18n.js?v=20260202j"></script>
-    <script src="../js/merkle.js?v=20260202q"></script>
+    <script src="../js/merkle.js?v=20260202r"></script>
 </body>
 </html>
