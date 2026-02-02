@@ -861,6 +861,244 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
     showStep();
 }
 
+// 渲染伪造交易的验证（演示验证失败）
+function renderFakeProof(tree) {
+    const detailsContainer = document.getElementById('proof-details');
+    const pathContainer = document.getElementById('proof-path');
+    const calcContainer = document.getElementById('proof-calc');
+    const proofDataSection = document.getElementById('proof-data-section');
+    const svg = document.querySelector('.merkle-svg');
+
+    // 清除之前的动画
+    if (verifyAnimationTimer) {
+        clearTimeout(verifyAnimationTimer);
+    }
+
+    // 清除之前的高亮
+    const allRects = document.querySelectorAll('.merkle-svg .node-rect');
+    allRects.forEach(rect => {
+        rect.classList.remove('proof-target', 'proof-sibling', 'proof-path', 'verify-current', 'verify-sibling', 'verify-result', 'verify-success', 'verify-fail', 'not-in-path');
+    });
+
+    const allLines = document.querySelectorAll('.merkle-svg .tree-line');
+    allLines.forEach(line => {
+        line.classList.remove('proof-line', 'verify-line', 'not-in-path');
+    });
+
+    // 伪造交易数据
+    const fakeTx = 'TX_FAKE';
+    const fakeHash = sha256(fakeTx);
+
+    // 使用第一个交易的证明路径（但用伪造的哈希计算）
+    const realProof = getMerkleProof(tree, 0);
+
+    // 显示验证所需数据
+    proofDataSection.style.display = 'block';
+    document.getElementById('verify-tx-data').innerHTML = `<strong style="color: #ef4444;">${fakeTx}</strong> → <code style="color: #ef4444;">${fakeHash.substring(0, 16)}...</code>`;
+    document.getElementById('verify-root-data').innerHTML = `<code>${tree.root.hash.substring(0, 24)}...</code>`;
+
+    // 显示证明路径数据（借用TX1的路径）
+    let proofDataHtml = '<div class="proof-hashes">';
+    realProof.forEach((step, idx) => {
+        const posLabel = step.position === 'left' ? '左' : '右';
+        proofDataHtml += `
+            <div class="proof-hash-item">
+                <span class="proof-hash-level">第${idx + 1}层</span>
+                <span class="proof-hash-pos">${posLabel}兄弟:</span>
+                <code>${step.hash.substring(0, 12)}...</code>
+            </div>
+        `;
+    });
+    proofDataHtml += '</div>';
+    proofDataHtml += `<div class="proof-data-note" style="color: #ef4444;">⚠️ 使用 TX1 的证明路径尝试验证伪造交易</div>`;
+    document.getElementById('verify-proof-data').innerHTML = proofDataHtml;
+
+    // 滚动到验证数据区域
+    proofDataSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // 将所有节点变暗
+    allRects.forEach(rect => {
+        rect.classList.add('not-in-path');
+    });
+    allLines.forEach(line => {
+        line.classList.add('not-in-path');
+    });
+
+    // 显示证明详情容器
+    detailsContainer.style.display = 'block';
+    pathContainer.innerHTML = '';
+    calcContainer.innerHTML = '';
+
+    // 准备验证步骤
+    let currentHash = fakeHash;
+    const verifySteps = [];
+
+    verifySteps.push({
+        type: 'fake-target',
+        tx: fakeTx,
+        hash: fakeHash
+    });
+
+    realProof.forEach((step, idx) => {
+        const leftHash = step.position === 'left' ? step.hash : currentHash;
+        const rightHash = step.position === 'left' ? currentHash : step.hash;
+        const newHash = sha256(leftHash + rightHash);
+
+        verifySteps.push({
+            type: 'fake-verify',
+            stepNum: idx + 1,
+            siblingPosition: step.position,
+            leftHash: leftHash,
+            rightHash: rightHash,
+            resultHash: newHash
+        });
+
+        currentHash = newHash;
+    });
+
+    verifySteps.push({
+        type: 'fake-final',
+        computedHash: currentHash,
+        rootHash: tree.root.hash,
+        success: false
+    });
+
+    // 开始动画
+    animateFakeVerification(verifySteps, tree, svg, pathContainer, calcContainer);
+}
+
+// 伪造交易验证动画
+function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer) {
+    let stepIndex = 0;
+    const delay = 1000;
+
+    function showStep() {
+        if (stepIndex >= steps.length) {
+            return;
+        }
+
+        const step = steps[stepIndex];
+
+        if (step.type === 'fake-target') {
+            pathContainer.innerHTML = `
+                <div class="verify-anim-step active" style="border-color: #ef4444;">
+                    <div class="verify-step-header">
+                        <span class="verify-step-num" style="background: #ef4444;">伪造交易</span>
+                        <span class="verify-step-title">尝试验证不存在的交易</span>
+                    </div>
+                    <div class="verify-step-content">
+                        <div class="verify-target-info">
+                            <span class="target-label">交易内容:</span>
+                            <span class="target-value" style="color: #ef4444;">${step.tx}</span>
+                        </div>
+                        <div class="verify-target-hash">
+                            <span class="hash-label">交易哈希:</span>
+                            <code style="color: #ef4444;">${step.hash.substring(0, 16)}...</code>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            calcContainer.innerHTML = `
+                <div class="verify-calc-current" style="border: 1px solid #ef4444;">
+                    <span class="calc-label">伪造哈希:</span>
+                    <code class="current-hash" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">${step.hash.substring(0, 20)}...</code>
+                </div>
+            `;
+
+            stepIndex++;
+            verifyAnimationTimer = setTimeout(showStep, delay);
+
+        } else if (step.type === 'fake-verify') {
+            pathContainer.innerHTML = `
+                <div class="verify-anim-step active">
+                    <div class="verify-step-header">
+                        <span class="verify-step-num">第 ${step.stepNum} 层</span>
+                        <span class="verify-step-title">使用借来的证明路径计算</span>
+                    </div>
+                    <div class="verify-step-content">
+                        <div class="verify-pair">
+                            <div class="pair-node ${step.siblingPosition === 'right' ? 'current' : 'sibling'}" ${step.siblingPosition === 'right' ? 'style="border-color: #ef4444;"' : ''}>
+                                <span class="pair-label">${step.siblingPosition === 'right' ? '伪造' : '兄弟(左)'}</span>
+                                <code>${step.leftHash.substring(0, 10)}...</code>
+                            </div>
+                            <span class="pair-plus">+</span>
+                            <div class="pair-node ${step.siblingPosition === 'left' ? 'current' : 'sibling'}" ${step.siblingPosition === 'left' ? 'style="border-color: #ef4444;"' : ''}>
+                                <span class="pair-label">${step.siblingPosition === 'left' ? '伪造' : '兄弟(右)'}</span>
+                                <code>${step.rightHash.substring(0, 10)}...</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                calcContainer.innerHTML = `
+                    <div class="verify-calc-process">
+                        <div class="calc-inputs">
+                            <code class="${step.siblingPosition === 'right' ? 'hash-current' : 'hash-sibling'}" ${step.siblingPosition === 'right' ? 'style="background: rgba(239, 68, 68, 0.15); color: #ef4444;"' : ''}>${step.leftHash.substring(0, 8)}...</code>
+                            <span class="calc-op">||</span>
+                            <code class="${step.siblingPosition === 'left' ? 'hash-current' : 'hash-sibling'}" ${step.siblingPosition === 'left' ? 'style="background: rgba(239, 68, 68, 0.15); color: #ef4444;"' : ''}>${step.rightHash.substring(0, 8)}...</code>
+                        </div>
+                        <div class="calc-arrow-down">↓ SHA256</div>
+                        <div class="verify-calc-current">
+                            <span class="calc-label">计算结果:</span>
+                            <code class="current-hash" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">${step.resultHash.substring(0, 20)}...</code>
+                        </div>
+                    </div>
+                `;
+            }, 500);
+
+            stepIndex++;
+            verifyAnimationTimer = setTimeout(showStep, delay + 800);
+
+        } else if (step.type === 'fake-final') {
+            // 高亮根节点为失败状态
+            const rootGroup = svg.querySelector(`[data-id="${tree.root.id}"]`);
+            if (rootGroup) {
+                rootGroup.querySelector('.node-rect').classList.remove('not-in-path');
+                rootGroup.querySelector('.node-rect').classList.add('verify-fail');
+            }
+
+            pathContainer.innerHTML = `
+                <div class="verify-anim-step active" style="border-color: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);">
+                    <div class="verify-step-header">
+                        <span class="verify-step-num" style="background: #ef4444;">验证失败</span>
+                        <span class="verify-step-title">哈希值不匹配！</span>
+                    </div>
+                    <div class="verify-step-content">
+                        <div class="verify-compare">
+                            <div class="compare-item">
+                                <span class="compare-label">计算得到:</span>
+                                <code style="color: #ef4444;">${step.computedHash.substring(0, 16)}...</code>
+                            </div>
+                            <div class="compare-vs" style="color: #ef4444;">≠</div>
+                            <div class="compare-item">
+                                <span class="compare-label">Merkle Root:</span>
+                                <code>${step.rootHash.substring(0, 16)}...</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            calcContainer.innerHTML = `
+                <div class="verify-final-result fail">
+                    <span class="result-icon">✗</span>
+                    <span class="result-text">验证失败！该交易不存在于 Merkle Tree 中</span>
+                </div>
+                <div class="fake-explanation">
+                    <p>💡 <strong>为什么验证失败？</strong></p>
+                    <p>伪造交易的哈希值与真实交易不同，即使使用相同的证明路径，计算出的根哈希也会完全不同，无法匹配真正的 Merkle Root。</p>
+                    <p>这就是 Merkle Tree 能够防止数据篡改的原因。</p>
+                </div>
+            `;
+        }
+    }
+
+    showStep();
+}
+
 // 生成交易列表
 function generateTransactions(count) {
     const txList = [];
@@ -903,6 +1141,13 @@ document.addEventListener('DOMContentLoaded', function() {
             verifySelect.appendChild(option);
         });
 
+        // 添加一个不存在的交易选项
+        const fakeOption = document.createElement('option');
+        fakeOption.value = 'fake';
+        fakeOption.textContent = '❌ TX_FAKE (不存在)';
+        fakeOption.style.color = '#ef4444';
+        verifySelect.appendChild(fakeOption);
+
         verifyBtn.disabled = false;
 
         // 重置证明显示
@@ -911,10 +1156,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     verifyBtn.addEventListener('click', function() {
-        const txIndex = parseInt(verifySelect.value);
-        if (isNaN(txIndex) || !merkleTree) return;
+        const txValue = verifySelect.value;
+        if (!merkleTree) return;
 
-        const proof = getMerkleProof(merkleTree, txIndex);
-        renderProof(merkleTree, txIndex, proof);
+        if (txValue === 'fake') {
+            // 验证不存在的交易
+            renderFakeProof(merkleTree);
+        } else {
+            const txIndex = parseInt(txValue);
+            if (isNaN(txIndex)) return;
+            const proof = getMerkleProof(merkleTree, txIndex);
+            renderProof(merkleTree, txIndex, proof);
+        }
     });
 });

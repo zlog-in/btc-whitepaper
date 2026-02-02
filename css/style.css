@@ -8406,6 +8406,29 @@ body.menu-open {
     100% { transform: scale(1); opacity: 1; }
 }
 
+/* Fake Transaction Explanation */
+.fake-explanation {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.fake-explanation p {
+    margin: 0 0 0.5rem 0;
+}
+
+.fake-explanation p:last-child {
+    margin-bottom: 0;
+}
+
+.fake-explanation strong {
+    color: #ef4444;
+}
+
 /* Merkle SVG Responsive */
 @media (max-width: 768px) {
     .merkle-svg {
