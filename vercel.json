@@ -2,32 +2,51 @@
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/hash.html", "destination": "/pages/hash.html", "permanent": true },
+    { "source": "/sha256.html", "destination": "/pages/sha256.html", "permanent": true },
+    { "source": "/signature.html", "destination": "/pages/signature.html", "permanent": true },
+    { "source": "/ecdsa.html", "destination": "/pages/ecdsa.html", "permanent": true },
+    { "source": "/address.html", "destination": "/pages/address.html", "permanent": true },
+    { "source": "/multisig.html", "destination": "/pages/multisig.html", "permanent": true },
+    { "source": "/timelock.html", "destination": "/pages/timelock.html", "permanent": true },
+    { "source": "/htlc.html", "destination": "/pages/htlc.html", "permanent": true },
+    { "source": "/utxo.html", "destination": "/pages/utxo.html", "permanent": true },
+    { "source": "/block.html", "destination": "/pages/block.html", "permanent": true },
+    { "source": "/chain.html", "destination": "/pages/chain.html", "permanent": true },
+    { "source": "/pow.html", "destination": "/pages/pow.html", "permanent": true },
+    { "source": "/p2p.html", "destination": "/pages/p2p.html", "permanent": true },
+    { "source": "/hash", "destination": "/pages/hash", "permanent": true },
+    { "source": "/sha256", "destination": "/pages/sha256", "permanent": true },
+    { "source": "/signature", "destination": "/pages/signature", "permanent": true },
+    { "source": "/ecdsa", "destination": "/pages/ecdsa", "permanent": true },
+    { "source": "/address", "destination": "/pages/address", "permanent": true },
+    { "source": "/multisig", "destination": "/pages/multisig", "permanent": true },
+    { "source": "/timelock", "destination": "/pages/timelock", "permanent": true },
+    { "source": "/htlc", "destination": "/pages/htlc", "permanent": true },
+    { "source": "/utxo", "destination": "/pages/utxo", "permanent": true },
+    { "source": "/block", "destination": "/pages/block", "permanent": true },
+    { "source": "/chain", "destination": "/pages/chain", "permanent": true },
+    { "source": "/pow", "destination": "/pages/pow", "permanent": true },
+    { "source": "/p2p", "destination": "/pages/p2p", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.html",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     },
     {
       "source": "/css/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
       "source": "/js/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]
