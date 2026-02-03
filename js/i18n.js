@@ -817,7 +817,7 @@ const translations = {
 
         // POW页面
         'pow.title': '工作量证明',
-        'pow.desc': '矿工必须找到一个 Nonce，使得区块哈希满足难度要求（以特定数量的零开头）。',
+        'pow.desc': '工作量证明（Proof of Work）是比特币的核心共识机制，通过消耗真实的计算资源来保障网络安全，实现去中心化的信任。',
         'pow.target.label': '目标难度',
         'pow.target.value': '哈希必须以 <code>00</code> 开头',
         'pow.attempts.label': '尝试次数',
@@ -1675,7 +1675,7 @@ const translations = {
 
         // POW page
         'pow.title': 'Proof of Work',
-        'pow.desc': 'Miners must find a Nonce that makes the block hash meet difficulty requirements (starting with specific number of zeros).',
+        'pow.desc': 'Proof of Work is Bitcoin\'s core consensus mechanism. It secures the network by consuming real computational resources, achieving decentralized trust.',
         'pow.target.label': 'Target Difficulty',
         'pow.target.value': 'Hash must start with <code>00</code>',
         'pow.attempts.label': 'Attempts',

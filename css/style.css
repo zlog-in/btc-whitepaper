@@ -10234,3 +10234,1040 @@ body.menu-open {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================
+   工作量证明页面增强样式
+   ========================================== */
+
+/* PoW 概念公式 */
+.pow-concept {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.concept-formula {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.formula-item {
+    text-align: center;
+}
+
+.formula-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.formula-item code {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.formula-arrow {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.concept-explanation {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* 挖矿模拟器 */
+.pow-simulator {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.simulator-config {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.config-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.config-item label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.difficulty-selector {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.diff-btn {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.diff-btn:hover {
+    border-color: var(--primary);
+}
+
+.diff-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.pow-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.pow-stats .stat {
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.pow-stats .stat-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.pow-stats .stat-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+/* 哈希流可视化 */
+.pow-visual {
+    margin-bottom: 1.5rem;
+}
+
+.hash-stream {
+    height: 200px;
+    overflow-y: auto;
+    background: #0d1117;
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.75rem;
+}
+
+.hash-entry {
+    padding: 0.25rem 0;
+    color: #8b949e;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.hash-entry.success {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+}
+
+.hash-prefix {
+    color: #f97316;
+}
+
+.hash-prefix.valid {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.hash-rest {
+    color: #6e7681;
+}
+
+.found-hash {
+    background: rgba(16, 185, 129, 0.15);
+    border: 2px solid var(--success);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: 1rem;
+    animation: successPulse 0.5s ease;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(0.95); opacity: 0; }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.found-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--success);
+    margin-bottom: 0.75rem;
+}
+
+.found-hash code {
+    display: block;
+    font-size: 0.8rem;
+    word-break: break-all;
+    background: var(--bg);
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+}
+
+.found-nonce {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.pow-controls {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* 能量流程图 */
+.energy-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.energy-stage {
+    text-align: center;
+    padding: 1rem;
+    min-width: 100px;
+}
+
+.energy-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.energy-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.energy-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.energy-arrow {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.energy-insight {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.insight-item {
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--primary);
+}
+
+.insight-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.insight-item p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* 能量统计 */
+.energy-visual {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.energy-visual h4 {
+    margin: 0 0 1rem 0;
+}
+
+.hashrate-display {
+    margin-bottom: 1.5rem;
+}
+
+.hashrate-bar {
+    height: 24px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.hashrate-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    border-radius: 12px;
+    transition: width 0.5s ease;
+}
+
+.hashrate-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.energy-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.energy-stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.estat-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.estat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* 货币理论 */
+.monetary-concept {
+    margin-bottom: 1.5rem;
+}
+
+.concept-quote {
+    background: var(--bg);
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.concept-quote blockquote {
+    margin: 0 0 0.75rem 0;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.concept-quote cite {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.money-comparison {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.money-type {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.3s;
+}
+
+.money-type.highlight {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(247, 147, 26, 0.2);
+}
+
+.money-type.fiat {
+    opacity: 0.7;
+}
+
+.money-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.money-type h4 {
+    margin: 0 0 0.75rem 0;
+}
+
+.money-type ul {
+    margin: 0 0 1rem 0;
+    padding-left: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.money-type li {
+    margin-bottom: 0.35rem;
+}
+
+.money-cost {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+}
+
+.cost-label {
+    color: var(--text-muted);
+}
+
+.cost-value {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* 货币属性表格 */
+.money-properties {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.money-properties h4 {
+    margin: 0 0 1rem 0;
+}
+
+.properties-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.properties-table th,
+.properties-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.properties-table th {
+    background: var(--card-bg);
+    font-weight: 600;
+}
+
+.properties-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.rating {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.rating.perfect {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+}
+
+.rating.high {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.rating.medium {
+    background: rgba(251, 191, 36, 0.2);
+    color: #f59e0b;
+}
+
+.rating.low {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* 博弈论可视化 */
+.game-theory-visual {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.nash-equilibrium {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.nash-equilibrium h4 {
+    margin: 0 0 1rem 0;
+}
+
+.strategy-matrix {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.matrix-header {
+    display: contents;
+}
+
+.matrix-corner {
+    background: var(--card-bg);
+    padding: 0.75rem;
+}
+
+.matrix-label {
+    background: var(--card-bg);
+    padding: 0.75rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.matrix-row {
+    display: contents;
+}
+
+.matrix-cell {
+    background: var(--card-bg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.matrix-cell.win {
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.matrix-cell.lose {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.matrix-cell.neutral {
+    background: rgba(251, 191, 36, 0.15);
+}
+
+.payoff {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.equilibrium-result {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+}
+
+/* 激励相容 */
+.incentive-compat {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.incentive-compat h4 {
+    margin: 0 0 1rem 0;
+}
+
+.incentive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.incentive-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.incentive-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.incentive-text strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.incentive-text p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* 51%攻击计算器 */
+.attack-calculator {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.calc-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.calc-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.calc-input-group label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.calc-input-group select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    font-size: 0.9rem;
+}
+
+.calc-value {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.attack-results {
+    margin-top: 1.5rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.result-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.result-item.highlight {
+    background: rgba(239, 68, 68, 0.15);
+    border: 2px solid #ef4444;
+}
+
+.result-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.result-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.result-item.highlight .result-value {
+    color: #ef4444;
+}
+
+/* 攻击对比 */
+.attack-comparison {
+    margin-bottom: 1.5rem;
+}
+
+.attack-comparison h4 {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+}
+
+.comparison-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.comp-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.comp-label {
+    width: 120px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.comp-fill {
+    height: 24px;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.comp-fill.gain {
+    background: var(--success);
+}
+
+.comp-fill.cost {
+    background: #ef4444;
+}
+
+.comp-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.comparison-verdict {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius);
+    margin-top: 1rem;
+}
+
+.verdict-icon {
+    font-size: 1.5rem;
+}
+
+.verdict-text {
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+/* 攻击后果 */
+.attack-consequences {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.attack-consequences h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+}
+
+.attack-consequences ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.attack-consequences li {
+    padding: 0.35rem 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* 难度调整机制 */
+.difficulty-mechanism {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.diff-formula {
+    margin-bottom: 1.5rem;
+}
+
+.formula-box {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.formula-title {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.formula-box code {
+    font-size: 0.9rem;
+}
+
+/* 难度模拟 */
+.diff-simulation {
+    margin-bottom: 1.5rem;
+}
+
+.diff-simulation h4 {
+    margin: 0 0 1rem 0;
+}
+
+.sim-controls {
+    margin-bottom: 1rem;
+}
+
+.sim-input {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sim-input label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.sim-input input[type="range"] {
+    flex: 1;
+    max-width: 300px;
+    accent-color: var(--primary);
+}
+
+#hashrate-change-value {
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 50px;
+}
+
+.sim-results {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.sim-block {
+    text-align: center;
+    padding: 1rem 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.sim-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.sim-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: 'SF Mono', Monaco, monospace;
+}
+
+.sim-arrow {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* 时间线 */
+.sim-timeline {
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.timeline-bar {
+    height: 8px;
+    background: var(--card-bg);
+    border-radius: 4px;
+    position: relative;
+    overflow: visible;
+}
+
+.timeline-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.timeline-marker {
+    position: absolute;
+    top: -4px;
+    width: 16px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    transition: left 0.3s ease;
+    box-shadow: 0 0 8px rgba(247, 147, 26, 0.5);
+}
+
+.timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* 难度历史图表 */
+.diff-history h4 {
+    margin: 0 0 1rem 0;
+}
+
+.history-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 120px;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.chart-bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--primary), #f59e0b);
+    border-radius: 4px 4px 0 0;
+    min-width: 20px;
+    transition: all 0.3s;
+}
+
+.chart-bar:hover {
+    filter: brightness(1.2);
+}
+
+.chart-bar.active {
+    background: var(--success);
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.chart-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+}
+
+/* PoW 总结 */
+.pow-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.summary-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.summary-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.summary-item p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .energy-flow {
+        flex-direction: column;
+    }
+
+    .energy-arrow {
+        transform: rotate(90deg);
+    }
+
+    .energy-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .money-comparison {
+        grid-template-columns: 1fr;
+    }
+
+    .strategy-matrix {
+        font-size: 0.75rem;
+    }
+
+    .matrix-cell {
+        padding: 0.5rem;
+    }
+
+    .sim-results {
+        flex-direction: column;
+    }
+
+    .sim-arrow {
+        transform: rotate(90deg);
+    }
+}

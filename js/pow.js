@@ -38,103 +38,247 @@ function sha256(message) {
 }
 
 // ==========================================
-// 工作量证明演示
+// 挖矿模拟器
 // ==========================================
-const powTarget = document.getElementById('pow-target');
+let difficulty = 1;
+let nonce = 0;
+let mining = false;
+let miningInterval = null;
+let startTime = null;
+let hashCount = 0;
+const blockData = 'Block #123456 | Prev: 0000abc... | Tx: Alice→Bob 0.5 BTC';
+
+// DOM 元素
+const targetDisplay = document.getElementById('target-display');
+const powTargetHash = document.getElementById('pow-target-hash');
 const powAttempts = document.getElementById('pow-attempts');
+const powExpected = document.getElementById('pow-expected');
+const powSpeed = document.getElementById('pow-speed');
 const powStatus = document.getElementById('pow-status');
-const powLog = document.getElementById('pow-log');
-const powStepBtn = document.getElementById('pow-step');
-const powAutoBtn = document.getElementById('pow-auto');
-const powResetBtn = document.getElementById('pow-reset');
+const hashStream = document.getElementById('hash-stream');
+const foundHash = document.getElementById('found-hash');
+const validHashDisplay = document.getElementById('valid-hash-display');
+const validNonce = document.getElementById('valid-nonce');
+const startBtn = document.getElementById('pow-start');
+const stepBtn = document.getElementById('pow-step');
+const resetBtn = document.getElementById('pow-reset');
+const diffButtons = document.querySelectorAll('.diff-btn');
 
-let powNonce = 0;
-let powFound = false;
-let powInterval = null;
-const powDifficulty = 2;
-const powTargetPrefix = '0'.repeat(powDifficulty);
-const powBlockData = 'POW Demo Block';
+// 难度选择
+diffButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (mining) return;
+        diffButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        difficulty = parseInt(btn.dataset.diff);
+        updateTargetDisplay();
+        resetMining();
+    });
+});
 
-powTarget.innerHTML = `哈希必须以 <code>${powTargetPrefix}</code> 开头`;
-
-function getPowHash(nonce) {
-    return sha256(powBlockData + nonce);
+function updateTargetDisplay() {
+    const target = '0'.repeat(difficulty) + 'x'.repeat(8 - difficulty) + '...';
+    if (targetDisplay) targetDisplay.textContent = target;
+    if (powTargetHash) powTargetHash.textContent = target;
+    if (powExpected) powExpected.textContent = '~' + Math.pow(16, difficulty).toLocaleString();
 }
 
-function addLogEntry(nonce, hash, success) {
+function getHash(n) {
+    return sha256(blockData + n);
+}
+
+function addHashToStream(hash, success) {
     const entry = document.createElement('div');
-    entry.className = `log-entry ${success ? 'success' : 'fail'}`;
+    entry.className = `hash-entry ${success ? 'success' : ''}`;
+
+    const prefix = hash.slice(0, difficulty);
+    const rest = hash.slice(difficulty, 16);
+
     entry.innerHTML = `
-        <span>${nonce}</span>
-        <span>${hash}</span>
-        <span>${success ? '✅' : '❌'}</span>
+        <span class="hash-prefix ${success ? 'valid' : ''}">${prefix}</span><span class="hash-rest">${rest}...</span>
     `;
-    powLog.appendChild(entry);
-    powLog.scrollTop = powLog.scrollHeight;
+
+    hashStream.appendChild(entry);
+
+    // 保持最近20条
+    while (hashStream.children.length > 20) {
+        hashStream.removeChild(hashStream.firstChild);
+    }
+
+    hashStream.scrollTop = hashStream.scrollHeight;
 }
 
-function powStep() {
-    if (powFound) return;
+function mineStep() {
+    const hash = getHash(nonce);
+    const targetPrefix = '0'.repeat(difficulty);
+    const success = hash.startsWith(targetPrefix);
 
-    const hash = getPowHash(powNonce);
-    const success = hash.startsWith(powTargetPrefix);
+    addHashToStream(hash, success);
+    hashCount++;
 
-    addLogEntry(powNonce, hash, success);
-    powAttempts.textContent = powNonce + 1;
+    powAttempts.textContent = nonce.toLocaleString();
 
     if (success) {
-        powFound = true;
-        powStatus.textContent = '🎉 找到有效 Nonce!';
-        powStepBtn.disabled = true;
-        powAutoBtn.disabled = true;
-
-        if (powInterval) {
-            clearInterval(powInterval);
-            powInterval = null;
-            powAutoBtn.textContent = '🚀 自动挖矿';
-        }
+        stopMining();
+        foundHash.style.display = 'block';
+        validHashDisplay.textContent = hash;
+        validNonce.textContent = nonce.toLocaleString();
+        powStatus.textContent = '🎉 成功!';
+        startBtn.disabled = true;
+        stepBtn.disabled = true;
+        return true;
     }
 
-    powNonce++;
+    nonce++;
+    return false;
 }
 
-powStepBtn.addEventListener('click', powStep);
+function startMining() {
+    if (mining) {
+        stopMining();
+        return;
+    }
 
-powAutoBtn.addEventListener('click', () => {
-    if (powFound) return;
+    mining = true;
+    startTime = Date.now();
+    hashCount = 0;
+    startBtn.textContent = '⏸️ 暂停';
+    stepBtn.disabled = true;
+    powStatus.textContent = '⛏️ 挖矿中...';
 
-    if (powInterval) {
-        clearInterval(powInterval);
-        powInterval = null;
-        powAutoBtn.textContent = '🚀 自动挖矿';
-        powStatus.textContent = '已暂停';
-    } else {
-        powInterval = setInterval(() => {
-            for (let i = 0; i < 10; i++) {
-                powStep();
-                if (powFound) break;
+    miningInterval = setInterval(() => {
+        // 每帧计算多个哈希
+        for (let i = 0; i < 50; i++) {
+            if (mineStep()) {
+                return;
             }
-        }, 100);
-        powAutoBtn.textContent = '⏸️ 暂停';
-        powStatus.textContent = '挖矿中...';
-    }
-});
+        }
 
-powResetBtn.addEventListener('click', () => {
-    if (powInterval) {
-        clearInterval(powInterval);
-        powInterval = null;
-    }
+        // 更新速度
+        const elapsed = (Date.now() - startTime) / 1000;
+        const speed = Math.round(hashCount / elapsed);
+        powSpeed.textContent = speed.toLocaleString() + ' H/s';
+    }, 50);
+}
 
-    powNonce = 0;
-    powFound = false;
+function stopMining() {
+    mining = false;
+    if (miningInterval) {
+        clearInterval(miningInterval);
+        miningInterval = null;
+    }
+    startBtn.textContent = '▶️ 继续挖矿';
+    stepBtn.disabled = false;
+    if (powStatus.textContent === '⛏️ 挖矿中...') {
+        powStatus.textContent = '⏸️ 已暂停';
+    }
+}
+
+function resetMining() {
+    stopMining();
+    nonce = 0;
+    hashCount = 0;
     powAttempts.textContent = '0';
+    powSpeed.textContent = '0 H/s';
     powStatus.textContent = '就绪';
-    powStepBtn.disabled = false;
-    powAutoBtn.disabled = false;
-    powAutoBtn.textContent = '🚀 自动挖矿';
+    hashStream.innerHTML = '';
+    foundHash.style.display = 'none';
+    startBtn.textContent = '▶️ 开始挖矿';
+    startBtn.disabled = false;
+    stepBtn.disabled = false;
+}
 
-    const header = powLog.querySelector('.header');
-    powLog.innerHTML = '';
-    powLog.appendChild(header);
+if (startBtn) startBtn.addEventListener('click', startMining);
+if (stepBtn) stepBtn.addEventListener('click', () => {
+    if (!mining) mineStep();
 });
+if (resetBtn) resetBtn.addEventListener('click', resetMining);
+
+// ==========================================
+// 51% 攻击成本计算器
+// ==========================================
+const calcAttackBtn = document.getElementById('calc-attack');
+const attackDuration = document.getElementById('attack-duration');
+const attackResults = document.getElementById('attack-results');
+
+if (calcAttackBtn) {
+    calcAttackBtn.addEventListener('click', () => {
+        const hours = parseInt(attackDuration.value);
+
+        // 网络参数（估算值）
+        const networkHashrate = 600; // EH/s
+        const neededHashrate = networkHashrate * 0.51; // 需要51%
+        const asicPrice = 3000; // 美元/台
+        const asicHashrate = 0.0001; // EH/s per ASIC (100 TH/s)
+        const asicsNeeded = neededHashrate / asicHashrate;
+        const hardwareCost = asicsNeeded * asicPrice;
+
+        const powerPerAsic = 3000; // W
+        const totalPower = asicsNeeded * powerPerAsic / 1e9; // GW
+        const electricityCost = 0.05; // $/kWh
+        const powerCostPerHour = totalPower * 1e6 * electricityCost;
+        const totalPowerCost = powerCostPerHour * hours;
+
+        const totalCost = hardwareCost + totalPowerCost;
+
+        // 显示结果
+        document.getElementById('needed-hashrate').textContent = neededHashrate.toFixed(0) + ' EH/s';
+        document.getElementById('hardware-cost').textContent = '$' + (hardwareCost / 1e9).toFixed(1) + 'B';
+        document.getElementById('power-cost').textContent = '$' + (powerCostPerHour / 1e6).toFixed(1) + 'M/小时';
+        document.getElementById('total-cost').textContent = '$' + (totalCost / 1e9).toFixed(1) + 'B+';
+
+        // 更新对比条
+        const potentialGain = hours * 6 * 3.125 * 50000; // 假设每小时6个区块，每BTC $50000
+        document.getElementById('potential-gain').textContent = '$' + (potentialGain / 1e6).toFixed(0) + 'M';
+        document.getElementById('attack-cost-bar').textContent = '$' + (totalCost / 1e9).toFixed(1) + 'B+';
+
+        // 调整条宽度
+        const gainPercent = Math.min((potentialGain / totalCost) * 100, 100);
+        document.querySelector('.comp-fill.gain').style.width = gainPercent + '%';
+
+        attackResults.style.display = 'block';
+        attackResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+}
+
+// ==========================================
+// 难度调整模拟
+// ==========================================
+const hashrateChange = document.getElementById('hashrate-change');
+const hashrateChangeValue = document.getElementById('hashrate-change-value');
+const oldBlockTime = document.getElementById('old-block-time');
+const newBlockTime = document.getElementById('new-block-time');
+const timelineFill = document.getElementById('timeline-fill');
+const timelineMarker = document.getElementById('timeline-marker');
+
+if (hashrateChange) {
+    hashrateChange.addEventListener('input', () => {
+        const change = parseInt(hashrateChange.value);
+        const sign = change >= 0 ? '+' : '';
+        hashrateChangeValue.textContent = sign + change + '%';
+
+        // 算力变化影响出块时间
+        // 算力增加 -> 出块变快 -> 需要增加难度
+        const factor = 1 + change / 100;
+        const newTime = 10 / factor; // 分钟
+
+        const mins = Math.floor(newTime);
+        const secs = Math.round((newTime - mins) * 60);
+        oldBlockTime.textContent = mins + ':' + secs.toString().padStart(2, '0');
+
+        // 调整后恢复10分钟
+        newBlockTime.textContent = '10:00';
+
+        // 更新时间线
+        // 中点是2周，左边是更快（<2周），右边是更慢（>2周）
+        const actualWeeks = 2 / factor;
+        const position = Math.max(0, Math.min(100, (actualWeeks / 4) * 100));
+        timelineFill.style.width = position + '%';
+        timelineMarker.style.left = position + '%';
+    });
+}
+
+// ==========================================
+// 初始化
+// ==========================================
+updateTargetDisplay();
