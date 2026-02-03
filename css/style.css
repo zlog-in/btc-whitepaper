@@ -11287,3 +11287,13 @@ body.menu-open {
 .data-source a:hover {
     text-decoration: underline;
 }
+
+/* 数据过时提示 */
+.data-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
