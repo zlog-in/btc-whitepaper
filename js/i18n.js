@@ -847,6 +847,14 @@ const translations = {
         'pow.nav.prev': '← 区块链',
         'pow.nav.next': 'P2P 网络 →',
 
+        // 区块链页面
+        'chain.title': '区块链',
+        'chain.desc': '区块通过哈希指针连接成链，每个区块都包含前一区块的哈希值，形成一条不可篡改的数据链条。',
+        'chain.add.btn': '➕ 添加新区块',
+        'chain.reset.btn': '🔄 重置链',
+        'chain.nav.prev': '← 挖矿原理',
+        'chain.nav.next': '工作量证明 →',
+
         // 页脚
         'footer.text': '基于 Satoshi Nakamoto 的',
         'footer.link': '比特币白皮书',
@@ -1696,6 +1704,14 @@ const translations = {
         'pow.difficulty.desc': 'Bitcoin network adjusts difficulty every 2016 blocks (~2 weeks) to maintain an average of one new block every 10 minutes. Higher difficulty means more leading zeros required, thus more computation needed.',
         'pow.nav.prev': '← Blockchain',
         'pow.nav.next': 'P2P Network →',
+
+        // Blockchain page
+        'chain.title': 'Blockchain',
+        'chain.desc': 'Blocks are linked through hash pointers. Each block contains the hash of the previous block, forming an immutable chain of data.',
+        'chain.add.btn': '➕ Add New Block',
+        'chain.reset.btn': '🔄 Reset Chain',
+        'chain.nav.prev': '← Mining',
+        'chain.nav.next': 'Proof of Work →',
 
         // Footer
         'footer.text': 'Based on Satoshi Nakamoto\'s ',

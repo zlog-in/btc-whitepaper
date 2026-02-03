@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>区块链 · 比特币白皮书</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260202t">
+    <link rel="stylesheet" href="../css/style.css?v=20260203c">
 </head>
 <body>
     <nav class="nav">
@@ -86,30 +86,217 @@
                     <span class="page-icon">⛓️</span>
                     <div>
                         <h1 data-i18n="chain.title">区块链</h1>
-                        <p class="section-desc" data-i18n="chain.desc">区块通过哈希指针连接成链。尝试修改某个区块的数据，观察链的完整性如何被破坏。</p>
+                        <p class="section-desc" data-i18n="chain.desc">区块通过哈希指针连接成链，每个区块都包含前一区块的哈希值，形成一条不可篡改的数据链条。</p>
                     </div>
                 </div>
 
-                <div class="chain-controls">
-                    <button id="add-block-btn" class="btn" data-i18n="chain.add.btn">➕ 添加新区块</button>
-                    <button id="reset-chain-btn" class="btn secondary" data-i18n="chain.reset.btn">🔄 重置链</button>
+                <!-- 链的核心概念 -->
+                <div class="demo-box">
+                    <h3>🔗 什么是"链"？</h3>
+                    <p class="demo-desc">区块链的"链"指的是哈希指针：每个区块都存储前一个区块的哈希值，形成单向链接。</p>
+
+                    <div class="chain-concept">
+                        <div class="concept-block">
+                            <div class="concept-label">区块 N-1</div>
+                            <div class="concept-hash">哈希: <code>a3f2...</code></div>
+                        </div>
+                        <div class="concept-arrow">
+                            <div class="arrow-line"></div>
+                            <div class="arrow-label">哈希指针</div>
+                        </div>
+                        <div class="concept-block">
+                            <div class="concept-label">区块 N</div>
+                            <div class="concept-prev">前哈希: <code>a3f2...</code></div>
+                            <div class="concept-hash">哈希: <code>7b1c...</code></div>
+                        </div>
+                        <div class="concept-arrow">
+                            <div class="arrow-line"></div>
+                            <div class="arrow-label">哈希指针</div>
+                        </div>
+                        <div class="concept-block">
+                            <div class="concept-label">区块 N+1</div>
+                            <div class="concept-prev">前哈希: <code>7b1c...</code></div>
+                            <div class="concept-hash">哈希: <code>e9d4...</code></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="blockchain" id="blockchain"></div>
+                <!-- 区块链增长演示 -->
+                <div class="demo-box">
+                    <h3>📈 区块链增长过程</h3>
+                    <p class="demo-desc">观看一个新区块如何被创建并添加到链上的完整过程。</p>
 
-                <div class="card warning" id="tamper-warning" style="display: none;">
-                    <h4 data-i18n="chain.tamper.title">⚠️ 篡改检测</h4>
-                    <p data-i18n="chain.tamper.desc">修改区块数据后，该区块及其后续所有区块的哈希都将失效。攻击者需要重新计算所有后续区块的工作量证明，这在计算上是不可行的。</p>
+                    <div class="growth-demo">
+                        <!-- 交易池 -->
+                        <div class="growth-stage" id="stage-txpool">
+                            <div class="stage-header">
+                                <span class="stage-number">1</span>
+                                <span class="stage-title">交易池</span>
+                            </div>
+                            <div class="stage-content">
+                                <div class="tx-pool" id="tx-pool">
+                                    <div class="pending-tx" data-tx="1">💸 Alice → Bob: 0.5 BTC</div>
+                                    <div class="pending-tx" data-tx="2">💸 Charlie → Dave: 0.3 BTC</div>
+                                    <div class="pending-tx" data-tx="3">💸 Eve → Frank: 0.8 BTC</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="growth-arrow">→</div>
+
+                        <!-- 打包区块 -->
+                        <div class="growth-stage" id="stage-packaging">
+                            <div class="stage-header">
+                                <span class="stage-number">2</span>
+                                <span class="stage-title">打包区块</span>
+                            </div>
+                            <div class="stage-content">
+                                <div class="packaging-block" id="packaging-block">
+                                    <div class="pack-field">
+                                        <span class="pack-label">前哈希:</span>
+                                        <span class="pack-value" id="pack-prev-hash">等待中...</span>
+                                    </div>
+                                    <div class="pack-field">
+                                        <span class="pack-label">交易:</span>
+                                        <span class="pack-value" id="pack-txs">0 笔</span>
+                                    </div>
+                                    <div class="pack-field">
+                                        <span class="pack-label">Nonce:</span>
+                                        <span class="pack-value" id="pack-nonce">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="growth-arrow">→</div>
+
+                        <!-- 挖矿 -->
+                        <div class="growth-stage" id="stage-mining">
+                            <div class="stage-header">
+                                <span class="stage-number">3</span>
+                                <span class="stage-title">挖矿</span>
+                            </div>
+                            <div class="stage-content">
+                                <div class="mining-progress">
+                                    <div class="mining-status" id="mining-status">等待开始</div>
+                                    <div class="mining-bar">
+                                        <div class="mining-fill" id="mining-fill"></div>
+                                    </div>
+                                    <div class="mining-hash" id="mining-current-hash">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="growth-arrow">→</div>
+
+                        <!-- 添加到链 -->
+                        <div class="growth-stage" id="stage-added">
+                            <div class="stage-header">
+                                <span class="stage-number">4</span>
+                                <span class="stage-title">上链</span>
+                            </div>
+                            <div class="stage-content">
+                                <div class="added-indicator" id="added-indicator">
+                                    <span class="added-icon">⏳</span>
+                                    <span class="added-text">等待区块</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="growth-controls">
+                        <button id="start-growth-btn" class="btn primary">▶️ 开始演示</button>
+                        <button id="auto-growth-btn" class="btn">🔄 自动增长</button>
+                        <button id="reset-growth-btn" class="btn secondary">🔄 重置</button>
+                    </div>
                 </div>
 
-                <div class="card info">
-                    <h4 data-i18n="chain.features.title">🔗 区块链特性</h4>
-                    <ul>
-                        <li><strong data-i18n="chain.feature.1">链式结构</strong> — <span data-i18n="chain.feature.1.desc">每个区块包含前一区块的哈希，形成不可断裂的链</span></li>
-                        <li><strong data-i18n="chain.feature.2">不可篡改</strong> — <span data-i18n="chain.feature.2.desc">修改任意区块会导致后续所有区块失效</span></li>
-                        <li><strong data-i18n="chain.feature.3">可验证</strong> — <span data-i18n="chain.feature.3.desc">任何人都可以独立验证整条链的完整性</span></li>
-                        <li><strong data-i18n="chain.feature.4">分布式</strong> — <span data-i18n="chain.feature.4.desc">链的副本存储在网络中的每个节点</span></li>
-                    </ul>
+                <!-- 动态区块链展示 -->
+                <div class="demo-box">
+                    <h3>⛓️ 实时区块链</h3>
+                    <p class="demo-desc">点击任意区块的数据区域进行修改，观察哈希如何变化以及链的完整性如何被破坏。</p>
+
+                    <div class="chain-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">链长度:</span>
+                            <span class="stat-value" id="chain-length">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">状态:</span>
+                            <span class="stat-value" id="chain-status">有效 ✅</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">难度:</span>
+                            <span class="stat-value">2 个前导零</span>
+                        </div>
+                    </div>
+
+                    <div class="blockchain-visual" id="blockchain-visual">
+                        <!-- 区块链将在这里动态渲染 -->
+                    </div>
+
+                    <div class="chain-controls">
+                        <button id="add-block-btn" class="btn" data-i18n="chain.add.btn">➕ 添加新区块</button>
+                        <button id="reset-chain-btn" class="btn secondary" data-i18n="chain.reset.btn">🔄 重置链</button>
+                    </div>
+                </div>
+
+                <!-- 篡改检测 -->
+                <div class="demo-box" id="tamper-demo">
+                    <h3>🔍 篡改检测演示</h3>
+                    <p class="demo-desc">修改任意区块的数据，观察链的完整性如何被破坏。</p>
+
+                    <div class="tamper-explanation" id="tamper-explanation" style="display: none;">
+                        <div class="tamper-header">
+                            <span class="tamper-icon">⚠️</span>
+                            <span class="tamper-title">检测到篡改！</span>
+                        </div>
+                        <div class="tamper-details">
+                            <p>修改区块 <strong id="tampered-block">-</strong> 的数据导致：</p>
+                            <ol>
+                                <li>该区块的哈希值改变</li>
+                                <li>后续区块的"前哈希"字段与实际不符</li>
+                                <li>整条链从修改点开始失效</li>
+                            </ol>
+                            <p class="tamper-note">攻击者必须重新计算所有后续区块的工作量证明，这在计算上是不可行的。</p>
+                        </div>
+                        <button id="fix-chain-btn" class="btn">⛏️ 重新挖矿修复</button>
+                    </div>
+                </div>
+
+                <!-- 区块链特性 -->
+                <div class="card highlight">
+                    <h4>💡 为什么区块链不可篡改？</h4>
+                    <div class="immutable-reasons">
+                        <div class="reason-item">
+                            <span class="reason-icon">🔗</span>
+                            <div>
+                                <strong>链式连接</strong>
+                                <p>每个区块包含前一区块的哈希，修改任何数据都会改变哈希值</p>
+                            </div>
+                        </div>
+                        <div class="reason-item">
+                            <span class="reason-icon">⛏️</span>
+                            <div>
+                                <strong>工作量证明</strong>
+                                <p>重新计算哈希需要消耗大量算力，篡改成本极高</p>
+                            </div>
+                        </div>
+                        <div class="reason-item">
+                            <span class="reason-icon">🌐</span>
+                            <div>
+                                <strong>分布式存储</strong>
+                                <p>链的副本分布在全球数千个节点，无法同时篡改所有副本</p>
+                            </div>
+                        </div>
+                        <div class="reason-item">
+                            <span class="reason-icon">📏</span>
+                            <div>
+                                <strong>最长链原则</strong>
+                                <p>网络始终信任最长的有效链，篡改者需要超越整个网络的算力</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="page-nav">
@@ -124,7 +311,7 @@
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="../js/i18n.js?v=20260202j"></script>
-    <script src="../js/chain.js?v=20260202j"></script>
+    <script src="../js/i18n.js?v=20260203c"></script>
+    <script src="../js/chain.js?v=20260203c"></script>
 </body>
 </html>

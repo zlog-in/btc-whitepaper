@@ -9646,3 +9646,591 @@ body.menu-open {
         justify-content: center;
     }
 }
+
+/* ==========================================
+   区块链页面增强样式
+   ========================================== */
+
+/* 链的概念可视化 */
+.chain-concept {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 2rem 1rem;
+    overflow-x: auto;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.concept-block {
+    background: var(--card-bg);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 1rem;
+    min-width: 140px;
+    text-align: center;
+}
+
+.concept-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.concept-hash,
+.concept-prev {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.concept-hash code,
+.concept-prev code {
+    background: var(--bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+.concept-prev {
+    color: #3b82f6;
+    margin-bottom: 0.25rem;
+}
+
+.concept-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0.5rem;
+}
+
+.arrow-line {
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), #3b82f6);
+    position: relative;
+}
+
+.arrow-line::after {
+    content: '→';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #3b82f6;
+    font-size: 1rem;
+}
+
+.arrow-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* 区块链增长演示 */
+.growth-demo {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    overflow-x: auto;
+}
+
+.growth-stage {
+    flex: 1;
+    min-width: 160px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.growth-stage.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(247, 147, 26, 0.3);
+}
+
+.growth-stage.complete {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.stage-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.stage-number {
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.growth-stage.complete .stage-number {
+    background: var(--success);
+}
+
+.stage-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.stage-content {
+    font-size: 0.8rem;
+}
+
+.growth-arrow {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    padding: 0 0.25rem;
+}
+
+/* 交易池 */
+.tx-pool {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.pending-tx {
+    background: var(--bg);
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.pending-tx.selected {
+    background: rgba(247, 147, 26, 0.15);
+    border-color: var(--primary);
+    transform: scale(1.02);
+}
+
+/* 打包区块 */
+.packaging-block {
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 0.6rem;
+}
+
+.pack-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0;
+    font-size: 0.7rem;
+}
+
+.pack-label {
+    color: var(--text-muted);
+}
+
+.pack-value {
+    font-family: 'SF Mono', Monaco, monospace;
+    color: var(--primary);
+}
+
+/* 挖矿进度 */
+.mining-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mining-status {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.mining-bar {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.mining-fill {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    transition: width 0.1s linear;
+    border-radius: 4px;
+}
+
+.mining-hash {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-align: center;
+    word-break: break-all;
+}
+
+/* 上链指示器 */
+.added-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+.added-icon {
+    font-size: 2rem;
+}
+
+.added-icon.success {
+    animation: bounceIn 0.5s ease;
+}
+
+.added-text {
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* 增长控制按钮 */
+.growth-controls {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.growth-controls .btn.active {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+/* 区块链统计 */
+.chain-stats {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 1.5rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.stat-value.valid {
+    color: var(--success);
+}
+
+.stat-value.invalid {
+    color: #ef4444;
+}
+
+/* 区块链可视化容器 */
+.blockchain-visual {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    min-height: 280px;
+}
+
+/* 视觉区块 */
+.visual-block {
+    flex-shrink: 0;
+    width: 200px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.visual-block.valid {
+    border-color: var(--success);
+}
+
+.visual-block.invalid {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.visual-block.latest {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.vblock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+}
+
+.vblock-index {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.vblock-body {
+    padding: 0.8rem;
+}
+
+.vblock-field {
+    margin-bottom: 0.6rem;
+}
+
+.vblock-field:last-child {
+    margin-bottom: 0;
+}
+
+.vfield-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vfield-value {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.7rem;
+    background: var(--bg);
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    display: block;
+    word-break: break-all;
+}
+
+.vfield-data {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.75rem;
+    padding: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    resize: none;
+    min-height: 40px;
+}
+
+.vfield-data:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.block-hash.valid-hash {
+    color: var(--success);
+}
+
+.block-hash.invalid-hash {
+    color: #ef4444;
+}
+
+.tamper-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ef4444;
+    color: white;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0 var(--radius) 0 var(--radius);
+}
+
+/* 链接箭头 */
+.chain-link-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5rem;
+    min-width: 60px;
+}
+
+.link-line {
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--success), var(--primary));
+    position: relative;
+}
+
+.link-line::before {
+    content: '←';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--success);
+    font-size: 0.9rem;
+}
+
+.link-hash {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* 篡改检测说明 */
+.tamper-explanation {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid #ef4444;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.tamper-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.tamper-icon {
+    font-size: 1.5rem;
+}
+
+.tamper-title {
+    font-weight: 600;
+    color: #ef4444;
+    font-size: 1.1rem;
+}
+
+.tamper-details {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.tamper-details ol {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+.tamper-details li {
+    margin-bottom: 0.4rem;
+}
+
+.tamper-note {
+    font-style: italic;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* 不可篡改原因 */
+.immutable-reasons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.reason-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.reason-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.reason-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--text);
+}
+
+.reason-item p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .chain-concept {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .concept-arrow {
+        transform: rotate(90deg);
+        padding: 0.5rem 0;
+    }
+
+    .growth-demo {
+        flex-direction: column;
+    }
+
+    .growth-arrow {
+        transform: rotate(90deg);
+        padding: 0.5rem 0;
+    }
+
+    .growth-stage {
+        min-width: auto;
+    }
+
+    .blockchain-visual {
+        padding: 1rem;
+    }
+
+    .visual-block {
+        width: 160px;
+    }
+
+    .chain-stats {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .immutable-reasons {
+        grid-template-columns: 1fr;
+    }
+}
