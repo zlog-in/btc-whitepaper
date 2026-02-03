@@ -638,6 +638,571 @@ textarea {
     min-width: 20px;
 }
 
+/* ==========================================
+   区块结构图
+   ========================================== */
+.block-structure-diagram {
+    margin: 1.5rem 0;
+}
+
+.structure-block {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 2px solid var(--primary);
+    overflow: hidden;
+}
+
+.block-section {
+    padding: 1.25rem;
+}
+
+.block-section h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-section {
+    background: rgba(247, 147, 26, 0.05);
+    border-bottom: 2px dashed var(--border);
+}
+
+.header-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.field-item {
+    display: grid;
+    grid-template-columns: 120px 70px 1fr;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    align-items: center;
+}
+
+.field-item.highlight {
+    background: rgba(247, 147, 26, 0.15);
+    border: 1px solid var(--primary);
+}
+
+.field-name {
+    font-weight: 600;
+}
+
+.field-size {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+.field-desc {
+    color: var(--text-muted);
+}
+
+.body-section {
+    background: var(--bg);
+}
+
+.tx-list-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tx-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--card-bg);
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.tx-item.coinbase {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid var(--success);
+}
+
+.tx-item.more {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.tx-icon {
+    font-size: 1rem;
+}
+
+/* 区块头字段详解 */
+.field-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.detail-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.detail-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.detail-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.detail-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.detail-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   挖矿页面样式
+   ========================================== */
+
+/* 挖矿概念流程 */
+.mining-concept {
+    margin: 1.5rem 0;
+}
+
+.concept-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+}
+
+.flow-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    min-width: 100px;
+    border: 2px solid var(--border);
+}
+
+.flow-item.highlight {
+    border-color: var(--primary);
+    background: rgba(247, 147, 26, 0.1);
+}
+
+.flow-item.success {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.flow-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.flow-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.flow-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.flow-arrow {
+    font-size: 1.5rem;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* 难度演示 */
+.difficulty-demo {
+    margin: 1.5rem 0;
+}
+
+.difficulty-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.diff-example {
+    display: grid;
+    grid-template-columns: 140px 150px 150px 1fr;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.diff-label {
+    font-weight: 600;
+}
+
+.diff-target {
+    font-family: monospace;
+    color: var(--primary);
+}
+
+.diff-prob {
+    color: var(--text-muted);
+}
+
+.diff-bar {
+    height: 8px;
+    background: linear-gradient(90deg, var(--success), var(--warning), var(--error));
+    border-radius: 4px;
+}
+
+.real-difficulty {
+    background: rgba(247, 147, 26, 0.1);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+}
+
+.real-difficulty h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary);
+}
+
+.real-difficulty p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* 挖矿模拟器 */
+.mining-simulator {
+    margin: 1.5rem 0;
+}
+
+.sim-block {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 2px solid var(--border);
+    margin-bottom: 1rem;
+}
+
+.sim-field {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.sim-field label {
+    min-width: 120px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.sim-field input[type="text"] {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.difficulty-selector input {
+    flex: 1;
+    max-width: 150px;
+}
+
+.nonce-value {
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.hash-value {
+    font-family: monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+    background: var(--code-bg);
+    padding: 0.5rem;
+    border-radius: 4px;
+    flex: 1;
+}
+
+.hash-value .hash-zeros {
+    color: var(--success);
+    font-weight: bold;
+}
+
+.target-value {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.sim-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.sim-stats {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem;
+    background: var(--code-bg);
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.stat-value.mining {
+    color: var(--primary);
+    animation: pulse 1s infinite;
+}
+
+.stat-value.success {
+    color: var(--success);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.mining-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+    border: 2px solid var(--success);
+    border-radius: var(--radius);
+}
+
+.result-success {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.result-icon {
+    font-size: 1.5rem;
+}
+
+.result-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--success);
+}
+
+.result-details p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.result-details code {
+    font-size: 0.75rem;
+    background: var(--card-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* 挖矿奖励 */
+.reward-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.reward-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.reward-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.reward-content h4 {
+    margin: 0 0 0.5rem 0;
+}
+
+.reward-content p {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.halving-timeline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.halving-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg);
+    border-radius: 4px;
+    min-width: 70px;
+}
+
+.halving-item.current {
+    background: rgba(247, 147, 26, 0.15);
+    border: 1px solid var(--primary);
+}
+
+.halving-year {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.halving-reward {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.halving-arrow {
+    color: var(--text-muted);
+}
+
+.halving-note, .fee-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+/* 挖矿意义 */
+.mining-significance {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.sig-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.sig-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.sig-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.sig-item p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* 挖矿页面响应式 */
+@media (max-width: 768px) {
+    .concept-flow {
+        flex-direction: column;
+    }
+
+    .flow-arrow {
+        transform: rotate(90deg);
+    }
+
+    .diff-example {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .sim-field {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sim-field label {
+        min-width: auto;
+    }
+
+    .field-item {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+
+    .halving-timeline {
+        justify-content: center;
+    }
+}
+
 /* 按钮 */
 .btn {
     padding: 0.75rem 1.5rem;

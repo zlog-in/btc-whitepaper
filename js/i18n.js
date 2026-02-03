@@ -25,6 +25,7 @@ const translations = {
         'nav.cash': '现金模型',
         'nav.utxo': '└ UTXO 模型',
         'nav.block': '区块结构',
+        'nav.mining': '└ 挖矿原理',
         'nav.chain': '区块链',
         'nav.pow': '工作量证明',
         'nav.p2p': 'P2P 网络',
@@ -782,7 +783,13 @@ const translations = {
         'block.feature.5': '区块哈希',
         'block.feature.5.desc': '以上所有数据的 SHA-256 哈希',
         'block.nav.prev': '← UTXO 模型',
-        'block.nav.next': '区块链 →',
+        'block.nav.next': '挖矿原理 →',
+
+        // 挖矿页面
+        'mining.title': '挖矿原理',
+        'mining.desc': '挖矿是寻找满足难度要求的 Nonce 值的过程。矿工通过不断尝试，找到使区块哈希满足特定条件的随机数。',
+        'mining.nav.prev': '← 区块结构',
+        'mining.nav.next': '区块链 →',
 
         // 区块链页面
         'chain.title': '区块链',
@@ -801,7 +808,7 @@ const translations = {
         'chain.feature.3.desc': '任何人都可以独立验证整条链的完整性',
         'chain.feature.4': '分布式',
         'chain.feature.4.desc': '链的副本存储在网络中的每个节点',
-        'chain.nav.prev': '← 区块结构',
+        'chain.nav.prev': '← 挖矿原理',
         'chain.nav.next': '工作量证明 →',
         'chain.block.prev': '前一哈希：',
         'chain.block.data': '数据：',
@@ -868,6 +875,7 @@ const translations = {
         'nav.cash': 'Cash Model',
         'nav.utxo': '└ UTXO Model',
         'nav.block': 'Block Structure',
+        'nav.mining': '└ Mining',
         'nav.chain': 'Blockchain',
         'nav.pow': 'Proof of Work',
         'nav.p2p': 'P2P Network',
@@ -1625,7 +1633,13 @@ const translations = {
         'block.feature.5': 'Block Hash',
         'block.feature.5.desc': 'SHA-256 hash of all above data',
         'block.nav.prev': '← UTXO Model',
-        'block.nav.next': 'Blockchain →',
+        'block.nav.next': 'Mining →',
+
+        // Mining page
+        'mining.title': 'Mining',
+        'mining.desc': 'Mining is the process of finding a Nonce value that satisfies the difficulty requirement. Miners keep trying until they find a random number that makes the block hash meet specific conditions.',
+        'mining.nav.prev': '← Block Structure',
+        'mining.nav.next': 'Blockchain →',
 
         // Blockchain page
         'chain.title': 'Blockchain',
@@ -1644,7 +1658,7 @@ const translations = {
         'chain.feature.3.desc': 'Anyone can independently verify the entire chain',
         'chain.feature.4': 'Distributed',
         'chain.feature.4.desc': 'Copies of the chain are stored on every node',
-        'chain.nav.prev': '← Block Structure',
+        'chain.nav.prev': '← Mining',
         'chain.nav.next': 'Proof of Work →',
         'chain.block.prev': 'Prev Hash:',
         'chain.block.data': 'Data:',
