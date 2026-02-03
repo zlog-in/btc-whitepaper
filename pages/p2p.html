@@ -6,9 +6,9 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P 网络 · 比特币白皮书</title>
+    <title>共识传播 · 比特币白皮书</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260202t">
+    <link rel="stylesheet" href="../css/style.css?v=20260203f">
 </head>
 <body>
     <nav class="nav">
@@ -72,7 +72,7 @@
                     </div>
                     <div class="nav-group-links">
                         <a href="pow.html" data-i18n="nav.pow">工作量证明</a>
-                        <a href="p2p.html" class="active" data-i18n="nav.p2p">P2P 网络</a>
+                        <a href="p2p.html" class="active" data-i18n="nav.p2p">共识传播</a>
                     </div>
                 </div>
             </div>
@@ -85,59 +85,345 @@
                 <div class="page-header">
                     <span class="page-icon">🌐</span>
                     <div>
-                        <h1 data-i18n="p2p.title">P2P 网络</h1>
-                        <p class="section-desc" data-i18n="p2p.desc">比特币运行在一个去中心化的点对点网络上，没有中央服务器，每个节点都是平等的。</p>
+                        <h1>共识传播</h1>
+                        <p class="section-desc">比特币通过P2P网络传播区块，当出现分叉时，网络会通过最长链规则自动收敛到统一的共识状态。</p>
                     </div>
                 </div>
 
+                <!-- 区块传播演示 -->
                 <div class="demo-box">
-                    <h3 data-i18n="p2p.sim.title">🖥️ 网络模拟</h3>
-                    <p class="demo-desc" data-i18n="p2p.sim.desc">点击添加节点，观察消息如何在网络中传播。点击任意节点发起广播。</p>
+                    <h3>📡 区块在网络中的传播</h3>
+                    <p class="demo-desc">当矿工挖出新区块后，通过P2P网络向全网广播。观察区块如何从源节点扩散到整个网络。</p>
 
-                    <div class="p2p-controls">
-                        <button id="add-node-btn" class="btn" data-i18n="p2p.add.btn">➕ 添加节点</button>
-                        <button id="broadcast-btn" class="btn primary" data-i18n="p2p.broadcast.btn">📡 广播消息</button>
-                        <button id="reset-network-btn" class="btn secondary" data-i18n="p2p.reset.btn">🔄 重置网络</button>
+                    <div class="propagation-demo">
+                        <div class="network-view">
+                            <canvas id="propagation-canvas" width="800" height="400"></canvas>
+                        </div>
+
+                        <div class="propagation-stats">
+                            <div class="prop-stat">
+                                <span class="prop-label">节点总数</span>
+                                <span class="prop-value" id="total-nodes">12</span>
+                            </div>
+                            <div class="prop-stat">
+                                <span class="prop-label">已收到区块</span>
+                                <span class="prop-value" id="received-nodes">0</span>
+                            </div>
+                            <div class="prop-stat">
+                                <span class="prop-label">传播进度</span>
+                                <span class="prop-value" id="propagation-progress">0%</span>
+                            </div>
+                            <div class="prop-stat">
+                                <span class="prop-label">传播轮次</span>
+                                <span class="prop-value" id="propagation-hops">0</span>
+                            </div>
+                        </div>
+
+                        <div class="propagation-controls">
+                            <button id="start-propagation" class="btn primary">📡 广播新区块</button>
+                            <button id="reset-propagation" class="btn secondary">🔄 重置</button>
+                            <div class="speed-control">
+                                <label>传播速度:</label>
+                                <input type="range" id="propagation-speed" min="1" max="5" value="3">
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="network-container">
-                        <canvas id="network-canvas" width="700" height="400"></canvas>
-                    </div>
-
-                    <div class="network-stats">
-                        <div class="stat">
-                            <span class="stat-label" data-i18n="p2p.nodes.label">节点数量</span>
-                            <span class="stat-value" id="node-count">0</span>
+                    <div class="propagation-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot source"></span>
+                            <span>源节点（矿工）</span>
                         </div>
-                        <div class="stat">
-                            <span class="stat-label" data-i18n="p2p.connections.label">连接数</span>
-                            <span class="stat-value" id="connection-count">0</span>
+                        <div class="legend-item">
+                            <span class="legend-dot received"></span>
+                            <span>已收到区块</span>
                         </div>
-                        <div class="stat">
-                            <span class="stat-label" data-i18n="p2p.messages.label">消息传播</span>
-                            <span class="stat-value" id="message-status" data-i18n="p2p.status.idle">空闲</span>
+                        <div class="legend-item">
+                            <span class="legend-dot waiting"></span>
+                            <span>等待中</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="card info">
-                    <h4 data-i18n="p2p.features.title">🔗 P2P 网络特性</h4>
-                    <ul>
-                        <li><strong data-i18n="p2p.feature.1">去中心化</strong> — <span data-i18n="p2p.feature.1.desc">没有中央服务器，任何节点故障不影响网络运行</span></li>
-                        <li><strong data-i18n="p2p.feature.2">对等性</strong> — <span data-i18n="p2p.feature.2.desc">每个节点既是客户端也是服务器</span></li>
-                        <li><strong data-i18n="p2p.feature.3">消息广播</strong> — <span data-i18n="p2p.feature.3.desc">交易和区块通过泛洪方式传播到整个网络</span></li>
-                        <li><strong data-i18n="p2p.feature.4">自组织</strong> — <span data-i18n="p2p.feature.4.desc">节点可以随时加入或离开，网络自动调整</span></li>
-                    </ul>
+                <!-- 分叉演示 -->
+                <div class="demo-box">
+                    <h3>🔀 区块链分叉</h3>
+                    <p class="demo-desc">当两个矿工几乎同时挖出区块时，网络会暂时分裂成两条链。这是正常现象，最终会通过最长链规则解决。</p>
+
+                    <div class="fork-demo">
+                        <div class="fork-chain-view" id="fork-chain-view">
+                            <!-- 分叉链可视化 -->
+                            <div class="main-chain" id="main-chain">
+                                <div class="chain-block genesis">
+                                    <span class="block-label">创世块</span>
+                                </div>
+                                <div class="chain-arrow">→</div>
+                                <div class="chain-block">
+                                    <span class="block-label">#1</span>
+                                </div>
+                                <div class="chain-arrow">→</div>
+                                <div class="chain-block">
+                                    <span class="block-label">#2</span>
+                                </div>
+                                <div class="chain-arrow">→</div>
+                                <div class="chain-block current" id="block-3">
+                                    <span class="block-label">#3</span>
+                                </div>
+                                <div class="fork-point" id="fork-point">
+                                    <div class="fork-branch branch-a" id="branch-a">
+                                        <div class="chain-arrow">→</div>
+                                        <div class="chain-block fork-block block-a" id="block-4a">
+                                            <span class="block-label">#4A</span>
+                                            <span class="block-miner">矿工 A</span>
+                                        </div>
+                                    </div>
+                                    <div class="fork-branch branch-b" id="branch-b">
+                                        <div class="chain-arrow">→</div>
+                                        <div class="chain-block fork-block block-b" id="block-4b">
+                                            <span class="block-label">#4B</span>
+                                            <span class="block-miner">矿工 B</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fork-status" id="fork-status">
+                            <div class="status-message">点击"触发分叉"观看演示</div>
+                        </div>
+
+                        <div class="fork-controls">
+                            <button id="trigger-fork" class="btn">🔀 触发分叉</button>
+                            <button id="resolve-fork-a" class="btn" disabled>⛏️ 矿工A继续挖矿</button>
+                            <button id="resolve-fork-b" class="btn" disabled>⛏️ 矿工B继续挖矿</button>
+                            <button id="reset-fork" class="btn secondary">🔄 重置</button>
+                        </div>
+
+                        <div class="fork-explanation" id="fork-explanation" style="display: none;">
+                            <div class="explanation-step">
+                                <span class="step-icon">1️⃣</span>
+                                <p><strong>分叉发生：</strong>矿工A和矿工B几乎同时找到有效区块，各自向网络广播。</p>
+                            </div>
+                            <div class="explanation-step">
+                                <span class="step-icon">2️⃣</span>
+                                <p><strong>网络分裂：</strong>部分节点先收到区块A，部分先收到区块B，暂时形成两条链。</p>
+                            </div>
+                            <div class="explanation-step">
+                                <span class="step-icon">3️⃣</span>
+                                <p><strong>继续挖矿：</strong>矿工们在自己认可的链上继续挖矿，谁先找到下一个区块，谁的链就更长。</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- 共识收敛演示 -->
+                <div class="demo-box">
+                    <h3>🎯 共识收敛：最长链规则</h3>
+                    <p class="demo-desc">当某条分叉链变得更长时，所有节点会切换到最长链，被抛弃的区块成为"孤块"。</p>
+
+                    <div class="convergence-demo">
+                        <div class="convergence-visual" id="convergence-visual">
+                            <!-- 节点网络示意图 -->
+                            <div class="node-network">
+                                <div class="network-node" data-chain="none" id="node-1">
+                                    <span class="node-icon">🖥️</span>
+                                    <span class="node-label">节点 1</span>
+                                    <span class="node-chain"></span>
+                                </div>
+                                <div class="network-node" data-chain="none" id="node-2">
+                                    <span class="node-icon">🖥️</span>
+                                    <span class="node-label">节点 2</span>
+                                    <span class="node-chain"></span>
+                                </div>
+                                <div class="network-node" data-chain="none" id="node-3">
+                                    <span class="node-icon">🖥️</span>
+                                    <span class="node-label">节点 3</span>
+                                    <span class="node-chain"></span>
+                                </div>
+                                <div class="network-node" data-chain="none" id="node-4">
+                                    <span class="node-icon">🖥️</span>
+                                    <span class="node-label">节点 4</span>
+                                    <span class="node-chain"></span>
+                                </div>
+                                <div class="network-node" data-chain="none" id="node-5">
+                                    <span class="node-icon">🖥️</span>
+                                    <span class="node-label">节点 5</span>
+                                    <span class="node-chain"></span>
+                                </div>
+                                <div class="network-node" data-chain="none" id="node-6">
+                                    <span class="node-icon">🖥️</span>
+                                    <span class="node-label">节点 6</span>
+                                    <span class="node-chain"></span>
+                                </div>
+                            </div>
+
+                            <div class="chain-comparison">
+                                <div class="chain-side chain-a-side">
+                                    <h4>链 A</h4>
+                                    <div class="mini-chain" id="mini-chain-a">
+                                        <span class="mini-block">3</span>
+                                        <span class="mini-arrow">→</span>
+                                        <span class="mini-block highlight-a">4A</span>
+                                    </div>
+                                    <div class="chain-length">长度: <span id="chain-a-length">4</span></div>
+                                    <div class="chain-supporters">支持节点: <span id="chain-a-nodes">0</span></div>
+                                </div>
+
+                                <div class="vs-divider">VS</div>
+
+                                <div class="chain-side chain-b-side">
+                                    <h4>链 B</h4>
+                                    <div class="mini-chain" id="mini-chain-b">
+                                        <span class="mini-block">3</span>
+                                        <span class="mini-arrow">→</span>
+                                        <span class="mini-block highlight-b">4B</span>
+                                    </div>
+                                    <div class="chain-length">长度: <span id="chain-b-length">4</span></div>
+                                    <div class="chain-supporters">支持节点: <span id="chain-b-nodes">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="convergence-controls">
+                            <button id="start-convergence" class="btn primary">▶️ 开始演示</button>
+                            <button id="step-convergence" class="btn" disabled>⏭️ 下一步</button>
+                            <button id="reset-convergence" class="btn secondary">🔄 重置</button>
+                        </div>
+
+                        <div class="convergence-timeline" id="convergence-timeline">
+                            <div class="timeline-step" data-step="0">
+                                <span class="step-marker active">1</span>
+                                <span class="step-text">初始状态</span>
+                            </div>
+                            <div class="timeline-step" data-step="1">
+                                <span class="step-marker">2</span>
+                                <span class="step-text">分叉传播</span>
+                            </div>
+                            <div class="timeline-step" data-step="2">
+                                <span class="step-marker">3</span>
+                                <span class="step-text">新区块产生</span>
+                            </div>
+                            <div class="timeline-step" data-step="3">
+                                <span class="step-marker">4</span>
+                                <span class="step-text">共识收敛</span>
+                            </div>
+                        </div>
+
+                        <div class="convergence-message" id="convergence-message">
+                            点击"开始演示"观察共识如何形成
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最终一致性 -->
                 <div class="card highlight">
-                    <h4 data-i18n="p2p.process.title">📨 消息传播过程</h4>
-                    <p data-i18n="p2p.process.desc">当一个节点收到新交易或区块时，它会验证后转发给所有已连接的邻居节点。每个节点都会记录已见过的消息，避免重复转发，最终消息会扩散到整个网络。</p>
+                    <h4>💡 最终一致性</h4>
+                    <div class="consistency-points">
+                        <div class="point-item">
+                            <span class="point-icon">📏</span>
+                            <div>
+                                <strong>最长链规则</strong>
+                                <p>节点总是选择累积工作量最多（通常是最长）的链作为有效链</p>
+                            </div>
+                        </div>
+                        <div class="point-item">
+                            <span class="point-icon">⏱️</span>
+                            <div>
+                                <strong>6 个确认</strong>
+                                <p>交易被 6 个区块确认后，被篡改的概率小于 0.1%</p>
+                            </div>
+                        </div>
+                        <div class="point-item">
+                            <span class="point-icon">🔄</span>
+                            <div>
+                                <strong>自动重组</strong>
+                                <p>当发现更长的链时，节点会自动切换并回滚较短链上的交易</p>
+                            </div>
+                        </div>
+                        <div class="point-item">
+                            <span class="point-icon">💀</span>
+                            <div>
+                                <strong>孤块处理</strong>
+                                <p>被抛弃分支上的有效交易会返回内存池，等待被重新打包</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 确认数与安全性 -->
+                <div class="demo-box">
+                    <h3>🔒 确认数与交易安全性</h3>
+                    <p class="demo-desc">交易被包含的区块越深，被逆转的可能性越小。</p>
+
+                    <div class="confirmation-visual">
+                        <div class="confirmation-chain">
+                            <div class="conf-block old">
+                                <span class="conf-depth">深度 6+</span>
+                            </div>
+                            <div class="conf-arrow">→</div>
+                            <div class="conf-block">
+                                <span class="conf-depth">深度 5</span>
+                            </div>
+                            <div class="conf-arrow">→</div>
+                            <div class="conf-block">
+                                <span class="conf-depth">深度 4</span>
+                            </div>
+                            <div class="conf-arrow">→</div>
+                            <div class="conf-block">
+                                <span class="conf-depth">深度 3</span>
+                            </div>
+                            <div class="conf-arrow">→</div>
+                            <div class="conf-block">
+                                <span class="conf-depth">深度 2</span>
+                            </div>
+                            <div class="conf-arrow">→</div>
+                            <div class="conf-block">
+                                <span class="conf-depth">深度 1</span>
+                            </div>
+                            <div class="conf-arrow">→</div>
+                            <div class="conf-block latest">
+                                <span class="conf-depth">最新</span>
+                            </div>
+                        </div>
+
+                        <div class="confirmation-table">
+                            <div class="conf-row header">
+                                <span>确认数</span>
+                                <span>安全级别</span>
+                                <span>建议用途</span>
+                            </div>
+                            <div class="conf-row">
+                                <span class="conf-num">0</span>
+                                <span class="conf-level danger">未确认</span>
+                                <span class="conf-use">不建议接受</span>
+                            </div>
+                            <div class="conf-row">
+                                <span class="conf-num">1</span>
+                                <span class="conf-level warning">低</span>
+                                <span class="conf-use">小额交易</span>
+                            </div>
+                            <div class="conf-row">
+                                <span class="conf-num">3</span>
+                                <span class="conf-level moderate">中等</span>
+                                <span class="conf-use">普通交易</span>
+                            </div>
+                            <div class="conf-row">
+                                <span class="conf-num">6</span>
+                                <span class="conf-level safe">高</span>
+                                <span class="conf-use">大额交易</span>
+                            </div>
+                            <div class="conf-row">
+                                <span class="conf-num">60+</span>
+                                <span class="conf-level very-safe">极高</span>
+                                <span class="conf-use">交易所充值</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="page-nav">
-                    <a href="pow.html" class="btn secondary" data-i18n="p2p.nav.prev">← 工作量证明</a>
-                    <a href="../index.html" class="btn primary" data-i18n="p2p.nav.next">返回首页 →</a>
+                    <a href="pow.html" class="btn secondary">← 工作量证明</a>
+                    <a href="../index.html" class="btn primary">返回首页 →</a>
                 </div>
             </div>
         </section>
@@ -147,7 +433,7 @@
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="../js/i18n.js?v=20260202j"></script>
-    <script src="../js/p2p.js?v=20260202j"></script>
+    <script src="../js/i18n.js?v=20260203f"></script>
+    <script src="../js/p2p.js?v=20260203f"></script>
 </body>
 </html>

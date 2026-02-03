@@ -1735,7 +1735,7 @@ a.concept:hover {
     }
 }
 
-/* P2P 网络页面 */
+/* 共识传播页面 (旧版样式) */
 .p2p-controls {
     display: flex;
     gap: 1rem;
@@ -5524,7 +5524,7 @@ body.menu-open {
         width: 100%;
     }
 
-    /* P2P 网络 */
+    /* 共识传播 (旧版样式) */
     .p2p-controls {
         flex-direction: column;
         gap: 0.5rem;
@@ -11296,4 +11296,718 @@ body.menu-open {
     text-align: center;
     margin-top: 1rem;
     margin-bottom: 0;
+}
+
+/* ==========================================
+   共识传播页面样式
+   ========================================== */
+
+/* 区块传播演示 */
+.propagation-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.network-view {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.network-view canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.propagation-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.prop-stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.prop-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.prop-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.propagation-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.speed-control label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.speed-control input[type="range"] {
+    width: 100px;
+    accent-color: var(--primary);
+}
+
+.propagation-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.legend-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+.legend-dot.source {
+    background: var(--primary);
+    box-shadow: 0 0 8px var(--primary);
+}
+
+.legend-dot.received {
+    background: var(--success);
+}
+
+.legend-dot.waiting {
+    background: var(--border);
+    border: 2px solid var(--text-muted);
+}
+
+/* 分叉演示 */
+.fork-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.fork-chain-view {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    overflow-x: auto;
+}
+
+.main-chain {
+    display: flex;
+    align-items: center;
+    min-width: fit-content;
+}
+
+.chain-block {
+    width: 70px;
+    height: 50px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.chain-block.genesis {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-color: #f59e0b;
+}
+
+.chain-block.current {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.2);
+}
+
+.chain-block.fork-block {
+    width: 80px;
+    height: 60px;
+}
+
+.chain-block.block-a {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border-color: #3b82f6;
+}
+
+.chain-block.block-b {
+    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+    border-color: #ec4899;
+}
+
+.chain-block.winner {
+    border-color: var(--success);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+}
+
+.chain-block.orphan {
+    opacity: 0.4;
+    border-style: dashed;
+}
+
+.block-label {
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.block-miner {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.chain-arrow {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin: 0 0.5rem;
+}
+
+.fork-point {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+.fork-branch {
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.5s ease;
+}
+
+.fork-branch.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fork-status {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.status-message {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.fork-controls {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.fork-explanation {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--primary);
+}
+
+.explanation-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.step-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.explanation-step p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* 共识收敛演示 */
+.convergence-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.convergence-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.node-network {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+.network-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+    transition: all 0.3s;
+}
+
+.network-node[data-chain="a"] {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+}
+
+.network-node[data-chain="b"] {
+    border-color: #ec4899;
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+}
+
+.network-node.switching {
+    animation: nodePulse 0.5s ease;
+}
+
+@keyframes nodePulse {
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.node-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.node-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.node-chain {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.chain-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.chain-side {
+    flex: 1;
+    max-width: 200px;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    border: 2px solid var(--border);
+}
+
+.chain-a-side {
+    border-color: #3b82f6;
+}
+
+.chain-b-side {
+    border-color: #ec4899;
+}
+
+.chain-side h4 {
+    margin-bottom: 1rem;
+}
+
+.mini-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.mini-block {
+    width: 30px;
+    height: 24px;
+    background: var(--bg);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.mini-block.highlight-a {
+    background: #3b82f6;
+    color: white;
+}
+
+.mini-block.highlight-b {
+    background: #ec4899;
+    color: white;
+}
+
+.mini-arrow {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.chain-length,
+.chain-supporters {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.chain-supporters {
+    margin-top: 0.25rem;
+}
+
+.vs-divider {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-muted);
+}
+
+.convergence-controls {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.convergence-timeline {
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 0;
+    position: relative;
+}
+
+.convergence-timeline::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--border);
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1;
+}
+
+.step-marker {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.step-marker.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.step-marker.completed {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.step-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.convergence-message {
+    text-align: center;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* 一致性要点 */
+.consistency-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.point-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.point-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.point-item strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.point-item p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* 确认数可视化 */
+.confirmation-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.confirmation-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    overflow-x: auto;
+}
+
+.conf-block {
+    min-width: 70px;
+    padding: 1rem 0.5rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.conf-block.old {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-color: var(--success);
+}
+
+.conf-block.latest {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.conf-depth {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.conf-arrow {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.confirmation-table {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.conf-row {
+    display: grid;
+    grid-template-columns: 100px 120px 1fr;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.conf-row:last-child {
+    border-bottom: none;
+}
+
+.conf-row.header {
+    background: var(--bg);
+    font-weight: 600;
+}
+
+.conf-num {
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.conf-level {
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.conf-level.danger {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.conf-level.warning {
+    background: #fefce8;
+    color: #ca8a04;
+}
+
+.conf-level.moderate {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.conf-level.safe {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.conf-level.very-safe {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.conf-use {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .propagation-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .propagation-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .speed-control {
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    .propagation-legend {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .fork-chain-view {
+        padding: 1rem;
+    }
+
+    .chain-block {
+        width: 55px;
+        height: 40px;
+    }
+
+    .chain-block.fork-block {
+        width: 65px;
+        height: 50px;
+    }
+
+    .block-label {
+        font-size: 0.75rem;
+    }
+
+    .node-network {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chain-comparison {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .chain-side {
+        max-width: 100%;
+    }
+
+    .vs-divider {
+        transform: rotate(90deg);
+    }
+
+    .convergence-timeline {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .convergence-timeline::before {
+        display: none;
+    }
+
+    .confirmation-chain {
+        padding: 1rem;
+    }
+
+    .conf-block {
+        min-width: 50px;
+        padding: 0.75rem 0.25rem;
+    }
+
+    .conf-depth {
+        font-size: 0.65rem;
+    }
+
+    .conf-row {
+        grid-template-columns: 60px 80px 1fr;
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
 }
