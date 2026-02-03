@@ -11271,3 +11271,19 @@ body.menu-open {
         transform: rotate(90deg);
     }
 }
+
+/* 数据来源标注 */
+.data-source {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.data-source a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.data-source a:hover {
+    text-decoration: underline;
+}

@@ -205,11 +205,11 @@ if (calcAttackBtn) {
     calcAttackBtn.addEventListener('click', () => {
         const hours = parseInt(attackDuration.value);
 
-        // 网络参数（估算值）
-        const networkHashrate = 600; // EH/s
+        // 网络参数（数据来源: mempool.space）
+        const networkHashrate = 880; // EH/s (2024年数据)
         const neededHashrate = networkHashrate * 0.51; // 需要51%
-        const asicPrice = 3000; // 美元/台
-        const asicHashrate = 0.0001; // EH/s per ASIC (100 TH/s)
+        const asicPrice = 3000; // 美元/台 (Antminer S21 约$3000)
+        const asicHashrate = 0.0002; // EH/s per ASIC (200 TH/s, S21级别)
         const asicsNeeded = neededHashrate / asicHashrate;
         const hardwareCost = asicsNeeded * asicPrice;
 
