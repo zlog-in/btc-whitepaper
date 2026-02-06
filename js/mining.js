@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // SHA-256 哈希函数
 // ==========================================
@@ -109,9 +110,9 @@ function startMining() {
     attempts = 0;
     startTime = Date.now();
     miningResult.style.display = 'none';
-    miningStatus.textContent = '挖矿中...';
+    miningStatus.textContent = typeof t === 'function' ? t('mining.status.mining') : '挖矿中...';
     miningStatus.className = 'stat-value mining';
-    startBtn.textContent = '⏹️ 停止挖矿';
+    startBtn.textContent = typeof t === 'function' ? t('mining.btn.stop') : '⏹️ 停止挖矿';
     startBtn.classList.add('mining');
     miningData.disabled = true;
     miningDifficulty.disabled = true;
@@ -126,7 +127,7 @@ function startMining() {
                 // 找到有效哈希
                 stopMining();
                 updateDisplay(currentNonce, hash);
-                miningStatus.textContent = '成功!';
+                miningStatus.textContent = typeof t === 'function' ? t('mining.status.success') : '成功!';
                 miningStatus.className = 'stat-value success';
 
                 // 显示结果
@@ -151,13 +152,14 @@ function stopMining() {
         clearInterval(miningInterval);
         miningInterval = null;
     }
-    startBtn.textContent = '⛏️ 开始挖矿';
+    startBtn.textContent = typeof t === 'function' ? t('mining.btn.start') : '⛏️ 开始挖矿';
     startBtn.classList.remove('mining');
     miningData.disabled = false;
     miningDifficulty.disabled = false;
 
-    if (miningStatus.textContent === '挖矿中...') {
-        miningStatus.textContent = '已停止';
+    const miningText = typeof t === 'function' ? t('mining.status.mining') : '挖矿中...';
+    if (miningStatus.textContent === miningText) {
+        miningStatus.textContent = typeof t === 'function' ? t('mining.status.stopped') : '已停止';
         miningStatus.className = 'stat-value';
     }
 }
@@ -171,7 +173,7 @@ function resetMining() {
     miningNonce.textContent = '0';
     miningHash.textContent = '-';
     miningAttempts.textContent = '0';
-    miningStatus.textContent = '等待开始';
+    miningStatus.textContent = typeof t === 'function' ? t('mining.status.waiting') : '等待开始';
     miningStatus.className = 'stat-value';
     miningTime.textContent = '0.00s';
     miningResult.style.display = 'none';
@@ -184,3 +186,5 @@ resetBtn.addEventListener('click', resetMining);
 
 // 初始化
 updateTarget();
+
+})();

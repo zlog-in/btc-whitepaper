@@ -7,8 +7,9 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工作量证明 · 比特币白皮书</title>
+    <meta data-i18n-title="title.pow">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260203f">
+    <link rel="stylesheet" href="../css/style.css?v=20260206a">
 </head>
 <body>
     <nav class="nav">
@@ -92,36 +93,36 @@
 
                 <!-- 核心概念 -->
                 <div class="demo-box highlight-box">
-                    <h3>🎯 核心原理</h3>
-                    <p class="demo-desc">矿工必须找到一个随机数（Nonce），使得区块数据的哈希值满足难度要求——即以特定数量的零开头。</p>
+                    <h3 data-i18n="pow.core.title">🎯 核心原理</h3>
+                    <p class="demo-desc" data-i18n="pow.core.desc">矿工必须找到一个随机数（Nonce），使得区块数据的哈希值满足难度要求——即以特定数量的零开头。</p>
 
                     <div class="pow-concept">
                         <div class="concept-formula">
                             <div class="formula-item">
-                                <span class="formula-label">区块数据</span>
-                                <code>前哈希 + 交易 + 时间戳 + Nonce</code>
+                                <span class="formula-label" data-i18n="pow.core.blockdata">区块数据</span>
+                                <code data-i18n="pow.core.formula">前哈希 + 交易 + 时间戳 + Nonce</code>
                             </div>
                             <div class="formula-arrow">→ SHA-256 →</div>
                             <div class="formula-item">
-                                <span class="formula-label">目标</span>
+                                <span class="formula-label" data-i18n="pow.core.target">目标</span>
                                 <code id="target-display">0000xxxx...xxxx</code>
                             </div>
                         </div>
                         <div class="concept-explanation">
-                            <p>找到有效 Nonce 的唯一方法是<strong>暴力尝试</strong>——这需要消耗真实的计算资源和电力。</p>
+                            <p data-i18n="pow.core.explanation" data-i18n-html="pow.core.explanation">找到有效 Nonce 的唯一方法是<strong>暴力尝试</strong>——这需要消耗真实的计算资源和电力。</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 挖矿模拟器 -->
                 <div class="demo-box">
-                    <h3>⛏️ 挖矿模拟器</h3>
-                    <p class="demo-desc">亲自体验寻找有效 Nonce 的过程。调整难度观察找到解所需的尝试次数变化。</p>
+                    <h3 data-i18n="pow.sim.title">⛏️ 挖矿模拟器</h3>
+                    <p class="demo-desc" data-i18n="pow.sim.desc">亲自体验寻找有效 Nonce 的过程。调整难度观察找到解所需的尝试次数变化。</p>
 
                     <div class="pow-simulator">
                         <div class="simulator-config">
                             <div class="config-item">
-                                <label>难度（前导零数量）:</label>
+                                <label data-i18n="pow.sim.difficulty.label">难度（前导零数量）:</label>
                                 <div class="difficulty-selector">
                                     <button class="diff-btn active" data-diff="1">1</button>
                                     <button class="diff-btn" data-diff="2">2</button>
@@ -130,27 +131,27 @@
                                 </div>
                             </div>
                             <div class="config-item">
-                                <label>目标哈希:</label>
+                                <label data-i18n="pow.sim.target.label">目标哈希:</label>
                                 <code id="pow-target-hash">0xxxxxxx...</code>
                             </div>
                         </div>
 
                         <div class="pow-stats">
                             <div class="stat">
-                                <span class="stat-label">尝试次数</span>
+                                <span class="stat-label" data-i18n="pow.sim.attempts.label">尝试次数</span>
                                 <span class="stat-value" id="pow-attempts">0</span>
                             </div>
                             <div class="stat">
-                                <span class="stat-label">预期尝试</span>
+                                <span class="stat-label" data-i18n="pow.sim.expected.label">预期尝试</span>
                                 <span class="stat-value" id="pow-expected">~16</span>
                             </div>
                             <div class="stat">
-                                <span class="stat-label">速度</span>
+                                <span class="stat-label" data-i18n="pow.sim.speed.label">速度</span>
                                 <span class="stat-value" id="pow-speed">0 H/s</span>
                             </div>
                             <div class="stat">
-                                <span class="stat-label">状态</span>
-                                <span class="stat-value" id="pow-status">就绪</span>
+                                <span class="stat-label" data-i18n="pow.sim.status.label">状态</span>
+                                <span class="stat-value" id="pow-status" data-i18n="pow.sim.status.ready">就绪</span>
                             </div>
                         </div>
 
@@ -159,88 +160,88 @@
                                 <!-- 哈希流将动态显示 -->
                             </div>
                             <div class="found-hash" id="found-hash" style="display: none;">
-                                <div class="found-label">✅ 找到有效哈希!</div>
+                                <div class="found-label" data-i18n="pow.sim.found">✅ 找到有效哈希!</div>
                                 <code id="valid-hash-display"></code>
                                 <div class="found-nonce">Nonce: <span id="valid-nonce"></span></div>
                             </div>
                         </div>
 
                         <div class="pow-controls">
-                            <button id="pow-start" class="btn primary">▶️ 开始挖矿</button>
-                            <button id="pow-step" class="btn">👆 单步</button>
-                            <button id="pow-reset" class="btn secondary">🔄 重置</button>
+                            <button id="pow-start" class="btn primary" data-i18n="pow.sim.btn.start">▶️ 开始挖矿</button>
+                            <button id="pow-step" class="btn" data-i18n="pow.sim.btn.step">👆 单步</button>
+                            <button id="pow-reset" class="btn secondary" data-i18n="pow.sim.btn.reset">🔄 重置</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- 能量基础 -->
                 <div class="demo-box">
-                    <h3>⚡ 能量基础：从电力到信任</h3>
-                    <p class="demo-desc">工作量证明的本质是将物理世界的能量消耗转化为数字世界的安全保障。</p>
+                    <h3 data-i18n="pow.energy.title">⚡ 能量基础：从电力到信任</h3>
+                    <p class="demo-desc" data-i18n="pow.energy.desc">工作量证明的本质是将物理世界的能量消耗转化为数字世界的安全保障。</p>
 
                     <div class="energy-flow">
                         <div class="energy-stage">
                             <div class="energy-icon">🔌</div>
-                            <div class="energy-label">电力</div>
-                            <div class="energy-desc">真实的能源成本</div>
+                            <div class="energy-label" data-i18n="pow.energy.electricity">电力</div>
+                            <div class="energy-desc" data-i18n="pow.energy.electricity.desc">真实的能源成本</div>
                         </div>
                         <div class="energy-arrow">→</div>
                         <div class="energy-stage">
                             <div class="energy-icon">🖥️</div>
-                            <div class="energy-label">计算</div>
-                            <div class="energy-desc">SHA-256 哈希运算</div>
+                            <div class="energy-label" data-i18n="pow.energy.compute">计算</div>
+                            <div class="energy-desc" data-i18n="pow.energy.compute.desc">SHA-256 哈希运算</div>
                         </div>
                         <div class="energy-arrow">→</div>
                         <div class="energy-stage">
                             <div class="energy-icon">🔒</div>
-                            <div class="energy-label">安全</div>
-                            <div class="energy-desc">不可篡改的账本</div>
+                            <div class="energy-label" data-i18n="pow.energy.security">安全</div>
+                            <div class="energy-desc" data-i18n="pow.energy.security.desc">不可篡改的账本</div>
                         </div>
                         <div class="energy-arrow">→</div>
                         <div class="energy-stage">
                             <div class="energy-icon">💰</div>
-                            <div class="energy-label">价值</div>
-                            <div class="energy-desc">数字稀缺性</div>
+                            <div class="energy-label" data-i18n="pow.energy.value">价值</div>
+                            <div class="energy-desc" data-i18n="pow.energy.value.desc">数字稀缺性</div>
                         </div>
                     </div>
 
                     <div class="energy-insight">
                         <div class="insight-item">
-                            <h4>🌡️ 热力学视角</h4>
-                            <p>根据热力学第二定律，能量转换必然伴随熵增。挖矿将电能转化为热能，这个过程不可逆，因此<strong>工作量无法伪造</strong>。</p>
+                            <h4 data-i18n="pow.energy.thermo.title">🌡️ 热力学视角</h4>
+                            <p data-i18n="pow.energy.thermo.desc" data-i18n-html="pow.energy.thermo.desc">根据热力学第二定律，能量转换必然伴随熵增。挖矿将电能转化为热能，这个过程不可逆，因此<strong>工作量无法伪造</strong>。</p>
                         </div>
                         <div class="insight-item">
-                            <h4>🏭 信息物理桥梁</h4>
-                            <p>PoW 建立了物理世界与数字世界之间的桥梁——每一个比特币区块都锚定了现实世界中消耗的真实资源。</p>
+                            <h4 data-i18n="pow.energy.bridge.title">🏭 信息物理桥梁</h4>
+                            <p data-i18n="pow.energy.bridge.desc">PoW 建立了物理世界与数字世界之间的桥梁——每一个比特币区块都锚定了现实世界中消耗的真实资源。</p>
                         </div>
                     </div>
 
                     <!-- 能量消耗可视化 -->
                     <div class="energy-visual">
-                        <h4>📊 网络算力与安全性</h4>
-                        <p class="data-source">数据来源: <a href="https://mempool.space" target="_blank">mempool.space</a></p>
+                        <h4 data-i18n="pow.energy.hashrate.title">📊 网络算力与安全性</h4>
+                        <p class="data-source" data-i18n="pow.energy.hashrate.source" data-i18n-html="pow.energy.hashrate.source">数据来源: <a href="https://mempool.space" target="_blank">mempool.space</a></p>
                         <div class="hashrate-display">
                             <div class="hashrate-bar">
                                 <div class="hashrate-fill" id="hashrate-fill" style="width: 88%;"></div>
                             </div>
                             <div class="hashrate-labels">
                                 <span>0 EH/s</span>
-                                <span>当前: ~880 EH/s</span>
+                                <span data-i18n="pow.energy.hashrate.current">当前: ~880 EH/s</span>
                                 <span>1000 EH/s</span>
                             </div>
                         </div>
                         <div class="energy-stats">
                             <div class="energy-stat">
                                 <span class="estat-value">~150 TWh</span>
-                                <span class="estat-label">年耗电量</span>
+                                <span class="estat-label" data-i18n="pow.energy.stat.power">年耗电量</span>
                             </div>
                             <div class="energy-stat">
                                 <span class="estat-value">~$15B</span>
-                                <span class="estat-label">年安全支出</span>
+                                <span class="estat-label" data-i18n="pow.energy.stat.spend">年安全支出</span>
                             </div>
                             <div class="energy-stat">
                                 <span class="estat-value">10⁷⁷</span>
-                                <span class="estat-label">攻击所需操作</span>
+                                <span class="estat-label" data-i18n="pow.energy.stat.ops">攻击所需操作</span>
                             </div>
                         </div>
                     </div>
@@ -248,114 +249,114 @@
 
                 <!-- 货币理论 -->
                 <div class="demo-box">
-                    <h3>💎 货币理论：不可伪造的成本</h3>
-                    <p class="demo-desc">Nick Szabo 提出的"Unforgeable Costliness"（不可伪造的成本性）是理解比特币价值的关键。</p>
+                    <h3 data-i18n="pow.monetary.title">💎 货币理论：不可伪造的成本</h3>
+                    <p class="demo-desc" data-i18n="pow.monetary.desc">Nick Szabo 提出的"Unforgeable Costliness"（不可伪造的成本性）是理解比特币价值的关键。</p>
 
                     <div class="monetary-concept">
                         <div class="concept-quote">
-                            <blockquote>
+                            <blockquote data-i18n="pow.monetary.quote">
                                 "贵金属和收藏品因其创造成本高昂而具有不可伪造的稀缺性。这为货币提供了价值基础。"
                             </blockquote>
-                            <cite>— Nick Szabo, 2005</cite>
+                            <cite data-i18n="pow.monetary.cite">— Nick Szabo, 2005</cite>
                         </div>
 
                         <div class="money-comparison">
                             <div class="money-type">
                                 <div class="money-icon">🥇</div>
-                                <h4>黄金</h4>
+                                <h4 data-i18n="pow.monetary.gold">黄金</h4>
                                 <ul>
-                                    <li>开采需要能源和劳动</li>
-                                    <li>地壳中的稀缺性</li>
-                                    <li>无法人工合成</li>
-                                    <li>5000年的货币历史</li>
+                                    <li data-i18n="pow.monetary.gold.1">开采需要能源和劳动</li>
+                                    <li data-i18n="pow.monetary.gold.2">地壳中的稀缺性</li>
+                                    <li data-i18n="pow.monetary.gold.3">无法人工合成</li>
+                                    <li data-i18n="pow.monetary.gold.4">5000年的货币历史</li>
                                 </ul>
                                 <div class="money-cost">
-                                    <span class="cost-label">生产成本</span>
-                                    <span class="cost-value">~$1,200/盎司</span>
+                                    <span class="cost-label" data-i18n="pow.monetary.cost.label">生产成本</span>
+                                    <span class="cost-value" data-i18n="pow.monetary.gold.cost">~$1,200/盎司</span>
                                 </div>
                             </div>
 
                             <div class="money-type highlight">
                                 <div class="money-icon">₿</div>
-                                <h4>比特币</h4>
+                                <h4 data-i18n="pow.monetary.btc">比特币</h4>
                                 <ul>
-                                    <li>挖矿需要电力和硬件</li>
-                                    <li>协议中的稀缺性 (2100万)</li>
-                                    <li>无法复制或伪造</li>
-                                    <li>可审计的货币政策</li>
+                                    <li data-i18n="pow.monetary.btc.1">挖矿需要电力和硬件</li>
+                                    <li data-i18n="pow.monetary.btc.2">协议中的稀缺性 (2100万)</li>
+                                    <li data-i18n="pow.monetary.btc.3">无法复制或伪造</li>
+                                    <li data-i18n="pow.monetary.btc.4">可审计的货币政策</li>
                                 </ul>
                                 <div class="money-cost">
-                                    <span class="cost-label">生产成本</span>
-                                    <span class="cost-value">~$25,000/BTC</span>
+                                    <span class="cost-label" data-i18n="pow.monetary.cost.label">生产成本</span>
+                                    <span class="cost-value" data-i18n="pow.monetary.btc.cost">~$25,000/BTC</span>
                                 </div>
                             </div>
 
                             <div class="money-type fiat">
                                 <div class="money-icon">💵</div>
-                                <h4>法定货币</h4>
+                                <h4 data-i18n="pow.monetary.fiat">法定货币</h4>
                                 <ul>
-                                    <li>印刷成本接近零</li>
-                                    <li>无供应上限</li>
-                                    <li>依赖政府信用</li>
-                                    <li>可无限增发</li>
+                                    <li data-i18n="pow.monetary.fiat.1">印刷成本接近零</li>
+                                    <li data-i18n="pow.monetary.fiat.2">无供应上限</li>
+                                    <li data-i18n="pow.monetary.fiat.3">依赖政府信用</li>
+                                    <li data-i18n="pow.monetary.fiat.4">可无限增发</li>
                                 </ul>
                                 <div class="money-cost">
-                                    <span class="cost-label">生产成本</span>
-                                    <span class="cost-value">~$0.17/张</span>
+                                    <span class="cost-label" data-i18n="pow.monetary.cost.label">生产成本</span>
+                                    <span class="cost-value" data-i18n="pow.monetary.fiat.cost">~$0.17/张</span>
                                 </div>
                             </div>
                         </div>
-                        <p class="data-note">* 成本数据为估算值，可能已过时，仅供参考</p>
+                        <p class="data-note" data-i18n="pow.monetary.note">* 成本数据为估算值，可能已过时，仅供参考</p>
                     </div>
 
                     <!-- 货币属性对比 -->
                     <div class="money-properties">
-                        <h4>📋 货币属性对比</h4>
+                        <h4 data-i18n="pow.props.title">📋 货币属性对比</h4>
                         <table class="properties-table">
                             <thead>
                                 <tr>
-                                    <th>属性</th>
-                                    <th>黄金 🥇</th>
-                                    <th>比特币 ₿</th>
-                                    <th>法币 💵</th>
+                                    <th data-i18n="pow.props.header.property">属性</th>
+                                    <th data-i18n="pow.props.header.gold">黄金 🥇</th>
+                                    <th data-i18n="pow.props.header.btc">比特币 ₿</th>
+                                    <th data-i18n="pow.props.header.fiat">法币 💵</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>稀缺性</td>
-                                    <td><span class="rating high">高</span></td>
-                                    <td><span class="rating perfect">完美</span></td>
-                                    <td><span class="rating low">低</span></td>
+                                    <td data-i18n="pow.props.scarcity">稀缺性</td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
+                                    <td><span class="rating perfect" data-i18n="pow.props.rating.perfect">完美</span></td>
+                                    <td><span class="rating low" data-i18n="pow.props.rating.low">低</span></td>
                                 </tr>
                                 <tr>
-                                    <td>可分割性</td>
-                                    <td><span class="rating medium">中</span></td>
-                                    <td><span class="rating perfect">完美</span></td>
-                                    <td><span class="rating high">高</span></td>
+                                    <td data-i18n="pow.props.divisibility">可分割性</td>
+                                    <td><span class="rating medium" data-i18n="pow.props.rating.medium">中</span></td>
+                                    <td><span class="rating perfect" data-i18n="pow.props.rating.perfect">完美</span></td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
                                 </tr>
                                 <tr>
-                                    <td>便携性</td>
-                                    <td><span class="rating low">低</span></td>
-                                    <td><span class="rating perfect">完美</span></td>
-                                    <td><span class="rating high">高</span></td>
+                                    <td data-i18n="pow.props.portability">便携性</td>
+                                    <td><span class="rating low" data-i18n="pow.props.rating.low">低</span></td>
+                                    <td><span class="rating perfect" data-i18n="pow.props.rating.perfect">完美</span></td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
                                 </tr>
                                 <tr>
-                                    <td>可验证性</td>
-                                    <td><span class="rating medium">中</span></td>
-                                    <td><span class="rating perfect">完美</span></td>
-                                    <td><span class="rating high">高</span></td>
+                                    <td data-i18n="pow.props.verifiability">可验证性</td>
+                                    <td><span class="rating medium" data-i18n="pow.props.rating.medium">中</span></td>
+                                    <td><span class="rating perfect" data-i18n="pow.props.rating.perfect">完美</span></td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
                                 </tr>
                                 <tr>
-                                    <td>抗审查性</td>
-                                    <td><span class="rating medium">中</span></td>
-                                    <td><span class="rating high">高</span></td>
-                                    <td><span class="rating low">低</span></td>
+                                    <td data-i18n="pow.props.censorship">抗审查性</td>
+                                    <td><span class="rating medium" data-i18n="pow.props.rating.medium">中</span></td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
+                                    <td><span class="rating low" data-i18n="pow.props.rating.low">低</span></td>
                                 </tr>
                                 <tr>
-                                    <td>生产成本</td>
-                                    <td><span class="rating high">高</span></td>
-                                    <td><span class="rating high">高</span></td>
-                                    <td><span class="rating low">接近零</span></td>
+                                    <td data-i18n="pow.props.production">生产成本</td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
+                                    <td><span class="rating high" data-i18n="pow.props.rating.high">高</span></td>
+                                    <td><span class="rating low" data-i18n="pow.props.rating.nearzero">接近零</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -364,78 +365,78 @@
 
                 <!-- 博弈论 -->
                 <div class="demo-box">
-                    <h3>🎮 博弈论：激励与均衡</h3>
-                    <p class="demo-desc">比特币通过精巧的激励设计，使得诚实行为成为所有参与者的最优策略。</p>
+                    <h3 data-i18n="pow.game.title">🎮 博弈论：激励与均衡</h3>
+                    <p class="demo-desc" data-i18n="pow.game.desc">比特币通过精巧的激励设计，使得诚实行为成为所有参与者的最优策略。</p>
 
                     <div class="game-theory-visual">
                         <!-- 纳什均衡展示 -->
                         <div class="nash-equilibrium">
-                            <h4>⚖️ 纳什均衡：诚实挖矿 vs 攻击</h4>
+                            <h4 data-i18n="pow.game.nash.title">⚖️ 纳什均衡：诚实挖矿 vs 攻击</h4>
                             <div class="strategy-matrix">
                                 <div class="matrix-header">
                                     <div class="matrix-corner"></div>
-                                    <div class="matrix-label">其他矿工诚实</div>
-                                    <div class="matrix-label">其他矿工攻击</div>
+                                    <div class="matrix-label" data-i18n="pow.game.nash.others.honest">其他矿工诚实</div>
+                                    <div class="matrix-label" data-i18n="pow.game.nash.others.attack">其他矿工攻击</div>
                                 </div>
                                 <div class="matrix-row">
-                                    <div class="matrix-label">你诚实</div>
+                                    <div class="matrix-label" data-i18n="pow.game.nash.you.honest">你诚实</div>
                                     <div class="matrix-cell win">
-                                        <span class="payoff">+区块奖励</span>
-                                        <span class="payoff">+交易费</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.reward.block">+区块奖励</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.reward.fee">+交易费</span>
                                     </div>
                                     <div class="matrix-cell neutral">
-                                        <span class="payoff">+少量奖励</span>
-                                        <span class="payoff">(网络不稳定)</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.reward.small">+少量奖励</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.unstable">(网络不稳定)</span>
                                     </div>
                                 </div>
                                 <div class="matrix-row">
-                                    <div class="matrix-label">你攻击</div>
+                                    <div class="matrix-label" data-i18n="pow.game.nash.you.attack">你攻击</div>
                                     <div class="matrix-cell lose">
-                                        <span class="payoff">-硬件成本</span>
-                                        <span class="payoff">-电力成本</span>
-                                        <span class="payoff">-币价下跌</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.loss.hardware">-硬件成本</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.loss.power">-电力成本</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.loss.price">-币价下跌</span>
                                     </div>
                                     <div class="matrix-cell lose">
-                                        <span class="payoff">-所有人亏损</span>
-                                        <span class="payoff">(系统崩溃)</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.loss.all">-所有人亏损</span>
+                                        <span class="payoff" data-i18n="pow.game.nash.crash">(系统崩溃)</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="equilibrium-result">
+                            <div class="equilibrium-result" data-i18n="pow.game.nash.result" data-i18n-html="pow.game.nash.result">
                                 <strong>纳什均衡:</strong> 所有矿工诚实挖矿 → 每个人都获得最大期望收益
                             </div>
                         </div>
 
                         <!-- 激励相容 -->
                         <div class="incentive-compat">
-                            <h4>🎯 激励相容性</h4>
+                            <h4 data-i18n="pow.game.incentive.title">🎯 激励相容性</h4>
                             <div class="incentive-grid">
                                 <div class="incentive-item">
                                     <div class="incentive-icon">💰</div>
                                     <div class="incentive-text">
-                                        <strong>区块奖励</strong>
-                                        <p>诚实挖矿获得新发行的比特币</p>
+                                        <strong data-i18n="pow.game.incentive.reward">区块奖励</strong>
+                                        <p data-i18n="pow.game.incentive.reward.desc">诚实挖矿获得新发行的比特币</p>
                                     </div>
                                 </div>
                                 <div class="incentive-item">
                                     <div class="incentive-icon">💸</div>
                                     <div class="incentive-text">
-                                        <strong>交易手续费</strong>
-                                        <p>打包交易获得用户支付的费用</p>
+                                        <strong data-i18n="pow.game.incentive.fees">交易手续费</strong>
+                                        <p data-i18n="pow.game.incentive.fees.desc">打包交易获得用户支付的费用</p>
                                     </div>
                                 </div>
                                 <div class="incentive-item">
                                     <div class="incentive-icon">📈</div>
                                     <div class="incentive-text">
-                                        <strong>币价上涨</strong>
-                                        <p>网络安全增强推动币价上涨</p>
+                                        <strong data-i18n="pow.game.incentive.price">币价上涨</strong>
+                                        <p data-i18n="pow.game.incentive.price.desc">网络安全增强推动币价上涨</p>
                                     </div>
                                 </div>
                                 <div class="incentive-item">
                                     <div class="incentive-icon">🏭</div>
                                     <div class="incentive-text">
-                                        <strong>沉没成本</strong>
-                                        <p>已投入的硬件只有挖矿才有价值</p>
+                                        <strong data-i18n="pow.game.incentive.sunk">沉没成本</strong>
+                                        <p data-i18n="pow.game.incentive.sunk.desc">已投入的硬件只有挖矿才有价值</p>
                                     </div>
                                 </div>
                             </div>
@@ -445,75 +446,75 @@
 
                 <!-- 51%攻击分析 -->
                 <div class="demo-box">
-                    <h3>⚔️ 51% 攻击成本分析</h3>
-                    <p class="demo-desc">计算发起51%攻击所需的成本，理解为什么攻击比特币在经济上不可行。</p>
+                    <h3 data-i18n="pow.attack.title">⚔️ 51% 攻击成本分析</h3>
+                    <p class="demo-desc" data-i18n="pow.attack.desc">计算发起51%攻击所需的成本，理解为什么攻击比特币在经济上不可行。</p>
 
                     <div class="attack-calculator">
                         <div class="calc-inputs">
                             <div class="calc-input-group">
-                                <label>攻击持续时间:</label>
+                                <label data-i18n="pow.attack.duration.label">攻击持续时间:</label>
                                 <select id="attack-duration">
-                                    <option value="1">1 小时</option>
-                                    <option value="6" selected>6 小时</option>
-                                    <option value="24">24 小时</option>
-                                    <option value="168">1 周</option>
+                                    <option value="1" data-i18n="pow.attack.duration.1h">1 小时</option>
+                                    <option value="6" selected data-i18n="pow.attack.duration.6h">6 小时</option>
+                                    <option value="24" data-i18n="pow.attack.duration.24h">24 小时</option>
+                                    <option value="168" data-i18n="pow.attack.duration.1w">1 周</option>
                                 </select>
                             </div>
                             <div class="calc-input-group">
-                                <label>当前网络算力:</label>
+                                <label data-i18n="pow.attack.hashrate.label">当前网络算力:</label>
                                 <span class="calc-value" id="network-hashrate">~880 EH/s</span>
                             </div>
                         </div>
 
-                        <button id="calc-attack" class="btn">📊 计算攻击成本</button>
+                        <button id="calc-attack" class="btn" data-i18n="pow.attack.calc.btn">📊 计算攻击成本</button>
 
                         <div class="attack-results" id="attack-results" style="display: none;">
                             <div class="result-grid">
                                 <div class="result-item">
-                                    <span class="result-label">需要算力</span>
+                                    <span class="result-label" data-i18n="pow.attack.result.hashrate">需要算力</span>
                                     <span class="result-value" id="needed-hashrate">300+ EH/s</span>
                                 </div>
                                 <div class="result-item">
-                                    <span class="result-label">硬件成本</span>
+                                    <span class="result-label" data-i18n="pow.attack.result.hardware">硬件成本</span>
                                     <span class="result-value" id="hardware-cost">$10B+</span>
                                 </div>
                                 <div class="result-item">
-                                    <span class="result-label">电力成本</span>
+                                    <span class="result-label" data-i18n="pow.attack.result.power">电力成本</span>
                                     <span class="result-value" id="power-cost">$5M/小时</span>
                                 </div>
                                 <div class="result-item highlight">
-                                    <span class="result-label">总攻击成本</span>
+                                    <span class="result-label" data-i18n="pow.attack.result.total">总攻击成本</span>
                                     <span class="result-value" id="total-cost">$10B+</span>
                                 </div>
                             </div>
 
                             <div class="attack-comparison">
-                                <h4>攻击收益 vs 攻击成本</h4>
+                                <h4 data-i18n="pow.attack.compare.title">攻击收益 vs 攻击成本</h4>
                                 <div class="comparison-bars">
                                     <div class="comp-bar">
-                                        <div class="comp-label">可能收益（双花）</div>
+                                        <div class="comp-label" data-i18n="pow.attack.compare.gain">可能收益（双花）</div>
                                         <div class="comp-fill gain" style="width: 20%;"></div>
                                         <span class="comp-value" id="potential-gain">~$100M</span>
                                     </div>
                                     <div class="comp-bar">
-                                        <div class="comp-label">攻击成本</div>
+                                        <div class="comp-label" data-i18n="pow.attack.compare.cost">攻击成本</div>
                                         <div class="comp-fill cost" style="width: 100%;"></div>
                                         <span class="comp-value" id="attack-cost-bar">$10B+</span>
                                     </div>
                                 </div>
                                 <div class="comparison-verdict">
                                     <span class="verdict-icon">❌</span>
-                                    <span class="verdict-text">攻击成本远超潜在收益，经济上不可行</span>
+                                    <span class="verdict-text" data-i18n="pow.attack.verdict">攻击成本远超潜在收益，经济上不可行</span>
                                 </div>
                             </div>
 
                             <div class="attack-consequences">
-                                <h4>⚠️ 攻击的附带损失</h4>
+                                <h4 data-i18n="pow.attack.consequences.title">⚠️ 攻击的附带损失</h4>
                                 <ul>
-                                    <li>🔻 攻击者持有的BTC价值暴跌</li>
-                                    <li>🔻 专用矿机失去挖矿价值</li>
-                                    <li>🔻 市场信心崩溃，交易所下架</li>
-                                    <li>🔻 法律风险和声誉损失</li>
+                                    <li data-i18n="pow.attack.consequences.1">🔻 攻击者持有的BTC价值暴跌</li>
+                                    <li data-i18n="pow.attack.consequences.2">🔻 专用矿机失去挖矿价值</li>
+                                    <li data-i18n="pow.attack.consequences.3">🔻 市场信心崩溃，交易所下架</li>
+                                    <li data-i18n="pow.attack.consequences.4">🔻 法律风险和声誉损失</li>
                                 </ul>
                             </div>
                         </div>
@@ -522,22 +523,22 @@
 
                 <!-- 难度调整 -->
                 <div class="demo-box">
-                    <h3>📊 难度调整机制</h3>
-                    <p class="demo-desc">比特币网络每 2016 个区块自动调整难度，保持平均 10 分钟的出块时间。</p>
+                    <h3 data-i18n="pow.diff.title">📊 难度调整机制</h3>
+                    <p class="demo-desc" data-i18n="pow.diff.desc">比特币网络每 2016 个区块自动调整难度，保持平均 10 分钟的出块时间。</p>
 
                     <div class="difficulty-mechanism">
                         <div class="diff-formula">
                             <div class="formula-box">
-                                <span class="formula-title">新难度计算</span>
-                                <code>新难度 = 旧难度 × (2016 × 10分钟 / 实际耗时)</code>
+                                <span class="formula-title" data-i18n="pow.diff.formula.title">新难度计算</span>
+                                <code data-i18n="pow.diff.formula.code">新难度 = 旧难度 × (2016 × 10分钟 / 实际耗时)</code>
                             </div>
                         </div>
 
                         <div class="diff-simulation">
-                            <h4>🔄 难度调整模拟</h4>
+                            <h4 data-i18n="pow.diff.sim.title">🔄 难度调整模拟</h4>
                             <div class="sim-controls">
                                 <div class="sim-input">
-                                    <label>网络算力变化:</label>
+                                    <label data-i18n="pow.diff.sim.hashrate.label">网络算力变化:</label>
                                     <input type="range" id="hashrate-change" min="-50" max="100" value="0">
                                     <span id="hashrate-change-value">+0%</span>
                                 </div>
@@ -545,12 +546,12 @@
 
                             <div class="sim-results">
                                 <div class="sim-block">
-                                    <div class="sim-label">调整前出块时间</div>
+                                    <div class="sim-label" data-i18n="pow.diff.sim.before">调整前出块时间</div>
                                     <div class="sim-value" id="old-block-time">10:00</div>
                                 </div>
-                                <div class="sim-arrow">→ 调整 →</div>
+                                <div class="sim-arrow" data-i18n="pow.diff.sim.arrow">→ 调整 →</div>
                                 <div class="sim-block">
-                                    <div class="sim-label">调整后出块时间</div>
+                                    <div class="sim-label" data-i18n="pow.diff.sim.after">调整后出块时间</div>
                                     <div class="sim-value" id="new-block-time">10:00</div>
                                 </div>
                             </div>
@@ -561,15 +562,15 @@
                                     <div class="timeline-marker" id="timeline-marker" style="left: 50%;"></div>
                                 </div>
                                 <div class="timeline-labels">
-                                    <span>2 周快</span>
-                                    <span>目标: 2 周</span>
-                                    <span>4 周慢</span>
+                                    <span data-i18n="pow.diff.timeline.fast">2 周快</span>
+                                    <span data-i18n="pow.diff.timeline.target">目标: 2 周</span>
+                                    <span data-i18n="pow.diff.timeline.slow">4 周慢</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="diff-history">
-                            <h4>📈 难度历史趋势</h4>
+                            <h4 data-i18n="pow.diff.history.title">📈 难度历史趋势</h4>
                             <div class="history-chart" id="difficulty-chart">
                                 <div class="chart-bar" style="height: 10%;" title="2010"></div>
                                 <div class="chart-bar" style="height: 15%;" title="2012"></div>
@@ -590,41 +591,41 @@
                                 <span>2022</span>
                                 <span>2024</span>
                             </div>
-                            <p class="chart-note">难度从 2009 年的 1 增长到 2024 年的约 80 万亿 (80T)</p>
+                            <p class="chart-note" data-i18n="pow.diff.history.note">难度从 2009 年的 1 增长到 2024 年的约 80 万亿 (80T)</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 总结卡片 -->
                 <div class="card highlight">
-                    <h4>💡 为什么工作量证明如此重要？</h4>
+                    <h4 data-i18n="pow.summary.title">💡 为什么工作量证明如此重要？</h4>
                     <div class="pow-summary">
                         <div class="summary-item">
                             <span class="summary-icon">🔐</span>
                             <div>
-                                <strong>安全锚定</strong>
-                                <p>将数字货币锚定到物理世界的能源消耗</p>
+                                <strong data-i18n="pow.summary.anchor">安全锚定</strong>
+                                <p data-i18n="pow.summary.anchor.desc">将数字货币锚定到物理世界的能源消耗</p>
                             </div>
                         </div>
                         <div class="summary-item">
                             <span class="summary-icon">⚖️</span>
                             <div>
-                                <strong>公平发行</strong>
-                                <p>谁付出算力谁获得奖励，无需许可</p>
+                                <strong data-i18n="pow.summary.fair">公平发行</strong>
+                                <p data-i18n="pow.summary.fair.desc">谁付出算力谁获得奖励，无需许可</p>
                             </div>
                         </div>
                         <div class="summary-item">
                             <span class="summary-icon">🎯</span>
                             <div>
-                                <strong>激励相容</strong>
-                                <p>诚实行为是所有人的最优策略</p>
+                                <strong data-i18n="pow.summary.incentive">激励相容</strong>
+                                <p data-i18n="pow.summary.incentive.desc">诚实行为是所有人的最优策略</p>
                             </div>
                         </div>
                         <div class="summary-item">
                             <span class="summary-icon">🌐</span>
                             <div>
-                                <strong>去中心化</strong>
-                                <p>任何人都可以参与，无需信任第三方</p>
+                                <strong data-i18n="pow.summary.decentral">去中心化</strong>
+                                <p data-i18n="pow.summary.decentral.desc">任何人都可以参与，无需信任第三方</p>
                             </div>
                         </div>
                     </div>
@@ -642,7 +643,7 @@
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="../js/i18n.js?v=20260203f"></script>
-    <script src="../js/pow.js?v=20260203f"></script>
+    <script src="../js/i18n.js?v=20260206a"></script>
+    <script src="../js/pow.js?v=20260206a"></script>
 </body>
 </html>

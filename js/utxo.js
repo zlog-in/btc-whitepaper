@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // UTXO 数据结构
 // ==========================================
@@ -144,7 +145,7 @@ function renderUtxoList() {
                 <div class="utxo-txid">TX: ${truncate(utxo.txid)}</div>
                 <div class="utxo-vout">Output #${utxo.vout}</div>
             </div>
-            <div class="utxo-status ${isSelected ? 'selected' : 'unspent'}">${isSelected ? '✓ 已选' : '○ 可用'}</div>
+            <div class="utxo-status ${isSelected ? 'selected' : 'unspent'}">${isSelected ? (typeof t === 'function' ? t('utxo.status.selected') : '✓ 已选') : (typeof t === 'function' ? t('utxo.status.available') : '○ 可用')}</div>
         `;
         div.addEventListener('click', () => toggleUtxoSelection(index));
         list.appendChild(div);
@@ -464,22 +465,22 @@ document.getElementById('send-tx').addEventListener('click', async () => {
     const resultDiv = document.getElementById('tx-result');
     const sigHtml = `
         <div class="tx-signature">
-            <h4>🔏 交易签名</h4>
+            <h4>${typeof t === 'function' ? t('utxo.sig.title') : '🔏 交易签名'}</h4>
             <div class="sig-details">
                 <div class="sig-row">
-                    <span class="sig-label">交易哈希:</span>
+                    <span class="sig-label">${typeof t === 'function' ? t('utxo.sig.txhash') : '交易哈希:'}</span>
                     <code class="sig-value">${truncate(signature.txHash, 12)}</code>
                 </div>
                 <div class="sig-row">
-                    <span class="sig-label">签名 r:</span>
+                    <span class="sig-label">${typeof t === 'function' ? t('utxo.sig.r') : '签名 r:'}</span>
                     <code class="sig-value">${truncate(signature.r, 12)}</code>
                 </div>
                 <div class="sig-row">
-                    <span class="sig-label">签名 s:</span>
+                    <span class="sig-label">${typeof t === 'function' ? t('utxo.sig.s') : '签名 s:'}</span>
                     <code class="sig-value">${truncate(signature.s, 12)}</code>
                 </div>
             </div>
-            <p class="sig-note">✅ 使用私钥签名后广播到网络</p>
+            <p class="sig-note">${typeof t === 'function' ? t('utxo.sig.note') : '✅ 使用私钥签名后广播到网络'}</p>
         </div>
     `;
     resultDiv.innerHTML += sigHtml;
@@ -537,3 +538,5 @@ function init() {
 }
 
 init();
+
+})();

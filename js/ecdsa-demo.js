@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // ECDSA 数字签名可视化演示
 // 使用 secp256k1 椭圆曲线
@@ -646,3 +647,5 @@ function showECDSAPanel(step) {
 
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', initECDSADemo);
+
+})();

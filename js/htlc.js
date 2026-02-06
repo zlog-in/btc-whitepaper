@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // HTLC 交互演示
 // ==========================================
@@ -632,3 +633,5 @@ document.getElementById('unlock-refund-btn').addEventListener('click', async () 
 // 初始化
 updateBlockHeight();
 timeoutInput.dispatchEvent(new Event('input'));
+
+})();

@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // 多重签名交互演示
 // ==========================================
@@ -446,3 +447,5 @@ document.getElementById('broadcast-btn').addEventListener('click', async () => {
 
     btn.textContent = '✅ ' + (typeof t === 'function' ? t('multisig.broadcasted') : '已广播');
 });
+
+})();

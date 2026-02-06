@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // 共识传播演示
 // ==========================================
@@ -272,7 +273,7 @@ function triggerFork() {
 
     if (forkPoint) forkPoint.classList.add('active');
     if (explanation) explanation.style.display = 'block';
-    if (status) status.innerHTML = '<div class="status-message warning">⚠️ 分叉发生！网络暂时分裂成两条链</div>';
+    if (status) status.innerHTML = `<div class="status-message warning">${typeof t === 'function' ? t('p2p.fork.status.warning') : '⚠️ 分叉发生！网络暂时分裂成两条链'}</div>`;
     if (resolveA) resolveA.disabled = false;
     if (resolveB) resolveB.disabled = false;
 
@@ -311,7 +312,7 @@ function resolveFork(winner) {
 
     if (winner === 'a') {
         // 矿工A赢得竞争
-        if (status) status.innerHTML = '<div class="status-message success">✅ 矿工A找到新区块！链A成为最长链，链B的区块#4B成为孤块</div>';
+        if (status) status.innerHTML = `<div class="status-message success">${typeof t === 'function' ? t('p2p.fork.status.resolveA') : '✅ 矿工A找到新区块！链A成为最长链，链B的区块#4B成为孤块'}</div>`;
 
         // 添加新区块到链A
         if (branchA) {
@@ -331,7 +332,7 @@ function resolveFork(winner) {
 
     } else {
         // 矿工B赢得竞争
-        if (status) status.innerHTML = '<div class="status-message success">✅ 矿工B找到新区块！链B成为最长链，链A的区块#4A成为孤块</div>';
+        if (status) status.innerHTML = `<div class="status-message success">${typeof t === 'function' ? t('p2p.fork.status.resolveB') : '✅ 矿工B找到新区块！链B成为最长链，链A的区块#4A成为孤块'}</div>`;
 
         // 添加新区块到链B
         if (branchB) {
@@ -364,7 +365,7 @@ function resetFork() {
 
     if (forkPoint) forkPoint.classList.remove('active');
     if (explanation) explanation.style.display = 'none';
-    if (status) status.innerHTML = '<div class="status-message">点击"触发分叉"观看演示</div>';
+    if (status) status.innerHTML = `<div class="status-message">${typeof t === 'function' ? t('p2p.fork.status.initial') : '点击"触发分叉"观看演示'}</div>`;
     if (resolveA) resolveA.disabled = true;
     if (resolveB) resolveB.disabled = true;
 
@@ -376,7 +377,7 @@ function resetFork() {
             <div class="chain-arrow">→</div>
             <div class="chain-block fork-block block-a" id="block-4a">
                 <span class="block-label">#4A</span>
-                <span class="block-miner">矿工 A</span>
+                <span class="block-miner" data-i18n="p2p.fork.minerA">${typeof t === 'function' ? t('p2p.fork.minerA') : '矿工 A'}</span>
             </div>
         `;
     }
@@ -387,7 +388,7 @@ function resetFork() {
             <div class="chain-arrow">→</div>
             <div class="chain-block fork-block block-b" id="block-4b">
                 <span class="block-label">#4B</span>
-                <span class="block-miner">矿工 B</span>
+                <span class="block-miner" data-i18n="p2p.fork.minerB">${typeof t === 'function' ? t('p2p.fork.minerB') : '矿工 B'}</span>
             </div>
         `;
     }
@@ -431,8 +432,8 @@ function updateConvergenceDisplay() {
             nodeEl.dataset.chain = chain;
             const chainLabel = nodeEl.querySelector('.node-chain');
             if (chainLabel) {
-                if (chain === 'a') chainLabel.textContent = '链A';
-                else if (chain === 'b') chainLabel.textContent = '链B';
+                if (chain === 'a') chainLabel.textContent = typeof t === 'function' ? t('p2p.convergence.chainA') : '链A';
+                else if (chain === 'b') chainLabel.textContent = typeof t === 'function' ? t('p2p.convergence.chainB') : '链B';
                 else chainLabel.textContent = '';
             }
         }
@@ -494,13 +495,13 @@ function runConvergenceStep() {
     switch (convergenceState.step) {
         case 0:
             // 初始状态
-            setConvergenceMessage('所有节点都在区块#3上，准备接收新区块...');
+            setConvergenceMessage(typeof t === 'function' ? t('p2p.convergence.msg.step0') : '所有节点都在区块#3上，准备接收新区块...');
             convergenceState.nodeChains = {};
             break;
 
         case 1:
             // 分叉传播 - 节点随机接收不同的区块
-            setConvergenceMessage('矿工A和B同时发现区块，节点根据网络延迟接收不同的区块...');
+            setConvergenceMessage(typeof t === 'function' ? t('p2p.convergence.msg.step1') : '矿工A和B同时发现区块，节点根据网络延迟接收不同的区块...');
             convergenceState.nodeChains = {
                 1: 'a', 2: 'a', 3: 'b',
                 4: 'b', 5: 'a', 6: 'b'
@@ -509,14 +510,14 @@ function runConvergenceStep() {
 
         case 2:
             // 新区块产生 - 链A变长
-            setConvergenceMessage('矿工A率先在链A上挖出新区块#5A，链A现在更长！');
+            setConvergenceMessage(typeof t === 'function' ? t('p2p.convergence.msg.step2') : '矿工A率先在链A上挖出新区块#5A，链A现在更长！');
             convergenceState.chainALength = 5;
             updateMiniChains();
             break;
 
         case 3:
             // 共识收敛 - 所有节点切换到最长链
-            setConvergenceMessage('✅ 所有节点检测到链A更长，自动切换到链A。共识达成！');
+            setConvergenceMessage(typeof t === 'function' ? t('p2p.convergence.msg.step3') : '✅ 所有节点检测到链A更长，自动切换到链A。共识达成！');
             convergenceState.nodeChains = {
                 1: 'a', 2: 'a', 3: 'a',
                 4: 'a', 5: 'a', 6: 'a'
@@ -571,7 +572,7 @@ function resetConvergence() {
     if (stepBtn) stepBtn.disabled = true;
     if (startBtn) startBtn.disabled = false;
 
-    setConvergenceMessage('点击"开始演示"观察共识如何形成');
+    setConvergenceMessage(typeof t === 'function' ? t('p2p.convergence.msg.initial') : '点击"开始演示"观察共识如何形成');
     updateConvergenceDisplay();
     updateMiniChains();
 
@@ -617,3 +618,5 @@ document.addEventListener('DOMContentLoaded', () => {
     resetFork();
     resetConvergence();
 });
+
+})();

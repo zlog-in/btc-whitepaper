@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // SHA-256 哈希函数
 // ==========================================
@@ -327,3 +328,5 @@ verifySignature.addEventListener('input', () => {
     verifyResult.innerHTML = '';
     verifyProcess.style.display = 'none';
 });
+
+})();

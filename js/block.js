@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // SHA-256 哈希函数
 // ==========================================
@@ -117,7 +118,7 @@ function updateBlockHash() {
 
     singleBlock.classList.remove('valid', 'invalid');
     singleBlock.classList.add(isValid ? 'valid' : 'invalid');
-    blockStatus.textContent = isValid ? '✅ 有效区块' : '⏳ 待挖矿';
+    blockStatus.textContent = isValid ? (typeof t === 'function' ? t('block.status.valid') : '✅ 有效区块') : (typeof t === 'function' ? t('block.status.pending') : '⏳ 待挖矿');
 }
 
 // 事件监听
@@ -146,12 +147,12 @@ mineBtn.addEventListener('click', () => {
     if (miningInterval) {
         clearInterval(miningInterval);
         miningInterval = null;
-        mineBtn.textContent = '⛏️ 开始挖矿';
+        mineBtn.textContent = typeof t === 'function' ? t('block.mine.btn') : '⛏️ 开始挖矿';
         mineBtn.classList.remove('mining');
         return;
     }
 
-    mineBtn.textContent = '⏹️ 停止挖矿';
+    mineBtn.textContent = typeof t === 'function' ? t('block.mine.stop') : '⏹️ 停止挖矿';
     mineBtn.classList.add('mining');
 
     const difficulty = parseInt(difficultyInput.value);
@@ -167,11 +168,11 @@ mineBtn.addEventListener('click', () => {
             if (hash.startsWith(target)) {
                 clearInterval(miningInterval);
                 miningInterval = null;
-                mineBtn.textContent = '⛏️ 开始挖矿';
+                mineBtn.textContent = typeof t === 'function' ? t('block.mine.btn') : '⛏️ 开始挖矿';
                 mineBtn.classList.remove('mining');
                 singleBlock.classList.remove('invalid');
                 singleBlock.classList.add('valid');
-                blockStatus.textContent = '✅ 有效区块';
+                blockStatus.textContent = typeof t === 'function' ? t('block.status.valid') : '✅ 有效区块';
                 return;
             }
             nonce++;
@@ -182,3 +183,5 @@ mineBtn.addEventListener('click', () => {
 });
 
 updateBlockHash();
+
+})();

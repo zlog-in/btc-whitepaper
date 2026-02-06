@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // 时间锁交互演示
 // ==========================================
@@ -408,3 +409,5 @@ document.getElementById('try-spend-btn').addEventListener('click', async () => {
 // 初始化
 updateBlockHeight();
 lockHeightInput.dispatchEvent(new Event('input'));
+
+})();

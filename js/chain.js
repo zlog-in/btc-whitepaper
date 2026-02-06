@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // SHA-256 哈希函数
 // ==========================================
@@ -96,7 +97,7 @@ function createChainBlock(index, prevHash, transactions = []) {
         prevHash,
         timestamp: new Date().toISOString(),
         transactions,
-        data: transactions.map(tx => `${tx.from}→${tx.to}: ${tx.amount} BTC`).join('; ') || `区块 #${index}`,
+        data: transactions.map(tx => `${tx.from}→${tx.to}: ${tx.amount} BTC`).join('; ') || `${typeof t === 'function' ? t('chain.block.default') : '区块'} #${index}`,
         nonce: 0,
         hash: ''
     };
@@ -192,11 +193,11 @@ function renderBlockchain() {
             </div>
             <div class="vblock-body">
                 <div class="vblock-field">
-                    <span class="vfield-label">前哈希</span>
+                    <span class="vfield-label">${typeof t === 'function' ? t('chain.block.prevhash') : '前哈希'}</span>
                     <code class="vfield-value prev-hash">${block.prevHash.slice(0, 12)}...</code>
                 </div>
                 <div class="vblock-field">
-                    <span class="vfield-label">数据</span>
+                    <span class="vfield-label">${typeof t === 'function' ? t('chain.block.data') : '数据'}</span>
                     <textarea class="vfield-data" data-block="${i}">${block.data}</textarea>
                 </div>
                 <div class="vblock-field">
@@ -204,11 +205,11 @@ function renderBlockchain() {
                     <code class="vfield-value">${block.nonce}</code>
                 </div>
                 <div class="vblock-field hash-field">
-                    <span class="vfield-label">哈希</span>
+                    <span class="vfield-label">${typeof t === 'function' ? t('chain.block.hash') : '哈希'}</span>
                     <code class="vfield-value block-hash ${block.hash.startsWith(chainTarget) ? 'valid-hash' : 'invalid-hash'}">${block.hash.slice(0, 16)}...</code>
                 </div>
             </div>
-            ${isTampered ? '<div class="tamper-badge">⚠️ 已被篡改</div>' : ''}
+            ${isTampered ? '<div class="tamper-badge">' + (typeof t === 'function' ? t('chain.block.tampered') : '⚠️ 已被篡改') + '</div>' : ''}
         `;
         blockchainVisual.appendChild(blockEl);
 
@@ -222,12 +223,12 @@ function renderBlockchain() {
     // 更新统计
     chainLengthEl.textContent = chain.length;
     if (validation.valid) {
-        chainStatusEl.textContent = '有效 ✅';
+        chainStatusEl.textContent = typeof t === 'function' ? t('chain.stat.valid') : '有效 ✅';
         chainStatusEl.className = 'stat-value valid';
         tamperExplanation.style.display = 'none';
         tamperedBlockIndex = null;
     } else {
-        chainStatusEl.textContent = '无效 ❌';
+        chainStatusEl.textContent = typeof t === 'function' ? t('chain.stat.invalid') : '无效 ❌';
         chainStatusEl.className = 'stat-value invalid';
     }
 
@@ -263,7 +264,7 @@ async function fixTamperedChain() {
     if (tamperedBlockIndex === null) return;
 
     fixChainBtn.disabled = true;
-    fixChainBtn.textContent = '⛏️ 重新挖矿中...';
+    fixChainBtn.textContent = typeof t === 'function' ? t('chain.tamper.fix.mining') : '⛏️ 重新挖矿中...';
 
     for (let i = tamperedBlockIndex; i < chain.length; i++) {
         if (i > 0) {
@@ -274,7 +275,7 @@ async function fixTamperedChain() {
     }
 
     fixChainBtn.disabled = false;
-    fixChainBtn.textContent = '⛏️ 重新挖矿修复';
+    fixChainBtn.textContent = typeof t === 'function' ? t('chain.tamper.fix.btn') : '⛏️ 重新挖矿修复';
     tamperExplanation.style.display = 'none';
     tamperedBlockIndex = null;
 }
@@ -301,26 +302,26 @@ function resetGrowthDemo() {
     }
 
     // 重置打包区
-    packPrevHash.textContent = '等待中...';
-    packTxs.textContent = '0 笔';
+    packPrevHash.textContent = typeof t === 'function' ? t('chain.growth.pack.waiting') : '等待中...';
+    packTxs.textContent = typeof t === 'function' ? t('chain.growth.pack.txcount') : '0 笔';
     packNonce.textContent = '-';
 
     // 重置挖矿区
-    miningStatus.textContent = '等待开始';
+    miningStatus.textContent = typeof t === 'function' ? t('chain.growth.mining.waiting') : '等待开始';
     miningFill.style.width = '0%';
     miningCurrentHash.textContent = '-';
 
     // 重置上链指示
     addedIndicator.innerHTML = `
         <span class="added-icon">⏳</span>
-        <span class="added-text">等待区块</span>
+        <span class="added-text">${typeof t === 'function' ? t('chain.growth.added.waiting') : '等待区块'}</span>
     `;
 
     // 移除所有高亮
     document.querySelectorAll('.growth-stage').forEach(el => el.classList.remove('active', 'complete'));
 
     startGrowthBtn.disabled = false;
-    startGrowthBtn.textContent = '▶️ 开始演示';
+    startGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.btn.start') : '▶️ 开始演示';
 }
 
 async function runGrowthDemo() {
@@ -328,7 +329,7 @@ async function runGrowthDemo() {
 
     // 阶段1: 从交易池选择交易
     document.getElementById('stage-txpool').classList.add('active');
-    startGrowthBtn.textContent = '📦 选择交易...';
+    startGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.status.selecting') : '📦 选择交易...';
 
     currentGrowthTxs = [];
     const txEls = txPool.querySelectorAll('.pending-tx');
@@ -344,12 +345,12 @@ async function runGrowthDemo() {
 
     // 阶段2: 打包区块
     document.getElementById('stage-packaging').classList.add('active');
-    startGrowthBtn.textContent = '📦 打包中...';
+    startGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.status.packing') : '📦 打包中...';
 
     const prevBlock = chain[chain.length - 1];
     packPrevHash.textContent = prevBlock.hash.slice(0, 12) + '...';
     await sleep(400);
-    packTxs.textContent = `${currentGrowthTxs.length} 笔`;
+    packTxs.textContent = typeof t === 'function' ? `${currentGrowthTxs.length} ${t('chain.growth.pack.txunit')}` : `${currentGrowthTxs.length} 笔`;
     await sleep(400);
     packNonce.textContent = '0';
     await sleep(300);
@@ -359,8 +360,8 @@ async function runGrowthDemo() {
 
     // 阶段3: 挖矿
     document.getElementById('stage-mining').classList.add('active');
-    startGrowthBtn.textContent = '⛏️ 挖矿中...';
-    miningStatus.textContent = '寻找有效哈希...';
+    startGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.status.mining') : '⛏️ 挖矿中...';
+    miningStatus.textContent = typeof t === 'function' ? t('chain.growth.mining.searching') : '寻找有效哈希...';
 
     const newBlock = createChainBlock(chain.length, prevBlock.hash, currentGrowthTxs);
 
@@ -369,7 +370,7 @@ async function runGrowthDemo() {
         miningCurrentHash.textContent = hash.slice(0, 20) + '...';
         miningFill.style.width = Math.min(nonce / 100, 100) + '%';
         if (found) {
-            miningStatus.textContent = '✅ 找到有效哈希！';
+            miningStatus.textContent = typeof t === 'function' ? t('chain.growth.mining.found') : '✅ 找到有效哈希！';
             miningFill.style.width = '100%';
             miningFill.style.background = 'var(--success)';
         }
@@ -381,11 +382,11 @@ async function runGrowthDemo() {
 
     // 阶段4: 添加到链
     document.getElementById('stage-added').classList.add('active');
-    startGrowthBtn.textContent = '⛓️ 上链中...';
+    startGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.status.adding') : '⛓️ 上链中...';
 
     addedIndicator.innerHTML = `
         <span class="added-icon success">✅</span>
-        <span class="added-text">区块 #${newBlock.index} 已添加</span>
+        <span class="added-text">${typeof t === 'function' ? t('chain.growth.added.block') : '区块'} #${newBlock.index} ${typeof t === 'function' ? t('chain.growth.added.done') : '已添加'}</span>
     `;
 
     chain.push(newBlock);
@@ -398,7 +399,7 @@ async function runGrowthDemo() {
     // 更新交易池索引
     txPoolIndex = (txPoolIndex + 3) % sampleTransactions.length;
 
-    startGrowthBtn.textContent = '▶️ 再来一次';
+    startGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.btn.again') : '▶️ 再来一次';
     startGrowthBtn.disabled = false;
 
     // 准备下一轮
@@ -411,10 +412,10 @@ function toggleAutoGrowth() {
     if (autoGrowthInterval) {
         clearInterval(autoGrowthInterval);
         autoGrowthInterval = null;
-        autoGrowthBtn.textContent = '🔄 自动增长';
+        autoGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.btn.auto') : '🔄 自动增长';
         autoGrowthBtn.classList.remove('active');
     } else {
-        autoGrowthBtn.textContent = '⏹️ 停止自动';
+        autoGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.btn.stop') : '⏹️ 停止自动';
         autoGrowthBtn.classList.add('active');
         autoGrowthInterval = setInterval(() => {
             if (!startGrowthBtn.disabled) {
@@ -457,7 +458,7 @@ function initializeChain() {
 // ==========================================
 async function addNewBlock() {
     addBlockBtn.disabled = true;
-    addBlockBtn.textContent = '⛏️ 挖矿中...';
+    addBlockBtn.textContent = typeof t === 'function' ? t('chain.mining') : '⛏️ 挖矿中...';
 
     const prevBlock = chain[chain.length - 1];
     const tx = sampleTransactions[txPoolIndex % sampleTransactions.length];
@@ -470,7 +471,7 @@ async function addNewBlock() {
     renderBlockchain();
 
     addBlockBtn.disabled = false;
-    addBlockBtn.textContent = '➕ 添加新区块';
+    addBlockBtn.textContent = typeof t === 'function' ? t('chain.add.btn') : '➕ 添加新区块';
 }
 
 // ==========================================
@@ -489,7 +490,7 @@ if (resetGrowthBtn) resetGrowthBtn.addEventListener('click', () => {
     if (autoGrowthInterval) {
         clearInterval(autoGrowthInterval);
         autoGrowthInterval = null;
-        autoGrowthBtn.textContent = '🔄 自动增长';
+        autoGrowthBtn.textContent = typeof t === 'function' ? t('chain.growth.btn.auto') : '🔄 自动增长';
         autoGrowthBtn.classList.remove('active');
     }
     resetGrowthDemo();
@@ -501,3 +502,5 @@ if (fixChainBtn) fixChainBtn.addEventListener('click', fixTamperedChain);
 
 // 启动
 initializeChain();
+
+})();

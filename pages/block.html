@@ -7,8 +7,9 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>区块结构 · 比特币白皮书</title>
+    <meta data-i18n-title="title.block">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260203f">
+    <link rel="stylesheet" href="../css/style.css?v=20260206a">
 </head>
 <body>
     <nav class="nav">
@@ -92,65 +93,65 @@
 
                 <!-- 区块结构图 -->
                 <div class="demo-box">
-                    <h3>📋 区块组成</h3>
-                    <p class="demo-desc">一个完整的比特币区块由区块头 (Block Header) 和交易列表 (Transactions) 组成。</p>
+                    <h3 data-i18n="block.structure.title">📋 区块组成</h3>
+                    <p class="demo-desc" data-i18n="block.structure.desc">一个完整的比特币区块由区块头 (Block Header) 和交易列表 (Transactions) 组成。</p>
 
                     <div class="block-structure-diagram">
                         <div class="structure-block">
                             <div class="block-section header-section">
-                                <h4>区块头 (80 字节)</h4>
+                                <h4 data-i18n="block.header.title">区块头 (80 字节)</h4>
                                 <div class="header-fields">
                                     <div class="field-item">
-                                        <span class="field-name">版本号</span>
-                                        <span class="field-size">4 字节</span>
-                                        <span class="field-desc">协议版本</span>
+                                        <span class="field-name" data-i18n="block.field.version">版本号</span>
+                                        <span class="field-size" data-i18n="block.field.version.size">4 字节</span>
+                                        <span class="field-desc" data-i18n="block.field.version.desc">协议版本</span>
                                     </div>
                                     <div class="field-item">
-                                        <span class="field-name">前区块哈希</span>
-                                        <span class="field-size">32 字节</span>
-                                        <span class="field-desc">链接到前一区块</span>
+                                        <span class="field-name" data-i18n="block.field.prevhash">前区块哈希</span>
+                                        <span class="field-size" data-i18n="block.field.prevhash.size">32 字节</span>
+                                        <span class="field-desc" data-i18n="block.field.prevhash.desc">链接到前一区块</span>
                                     </div>
                                     <div class="field-item">
-                                        <span class="field-name">Merkle Root</span>
-                                        <span class="field-size">32 字节</span>
-                                        <span class="field-desc">所有交易的摘要</span>
+                                        <span class="field-name" data-i18n="block.field.merkle">Merkle Root</span>
+                                        <span class="field-size" data-i18n="block.field.merkle.size">32 字节</span>
+                                        <span class="field-desc" data-i18n="block.field.merkle.desc">所有交易的摘要</span>
                                     </div>
                                     <div class="field-item">
-                                        <span class="field-name">时间戳</span>
-                                        <span class="field-size">4 字节</span>
-                                        <span class="field-desc">区块创建时间</span>
+                                        <span class="field-name" data-i18n="block.field.time">时间戳</span>
+                                        <span class="field-size" data-i18n="block.field.time.size">4 字节</span>
+                                        <span class="field-desc" data-i18n="block.field.time.desc">区块创建时间</span>
                                     </div>
                                     <div class="field-item">
-                                        <span class="field-name">难度目标</span>
-                                        <span class="field-size">4 字节</span>
-                                        <span class="field-desc">挖矿难度</span>
+                                        <span class="field-name" data-i18n="block.field.bits">难度目标</span>
+                                        <span class="field-size" data-i18n="block.field.bits.size">4 字节</span>
+                                        <span class="field-desc" data-i18n="block.field.bits.desc">挖矿难度</span>
                                     </div>
                                     <div class="field-item highlight">
-                                        <span class="field-name">Nonce</span>
-                                        <span class="field-size">4 字节</span>
-                                        <span class="field-desc">挖矿随机数</span>
+                                        <span class="field-name" data-i18n="block.field.nonce">Nonce</span>
+                                        <span class="field-size" data-i18n="block.field.nonce.size">4 字节</span>
+                                        <span class="field-desc" data-i18n="block.field.nonce.desc">挖矿随机数</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="block-section body-section">
-                                <h4>交易列表</h4>
+                                <h4 data-i18n="block.txlist.title">交易列表</h4>
                                 <div class="tx-list-preview">
                                     <div class="tx-item coinbase">
                                         <span class="tx-icon">🏆</span>
-                                        <span class="tx-label">Coinbase 交易 (矿工奖励)</span>
+                                        <span class="tx-label" data-i18n="block.txlist.coinbase">Coinbase 交易 (矿工奖励)</span>
                                     </div>
                                     <div class="tx-item">
                                         <span class="tx-icon">💸</span>
-                                        <span class="tx-label">交易 #1</span>
+                                        <span class="tx-label" data-i18n="block.txlist.tx1">交易 #1</span>
                                     </div>
                                     <div class="tx-item">
                                         <span class="tx-icon">💸</span>
-                                        <span class="tx-label">交易 #2</span>
+                                        <span class="tx-label" data-i18n="block.txlist.tx2">交易 #2</span>
                                     </div>
                                     <div class="tx-item more">
                                         <span class="tx-icon">...</span>
-                                        <span class="tx-label">更多交易 (平均 ~2000 笔/区块)</span>
+                                        <span class="tx-label" data-i18n="block.txlist.more">更多交易 (平均 ~2000 笔/区块)</span>
                                     </div>
                                 </div>
                             </div>
@@ -160,8 +161,8 @@
 
                 <!-- 交互式区块 -->
                 <div class="demo-box">
-                    <h3>🔧 交互式区块</h3>
-                    <p class="demo-desc">修改区块内容，观察哈希值如何变化。任何微小的改动都会导致完全不同的哈希值。</p>
+                    <h3 data-i18n="block.interactive.title">🔧 交互式区块</h3>
+                    <p class="demo-desc" data-i18n="block.interactive.desc">修改区块内容，观察哈希值如何变化。任何微小的改动都会导致完全不同的哈希值。</p>
 
                     <div class="block-demo">
                         <div class="block-card" id="single-block">
@@ -182,7 +183,7 @@
 
                             <div class="block-field">
                                 <label data-i18n="block.data.label">交易数据：</label>
-                                <textarea id="block-data">Alice 转给 Bob 10 BTC
+                                <textarea id="block-data" data-i18n-value="block.data.default">Alice 转给 Bob 10 BTC
 Bob 转给 Charlie 5 BTC</textarea>
                             </div>
 
@@ -211,53 +212,53 @@ Bob 转给 Charlie 5 BTC</textarea>
                     </div>
 
                     <div class="card info" style="margin-top: 1.5rem;">
-                        <p>💡 想深入了解挖矿过程？请访问 <a href="mining.html">挖矿原理</a> 页面查看详细解释和更丰富的演示。</p>
+                        <p data-i18n-html="block.interactive.tip">💡 想深入了解挖矿过程？请访问 <a href="mining.html">挖矿原理</a> 页面查看详细解释和更丰富的演示。</p>
                     </div>
                 </div>
 
                 <!-- 区块头详解 -->
                 <div class="demo-box">
-                    <h3>📑 区块头字段详解</h3>
+                    <h3 data-i18n="block.details.title">📑 区块头字段详解</h3>
                     <div class="field-details">
                         <div class="detail-card">
                             <div class="detail-icon">🔗</div>
                             <div class="detail-content">
-                                <h4>前区块哈希 (Previous Block Hash)</h4>
-                                <p>指向前一个区块的哈希值，这是形成"链"的关键。创世区块的此字段为全零。</p>
+                                <h4 data-i18n="block.detail.prevhash.title">前区块哈希 (Previous Block Hash)</h4>
+                                <p data-i18n="block.detail.prevhash.desc">指向前一个区块的哈希值，这是形成"链"的关键。创世区块的此字段为全零。</p>
                             </div>
                         </div>
 
                         <div class="detail-card">
                             <div class="detail-icon">🌳</div>
                             <div class="detail-content">
-                                <h4>Merkle Root</h4>
-                                <p>区块内所有交易的 Merkle Tree 根哈希。任何一笔交易改变，Merkle Root 都会改变。</p>
-                                <a href="merkle.html" class="detail-link">了解 Merkle Tree →</a>
+                                <h4 data-i18n="block.detail.merkle.title">Merkle Root</h4>
+                                <p data-i18n="block.detail.merkle.desc">区块内所有交易的 Merkle Tree 根哈希。任何一笔交易改变，Merkle Root 都会改变。</p>
+                                <a href="merkle.html" class="detail-link" data-i18n="block.detail.merkle.link">了解 Merkle Tree →</a>
                             </div>
                         </div>
 
                         <div class="detail-card">
                             <div class="detail-icon">⏰</div>
                             <div class="detail-content">
-                                <h4>时间戳 (Timestamp)</h4>
-                                <p>区块创建的 Unix 时间戳。允许有一定误差，用于难度调整计算。</p>
+                                <h4 data-i18n="block.detail.time.title">时间戳 (Timestamp)</h4>
+                                <p data-i18n="block.detail.time.desc">区块创建的 Unix 时间戳。允许有一定误差，用于难度调整计算。</p>
                             </div>
                         </div>
 
                         <div class="detail-card">
                             <div class="detail-icon">🎯</div>
                             <div class="detail-content">
-                                <h4>难度目标 (Bits)</h4>
-                                <p>压缩格式的难度目标值。网络每 2016 个区块调整一次，保持约 10 分钟出块。</p>
+                                <h4 data-i18n="block.detail.bits.title">难度目标 (Bits)</h4>
+                                <p data-i18n="block.detail.bits.desc">压缩格式的难度目标值。网络每 2016 个区块调整一次，保持约 10 分钟出块。</p>
                             </div>
                         </div>
 
                         <div class="detail-card">
                             <div class="detail-icon">🎲</div>
                             <div class="detail-content">
-                                <h4>Nonce</h4>
-                                <p>矿工不断尝试的随机数，直到找到使区块哈希满足难度要求的值。</p>
-                                <a href="mining.html" class="detail-link">了解挖矿原理 →</a>
+                                <h4 data-i18n="block.detail.nonce.title">Nonce</h4>
+                                <p data-i18n="block.detail.nonce.desc">矿工不断尝试的随机数，直到找到使区块哈希满足难度要求的值。</p>
+                                <a href="mining.html" class="detail-link" data-i18n="block.detail.nonce.link">了解挖矿原理 →</a>
                             </div>
                         </div>
                     </div>
@@ -265,13 +266,13 @@ Bob 转给 Charlie 5 BTC</textarea>
 
                 <!-- Coinbase 交易 -->
                 <div class="card highlight">
-                    <h4>🏆 Coinbase 交易</h4>
-                    <p>每个区块的第一笔交易是特殊的 <strong>Coinbase 交易</strong>，它没有输入，只有输出。这是矿工获得区块奖励的方式：</p>
+                    <h4 data-i18n="block.coinbase.title">🏆 Coinbase 交易</h4>
+                    <p data-i18n-html="block.coinbase.desc">每个区块的第一笔交易是特殊的 <strong>Coinbase 交易</strong>，它没有输入，只有输出。这是矿工获得区块奖励的方式：</p>
                     <ul style="margin-top: 0.75rem; padding-left: 1.5rem;">
-                        <li>区块奖励（新发行的比特币）</li>
-                        <li>区块内所有交易的手续费总和</li>
+                        <li data-i18n="block.coinbase.reward">区块奖励（新发行的比特币）</li>
+                        <li data-i18n="block.coinbase.fees">区块内所有交易的手续费总和</li>
                     </ul>
-                    <p style="margin-top: 0.75rem;">Coinbase 交易的输出需要等待 100 个区块确认后才能使用，这是为了防止链重组导致的问题。</p>
+                    <p style="margin-top: 0.75rem;" data-i18n="block.coinbase.maturity">Coinbase 交易的输出需要等待 100 个区块确认后才能使用，这是为了防止链重组导致的问题。</p>
                 </div>
 
                 <div class="page-nav">
@@ -286,7 +287,7 @@ Bob 转给 Charlie 5 BTC</textarea>
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="../js/i18n.js?v=20260203f"></script>
-    <script src="../js/block.js?v=20260203f"></script>
+    <script src="../js/i18n.js?v=20260206a"></script>
+    <script src="../js/block.js?v=20260206a"></script>
 </body>
 </html>

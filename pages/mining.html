@@ -7,8 +7,9 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>挖矿原理 · 比特币白皮书</title>
+    <meta data-i18n-title="title.mining">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260203f">
+    <link rel="stylesheet" href="../css/style.css?v=20260206a">
 </head>
 <body>
     <nav class="nav">
@@ -92,33 +93,33 @@
 
                 <!-- 什么是挖矿 -->
                 <div class="demo-box">
-                    <h3>🎯 什么是挖矿？</h3>
-                    <p class="demo-desc">挖矿本质上是一个"猜数字"游戏：找到一个 Nonce 值，使得区块哈希以特定数量的零开头。</p>
+                    <h3 data-i18n="mining.concept.title">🎯 什么是挖矿？</h3>
+                    <p class="demo-desc" data-i18n="mining.concept.desc">挖矿本质上是一个"猜数字"游戏：找到一个 Nonce 值，使得区块哈希以特定数量的零开头。</p>
 
                     <div class="mining-concept">
                         <div class="concept-flow">
                             <div class="flow-item">
                                 <div class="flow-icon">📦</div>
-                                <div class="flow-label">区块数据</div>
-                                <div class="flow-desc">交易 + 前区块哈希 + 时间戳</div>
+                                <div class="flow-label" data-i18n="mining.flow.blockdata">区块数据</div>
+                                <div class="flow-desc" data-i18n="mining.flow.blockdata.desc">交易 + 前区块哈希 + 时间戳</div>
                             </div>
                             <div class="flow-arrow">+</div>
                             <div class="flow-item highlight">
                                 <div class="flow-icon">🎲</div>
                                 <div class="flow-label">Nonce</div>
-                                <div class="flow-desc">不断尝试的随机数</div>
+                                <div class="flow-desc" data-i18n="mining.flow.nonce.desc">不断尝试的随机数</div>
                             </div>
                             <div class="flow-arrow">→</div>
                             <div class="flow-item">
                                 <div class="flow-icon">#️⃣</div>
                                 <div class="flow-label">SHA-256</div>
-                                <div class="flow-desc">哈希运算</div>
+                                <div class="flow-desc" data-i18n="mining.flow.sha256.desc">哈希运算</div>
                             </div>
                             <div class="flow-arrow">→</div>
                             <div class="flow-item success">
                                 <div class="flow-icon">✅</div>
-                                <div class="flow-label">验证</div>
-                                <div class="flow-desc">哈希 < 目标值？</div>
+                                <div class="flow-label" data-i18n="mining.flow.verify">验证</div>
+                                <div class="flow-desc" data-i18n="mining.flow.verify.desc">哈希 < 目标值？</div>
                             </div>
                         </div>
                     </div>
@@ -126,57 +127,57 @@
 
                 <!-- 难度目标 -->
                 <div class="demo-box">
-                    <h3>📊 难度目标</h3>
-                    <p class="demo-desc">难度决定了哈希值需要以多少个零开头。零越多，难度越大，找到有效 Nonce 越困难。</p>
+                    <h3 data-i18n="mining.difficulty.title">📊 难度目标</h3>
+                    <p class="demo-desc" data-i18n="mining.difficulty.desc">难度决定了哈希值需要以多少个零开头。零越多，难度越大，找到有效 Nonce 越困难。</p>
 
                     <div class="difficulty-demo">
                         <div class="difficulty-examples">
                             <div class="diff-example">
-                                <div class="diff-label">难度 1 (1个零)</div>
-                                <div class="diff-target">目标: 0xxxxxxx...</div>
-                                <div class="diff-prob">概率: 1/16 (6.25%)</div>
+                                <div class="diff-label" data-i18n="mining.diff.1.label">难度 1 (1个零)</div>
+                                <div class="diff-target" data-i18n="mining.diff.1.target">目标: 0xxxxxxx...</div>
+                                <div class="diff-prob" data-i18n="mining.diff.1.prob">概率: 1/16 (6.25%)</div>
                                 <div class="diff-bar" style="width: 100%;"></div>
                             </div>
                             <div class="diff-example">
-                                <div class="diff-label">难度 2 (2个零)</div>
-                                <div class="diff-target">目标: 00xxxxxx...</div>
-                                <div class="diff-prob">概率: 1/256 (0.39%)</div>
+                                <div class="diff-label" data-i18n="mining.diff.2.label">难度 2 (2个零)</div>
+                                <div class="diff-target" data-i18n="mining.diff.2.target">目标: 00xxxxxx...</div>
+                                <div class="diff-prob" data-i18n="mining.diff.2.prob">概率: 1/256 (0.39%)</div>
                                 <div class="diff-bar" style="width: 60%;"></div>
                             </div>
                             <div class="diff-example">
-                                <div class="diff-label">难度 3 (3个零)</div>
-                                <div class="diff-target">目标: 000xxxxx...</div>
-                                <div class="diff-prob">概率: 1/4096 (0.024%)</div>
+                                <div class="diff-label" data-i18n="mining.diff.3.label">难度 3 (3个零)</div>
+                                <div class="diff-target" data-i18n="mining.diff.3.target">目标: 000xxxxx...</div>
+                                <div class="diff-prob" data-i18n="mining.diff.3.prob">概率: 1/4096 (0.024%)</div>
                                 <div class="diff-bar" style="width: 30%;"></div>
                             </div>
                             <div class="diff-example">
-                                <div class="diff-label">难度 4 (4个零)</div>
-                                <div class="diff-target">目标: 0000xxxx...</div>
-                                <div class="diff-prob">概率: 1/65536 (0.0015%)</div>
+                                <div class="diff-label" data-i18n="mining.diff.4.label">难度 4 (4个零)</div>
+                                <div class="diff-target" data-i18n="mining.diff.4.target">目标: 0000xxxx...</div>
+                                <div class="diff-prob" data-i18n="mining.diff.4.prob">概率: 1/65536 (0.0015%)</div>
                                 <div class="diff-bar" style="width: 10%;"></div>
                             </div>
                         </div>
 
                         <div class="real-difficulty">
-                            <h4>🌍 真实比特币难度</h4>
-                            <p>当前比特币网络要求哈希以约 <strong>19个零</strong> 开头，概率约为 1/10<sup>23</sup>，需要全球矿工每秒尝试数百万亿次哈希运算。</p>
+                            <h4 data-i18n="mining.real.title">🌍 真实比特币难度</h4>
+                            <p data-i18n="mining.real.desc" data-i18n-html="mining.real.desc">当前比特币网络要求哈希以约 <strong>19个零</strong> 开头，概率约为 1/10<sup>23</sup>，需要全球矿工每秒尝试数百万亿次哈希运算。</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 交互式挖矿演示 -->
                 <div class="demo-box">
-                    <h3>⛏️ 挖矿模拟器</h3>
-                    <p class="demo-desc">调整难度，点击开始挖矿，观察 Nonce 如何递增直到找到有效哈希。</p>
+                    <h3 data-i18n="mining.sim.title">⛏️ 挖矿模拟器</h3>
+                    <p class="demo-desc" data-i18n="mining.sim.desc">调整难度，点击开始挖矿，观察 Nonce 如何递增直到找到有效哈希。</p>
 
                     <div class="mining-simulator">
                         <div class="sim-block">
                             <div class="sim-field">
-                                <label>区块数据:</label>
+                                <label data-i18n="mining.sim.data.label">区块数据:</label>
                                 <input type="text" id="mining-data" value="Alice -> Bob: 10 BTC">
                             </div>
                             <div class="sim-field">
-                                <label>难度 (前导零):</label>
+                                <label data-i18n="mining.sim.diff.label">难度 (前导零):</label>
                                 <div class="difficulty-selector">
                                     <input type="range" id="mining-difficulty" min="1" max="5" value="2">
                                     <span id="mining-diff-value">2</span>
@@ -187,31 +188,31 @@
                                 <span class="nonce-value" id="mining-nonce">0</span>
                             </div>
                             <div class="sim-field hash-field">
-                                <label>哈希:</label>
+                                <label data-i18n="mining.sim.hash.label">哈希:</label>
                                 <code class="hash-value" id="mining-hash">-</code>
                             </div>
                             <div class="sim-field target-field">
-                                <label>目标:</label>
+                                <label data-i18n="mining.sim.target.label">目标:</label>
                                 <code class="target-value" id="mining-target">00xxxxxx...</code>
                             </div>
                         </div>
 
                         <div class="sim-controls">
-                            <button id="start-mining" class="btn primary">⛏️ 开始挖矿</button>
-                            <button id="reset-mining" class="btn secondary">🔄 重置</button>
+                            <button id="start-mining" class="btn primary" data-i18n="mining.sim.btn.start">⛏️ 开始挖矿</button>
+                            <button id="reset-mining" class="btn secondary" data-i18n="mining.sim.btn.reset">🔄 重置</button>
                         </div>
 
                         <div class="sim-stats">
                             <div class="stat-item">
-                                <span class="stat-label">尝试次数:</span>
+                                <span class="stat-label" data-i18n="mining.sim.stat.attempts">尝试次数:</span>
                                 <span class="stat-value" id="mining-attempts">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">状态:</span>
-                                <span class="stat-value" id="mining-status">等待开始</span>
+                                <span class="stat-label" data-i18n="mining.sim.stat.status">状态:</span>
+                                <span class="stat-value" id="mining-status" data-i18n="mining.sim.status.waiting">等待开始</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">用时:</span>
+                                <span class="stat-label" data-i18n="mining.sim.stat.time">用时:</span>
                                 <span class="stat-value" id="mining-time">0.00s</span>
                             </div>
                         </div>
@@ -219,11 +220,11 @@
                         <div class="mining-result" id="mining-result" style="display: none;">
                             <div class="result-success">
                                 <span class="result-icon">🎉</span>
-                                <span class="result-text">挖矿成功！</span>
+                                <span class="result-text" data-i18n="mining.sim.success">挖矿成功！</span>
                             </div>
                             <div class="result-details">
-                                <p>找到有效 Nonce: <strong id="found-nonce">-</strong></p>
-                                <p>哈希值: <code id="found-hash">-</code></p>
+                                <p><span data-i18n="mining.sim.found.nonce">找到有效 Nonce:</span> <strong id="found-nonce">-</strong></p>
+                                <p><span data-i18n="mining.sim.found.hash">哈希值:</span> <code id="found-hash">-</code></p>
                             </div>
                         </div>
                     </div>
@@ -231,15 +232,15 @@
 
                 <!-- 挖矿奖励 -->
                 <div class="demo-box">
-                    <h3>💰 挖矿奖励</h3>
-                    <p class="demo-desc">成功挖出区块的矿工可以获得两部分奖励。</p>
+                    <h3 data-i18n="mining.reward.title">💰 挖矿奖励</h3>
+                    <p class="demo-desc" data-i18n="mining.reward.desc">成功挖出区块的矿工可以获得两部分奖励。</p>
 
                     <div class="reward-breakdown">
                         <div class="reward-item">
                             <div class="reward-icon">🏆</div>
                             <div class="reward-content">
-                                <h4>区块奖励 (Block Reward)</h4>
-                                <p>系统凭空创造的新比特币，作为对矿工的激励。</p>
+                                <h4 data-i18n="mining.reward.block.title">区块奖励 (Block Reward)</h4>
+                                <p data-i18n="mining.reward.block.desc">系统凭空创造的新比特币，作为对矿工的激励。</p>
                                 <div class="halving-timeline">
                                     <div class="halving-item">
                                         <span class="halving-year">2009</span>
@@ -266,16 +267,16 @@
                                         <span class="halving-reward">3.125 BTC</span>
                                     </div>
                                 </div>
-                                <p class="halving-note">每 210,000 个区块（约4年）减半一次，直到 2140 年左右全部 2100 万枚比特币被挖完。</p>
+                                <p class="halving-note" data-i18n="mining.reward.halving.note" data-i18n-html="mining.reward.halving.note">每 210,000 个区块（约4年）减半一次，直到 <strong>2140</strong> 年左右全部 <strong>2100 万</strong>枚比特币被挖完。</p>
                             </div>
                         </div>
 
                         <div class="reward-item">
                             <div class="reward-icon">💸</div>
                             <div class="reward-content">
-                                <h4>交易手续费 (Transaction Fees)</h4>
-                                <p>区块中所有交易支付的手续费总和，归挖出该区块的矿工所有。</p>
-                                <p class="fee-note">随着区块奖励减半，手续费将成为矿工的主要收入来源。</p>
+                                <h4 data-i18n="mining.reward.fee.title">交易手续费 (Transaction Fees)</h4>
+                                <p data-i18n="mining.reward.fee.desc">区块中所有交易支付的手续费总和，归挖出该区块的矿工所有。</p>
+                                <p class="fee-note" data-i18n="mining.reward.fee.note">随着区块奖励减半，手续费将成为矿工的主要收入来源。</p>
                             </div>
                         </div>
                     </div>
@@ -283,34 +284,34 @@
 
                 <!-- 挖矿的意义 -->
                 <div class="card highlight">
-                    <h4>💡 挖矿的本质意义</h4>
+                    <h4 data-i18n="mining.significance.title">💡 挖矿的本质意义</h4>
                     <div class="mining-significance">
                         <div class="sig-item">
                             <span class="sig-icon">🔒</span>
                             <div>
-                                <strong>保护网络安全</strong>
-                                <p>算力投入使得攻击网络的成本极高</p>
+                                <strong data-i18n="mining.sig.security">保护网络安全</strong>
+                                <p data-i18n="mining.sig.security.desc">算力投入使得攻击网络的成本极高</p>
                             </div>
                         </div>
                         <div class="sig-item">
                             <span class="sig-icon">⚖️</span>
                             <div>
-                                <strong>公平发行货币</strong>
-                                <p>任何人都可以通过贡献算力获得比特币</p>
+                                <strong data-i18n="mining.sig.fairness">公平发行货币</strong>
+                                <p data-i18n="mining.sig.fairness.desc">任何人都可以通过贡献算力获得比特币</p>
                             </div>
                         </div>
                         <div class="sig-item">
                             <span class="sig-icon">🤝</span>
                             <div>
-                                <strong>达成共识</strong>
-                                <p>工作量证明确保所有节点认可同一条链</p>
+                                <strong data-i18n="mining.sig.consensus">达成共识</strong>
+                                <p data-i18n="mining.sig.consensus.desc">工作量证明确保所有节点认可同一条链</p>
                             </div>
                         </div>
                         <div class="sig-item">
                             <span class="sig-icon">📜</span>
                             <div>
-                                <strong>确认交易</strong>
-                                <p>交易被打包进区块后才被网络认可</p>
+                                <strong data-i18n="mining.sig.confirm">确认交易</strong>
+                                <p data-i18n="mining.sig.confirm.desc">交易被打包进区块后才被网络认可</p>
                             </div>
                         </div>
                     </div>
@@ -328,7 +329,7 @@
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="../js/i18n.js?v=20260203f"></script>
-    <script src="../js/mining.js?v=20260203f"></script>
+    <script src="../js/i18n.js?v=20260206a"></script>
+    <script src="../js/mining.js?v=20260206a"></script>
 </body>
 </html>

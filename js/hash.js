@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // SHA-256 哈希函数 (纯 JS 实现，支持 UTF-8)
 // ==========================================
@@ -180,16 +181,13 @@ document.getElementById('hash-calc-btn').addEventListener('click', updateHashDem
 
         output.textContent = hash;
 
-        const lang = document.documentElement.lang || 'zh-CN';
-        const isZh = lang.startsWith('zh');
-
-        countEl.textContent = isZh ? `计算次数: ${count}` : `Runs: ${count}`;
+        countEl.textContent = (typeof t === 'function' ? t('hash.demo.det.runs') : '计算次数: {n}').replace('{n}', count);
 
         if (lastHash === null) {
             lastHash = hash;
             resultEl.textContent = '';
         } else if (lastHash === hash) {
-            resultEl.textContent = isZh ? '✓ 结果相同！' : '✓ Same result!';
+            resultEl.textContent = typeof t === 'function' ? t('hash.demo.det.same') : '✓ 结果相同！';
             resultEl.className = 'demo-result success';
         }
 
@@ -291,13 +289,10 @@ document.getElementById('hash-calc-btn').addEventListener('click', updateHashDem
         searching = true;
         attempts = 0;
 
-        const lang = document.documentElement.lang || 'zh-CN';
-        const isZh = lang.startsWith('zh');
-
         function tryGuess() {
             if (attempts > 50) {
                 unknownEl.textContent = '???';
-                resultEl.textContent = isZh ? '✗ 无法反推！' : '✗ Cannot reverse!';
+                resultEl.textContent = typeof t === 'function' ? t('hash.demo.oneway.fail') : '✗ 无法反推！';
                 resultEl.className = 'demo-result fail';
                 searching = false;
                 return;
@@ -316,7 +311,7 @@ document.getElementById('hash-calc-btn').addEventListener('click', updateHashDem
             animationId = setTimeout(tryGuess, 50);
         }
 
-        resultEl.textContent = isZh ? '尝试反推中...' : 'Trying to reverse...';
+        resultEl.textContent = typeof t === 'function' ? t('hash.demo.oneway.trying') : '尝试反推中...';
         resultEl.className = 'demo-result';
         tryGuess();
     });
@@ -384,14 +379,11 @@ document.getElementById('hash-calc-btn').addEventListener('click', updateHashDem
         // 输入差异
         const inputDiff = levenshtein(text1, text2);
 
-        const lang = document.documentElement.lang || 'zh-CN';
-        const isZh = lang.startsWith('zh');
-
-        inputDiffEl.textContent = isZh ? `${inputDiff} 字符` : `${inputDiff} char(s)`;
+        inputDiffEl.textContent = (typeof t === 'function' ? t('hash.demo.avalanche.chars') : '{n} 字符').replace('{n}', inputDiff);
 
         // 位差异
         const { diff, bits1, bits2 } = countBitDiff(hash1, hash2);
-        bitsDiffEl.textContent = `${diff} / 256 ${isZh ? '位' : 'bits'}`;
+        bitsDiffEl.textContent = `${diff} / 256 ${typeof t === 'function' ? t('hash.demo.avalanche.bits') : '位'}`;
 
         // 百分比
         const percent = ((diff / 256) * 100).toFixed(1);
@@ -486,4 +478,6 @@ document.getElementById('hash-calc-btn').addEventListener('click', updateHashDem
         startBtn.disabled = false;
         stopBtn.disabled = true;
     });
+})();
+
 })();

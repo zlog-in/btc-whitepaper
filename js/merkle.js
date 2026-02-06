@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // Merkle Tree 演示
 // ==========================================
@@ -123,7 +124,7 @@ function buildMerkleTree(txList) {
                 id: `${lastNode.id}-dup`,
                 isDuplicate: true,
                 originalId: lastNode.id,
-                label: lastNode.isLeaf ? `${lastNode.label} (复制)` : `${lastNode.label || 'H'} (复制)`
+                label: lastNode.isLeaf ? `${lastNode.label} ${typeof t === 'function' ? t('merkle.node.copy.suffix') : '(复制)'}` : `${lastNode.label || 'H'} ${typeof t === 'function' ? t('merkle.node.copy.suffix') : '(复制)'}`
             };
             levelWithDuplicates.push(duplicateNode);
 
@@ -265,7 +266,7 @@ function renderMerkleTree(tree, containerId, animated = true) {
             let labelText;
             if (node.isDuplicate) {
                 // 复制节点显示 "复制" 标签
-                labelText = "复制";
+                labelText = typeof t === 'function' ? t('merkle.node.duplicate') : '复制';
             } else if (node.isLeaf) {
                 labelText = node.label;
             } else if (levelIndex === tree.levels.length - 1) {
@@ -356,7 +357,7 @@ function animateBuild(tree, svg) {
 
     function showStep() {
         if (stepIndex >= steps.length) {
-            calcDisplay.innerHTML = '<div class="calc-complete">✓ Merkle Tree 构建完成！根哈希: <code>' + tree.root.hash.substring(0, 16) + '...</code></div>';
+            calcDisplay.innerHTML = '<div class="calc-complete">' + (typeof t === 'function' ? t('merkle.calc.complete') : '✓ Merkle Tree 构建完成！根哈希:') + ' <code>' + tree.root.hash.substring(0, 16) + '...</code></div>';
             return;
         }
 
@@ -376,8 +377,8 @@ function animateBuild(tree, svg) {
 
             calcDisplay.innerHTML = `
                 <div class="calc-step-info">
-                    <span class="calc-step-num">步骤 1</span>
-                    <span class="calc-step-desc">计算每个交易的哈希值，形成叶子节点</span>
+                    <span class="calc-step-num">${typeof t === 'function' ? t('merkle.calc.step') : '步骤'} 1</span>
+                    <span class="calc-step-desc">${typeof t === 'function' ? t('merkle.calc.leaves.desc') : '计算每个交易的哈希值，形成叶子节点'}</span>
                 </div>
                 <div class="calc-formula-list">
                     ${step.nodes.map(n => `<div class="calc-item"><span class="calc-input">${n.label}</span> → <span class="calc-output">${n.hash.substring(0, 12)}...</span></div>`).join('')}
@@ -399,17 +400,17 @@ function animateBuild(tree, svg) {
 
             calcDisplay.innerHTML = `
                 <div class="calc-step-info">
-                    <span class="calc-step-num">步骤 ${stepIndex + 1}</span>
-                    <span class="calc-step-desc">节点数为奇数，复制最后一个节点</span>
+                    <span class="calc-step-num">${typeof t === 'function' ? t('merkle.calc.step') : '步骤'} ${stepIndex + 1}</span>
+                    <span class="calc-step-desc">${typeof t === 'function' ? t('merkle.calc.odd.desc') : '节点数为奇数，复制最后一个节点'}</span>
                 </div>
                 <div class="calc-duplicate">
                     <div class="duplicate-source">
-                        <span class="source-label">原节点:</span>
+                        <span class="source-label">${typeof t === 'function' ? t('merkle.calc.original') : '原节点:'}</span>
                         <span class="source-hash">${step.originalNode.hash.substring(0, 12)}...</span>
                     </div>
-                    <div class="duplicate-arrow">→ 复制</div>
+                    <div class="duplicate-arrow">${typeof t === 'function' ? t('merkle.calc.copy') : '→ 复制'}</div>
                     <div class="duplicate-target">
-                        <span class="target-label">虚拟节点:</span>
+                        <span class="target-label">${typeof t === 'function' ? t('merkle.calc.virtual') : '虚拟节点:'}</span>
                         <span class="target-hash">${step.duplicateNode.hash.substring(0, 12)}...</span>
                     </div>
                 </div>
@@ -448,11 +449,11 @@ function animateBuild(tree, svg) {
 
             // 显示计算过程
             const levelNum = parseInt(step.parentNode.id.split('-')[1]) || 0;
-            const rightLabel = step.hasDuplicate ? '(复制) ' + step.rightNode.hash.substring(0, 8) + '...' : step.rightNode.hash.substring(0, 10) + '...';
+            const rightLabel = step.hasDuplicate ? (typeof t === 'function' ? t('merkle.node.copy.suffix') : '(复制)') + ' ' + step.rightNode.hash.substring(0, 8) + '...' : step.rightNode.hash.substring(0, 10) + '...';
             calcDisplay.innerHTML = `
                 <div class="calc-step-info">
-                    <span class="calc-step-num">步骤 ${stepIndex + 1}</span>
-                    <span class="calc-step-desc">合并节点计算父哈希${step.hasDuplicate ? ' (使用复制节点)' : ''}</span>
+                    <span class="calc-step-num">${typeof t === 'function' ? t('merkle.calc.step') : '步骤'} ${stepIndex + 1}</span>
+                    <span class="calc-step-desc">${typeof t === 'function' ? t('merkle.calc.combine.desc') : '合并节点计算父哈希'}${step.hasDuplicate ? ' ' + (typeof t === 'function' ? t('merkle.calc.with.dup') : '(使用复制节点)') : ''}</span>
                 </div>
                 <div class="calc-combine">
                     <div class="calc-children">
@@ -578,17 +579,17 @@ function renderProof(tree, txIndex, proof) {
     // 显示证明路径数据
     let proofDataHtml = '<div class="proof-hashes">';
     proof.forEach((step, idx) => {
-        const posLabel = step.position === 'left' ? '左' : '右';
+        const posLabel = step.position === 'left' ? (typeof t === 'function' ? t('merkle.pos.left') : '左') : (typeof t === 'function' ? t('merkle.pos.right') : '右');
         proofDataHtml += `
             <div class="proof-hash-item">
-                <span class="proof-hash-level">第${idx + 1}层</span>
-                <span class="proof-hash-pos">${posLabel}兄弟:</span>
+                <span class="proof-hash-level">${(typeof t === 'function' ? t('merkle.proof.level') : '第{n}层').replace('{n}', idx + 1)}</span>
+                <span class="proof-hash-pos">${(typeof t === 'function' ? t('merkle.proof.sibling') : '{pos}兄弟:').replace('{pos}', posLabel)}</span>
                 <code>${step.hash.substring(0, 12)}...</code>
             </div>
         `;
     });
     proofDataHtml += '</div>';
-    proofDataHtml += `<div class="proof-data-note">💡 只需 ${proof.length} 个哈希值即可验证，无需完整的 ${tree.levels[0].length} 笔交易数据</div>`;
+    proofDataHtml += `<div class="proof-data-note">${(typeof t === 'function' ? t('merkle.proof.data.note') : '💡 只需 {count} 个哈希值即可验证，无需完整的 {total} 笔交易数据').replace('{count}', proof.length).replace('{total}', tree.levels[0].length)}</div>`;
     document.getElementById('verify-proof-data').innerHTML = proofDataHtml;
 
     // 收集验证路径上的节点ID
@@ -709,16 +710,16 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
             pathContainer.innerHTML = `
                 <div class="verify-anim-step active">
                     <div class="verify-step-header">
-                        <span class="verify-step-num">开始验证</span>
-                        <span class="verify-step-title">选择要验证的交易</span>
+                        <span class="verify-step-num">${typeof t === 'function' ? t('merkle.verify.start') : '开始验证'}</span>
+                        <span class="verify-step-title">${typeof t === 'function' ? t('merkle.verify.select.title') : '选择要验证的交易'}</span>
                     </div>
                     <div class="verify-step-content">
                         <div class="verify-target-info">
-                            <span class="target-label">交易内容:</span>
+                            <span class="target-label">${typeof t === 'function' ? t('merkle.verify.tx.content') : '交易内容:'}</span>
                             <span class="target-value">${step.tx}</span>
                         </div>
                         <div class="verify-target-hash">
-                            <span class="hash-label">交易哈希:</span>
+                            <span class="hash-label">${typeof t === 'function' ? t('merkle.verify.tx.hash') : '交易哈希:'}</span>
                             <code>${step.node.hash.substring(0, 16)}...</code>
                         </div>
                     </div>
@@ -727,7 +728,7 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
 
             calcContainer.innerHTML = `
                 <div class="verify-calc-current">
-                    <span class="calc-label">当前哈希值:</span>
+                    <span class="calc-label">${typeof t === 'function' ? t('merkle.verify.current.hash') : '当前哈希值:'}</span>
                     <code class="current-hash">${step.node.hash.substring(0, 20)}...</code>
                 </div>
             `;
@@ -760,18 +761,18 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
             pathContainer.innerHTML = `
                 <div class="verify-anim-step active">
                     <div class="verify-step-header">
-                        <span class="verify-step-num">第 ${step.stepNum} 层</span>
-                        <span class="verify-step-title">获取兄弟节点并合并</span>
+                        <span class="verify-step-num">${(typeof t === 'function' ? t('merkle.verify.layer') : '第 {n} 层').replace('{n}', step.stepNum)}</span>
+                        <span class="verify-step-title">${typeof t === 'function' ? t('merkle.verify.get.sibling') : '获取兄弟节点并合并'}</span>
                     </div>
                     <div class="verify-step-content">
                         <div class="verify-pair">
                             <div class="pair-node ${step.siblingPosition === 'right' ? 'current' : 'sibling'}">
-                                <span class="pair-label">${step.siblingPosition === 'right' ? '当前' : '兄弟(左)'}</span>
+                                <span class="pair-label">${step.siblingPosition === 'right' ? (typeof t === 'function' ? t('merkle.verify.current') : '当前') : (typeof t === 'function' ? t('merkle.verify.sibling.left') : '兄弟(左)')}</span>
                                 <code>${step.leftHash.substring(0, 10)}...</code>
                             </div>
                             <span class="pair-plus">+</span>
                             <div class="pair-node ${step.siblingPosition === 'left' ? 'current' : 'sibling'}">
-                                <span class="pair-label">${step.siblingPosition === 'left' ? '当前' : '兄弟(右)'}</span>
+                                <span class="pair-label">${step.siblingPosition === 'left' ? (typeof t === 'function' ? t('merkle.verify.current') : '当前') : (typeof t === 'function' ? t('merkle.verify.sibling.right') : '兄弟(右)')}</span>
                                 <code>${step.rightHash.substring(0, 10)}...</code>
                             </div>
                         </div>
@@ -790,7 +791,7 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
                         </div>
                         <div class="calc-arrow-down">↓ SHA256</div>
                         <div class="verify-calc-current">
-                            <span class="calc-label">计算结果:</span>
+                            <span class="calc-label">${typeof t === 'function' ? t('merkle.verify.calc.result') : '计算结果:'}</span>
                             <code class="current-hash result-new">${step.resultHash.substring(0, 20)}...</code>
                         </div>
                     </div>
@@ -830,18 +831,18 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
             pathContainer.innerHTML = `
                 <div class="verify-anim-step active final">
                     <div class="verify-step-header">
-                        <span class="verify-step-num">最终验证</span>
-                        <span class="verify-step-title">比较 Merkle Root</span>
+                        <span class="verify-step-num">${typeof t === 'function' ? t('merkle.verify.final') : '最终验证'}</span>
+                        <span class="verify-step-title">${typeof t === 'function' ? t('merkle.verify.compare.root') : '比较 Merkle Root'}</span>
                     </div>
                     <div class="verify-step-content">
                         <div class="verify-compare">
                             <div class="compare-item">
-                                <span class="compare-label">计算得到:</span>
+                                <span class="compare-label">${typeof t === 'function' ? t('merkle.verify.computed') : '计算得到:'}</span>
                                 <code>${step.computedHash.substring(0, 16)}...</code>
                             </div>
                             <div class="compare-vs">${step.success ? '=' : '≠'}</div>
                             <div class="compare-item">
-                                <span class="compare-label">Merkle Root:</span>
+                                <span class="compare-label">${typeof t === 'function' ? t('merkle.verify.root.label') : 'Merkle Root:'}</span>
                                 <code>${step.rootHash.substring(0, 16)}...</code>
                             </div>
                         </div>
@@ -852,7 +853,7 @@ function animateVerification(steps, tree, svg, pathContainer, calcContainer) {
             calcContainer.innerHTML = `
                 <div class="verify-final-result ${step.success ? 'success' : 'fail'}">
                     <span class="result-icon">${step.success ? '✓' : '✗'}</span>
-                    <span class="result-text">${step.success ? '验证成功！交易确实存在于此 Merkle Tree 中' : '验证失败！哈希值不匹配'}</span>
+                    <span class="result-text">${step.success ? (typeof t === 'function' ? t('merkle.verify.success') : '验证成功！交易确实存在于此 Merkle Tree 中') : (typeof t === 'function' ? t('merkle.verify.fail') : '验证失败！哈希值不匹配')}</span>
                 </div>
             `;
         }
@@ -900,17 +901,17 @@ function renderFakeProof(tree) {
     // 显示证明路径数据（借用TX1的路径）
     let proofDataHtml = '<div class="proof-hashes">';
     realProof.forEach((step, idx) => {
-        const posLabel = step.position === 'left' ? '左' : '右';
+        const posLabel = step.position === 'left' ? (typeof t === 'function' ? t('merkle.pos.left') : '左') : (typeof t === 'function' ? t('merkle.pos.right') : '右');
         proofDataHtml += `
             <div class="proof-hash-item">
-                <span class="proof-hash-level">第${idx + 1}层</span>
-                <span class="proof-hash-pos">${posLabel}兄弟:</span>
+                <span class="proof-hash-level">${(typeof t === 'function' ? t('merkle.proof.level') : '第{n}层').replace('{n}', idx + 1)}</span>
+                <span class="proof-hash-pos">${(typeof t === 'function' ? t('merkle.proof.sibling') : '{pos}兄弟:').replace('{pos}', posLabel)}</span>
                 <code>${step.hash.substring(0, 12)}...</code>
             </div>
         `;
     });
     proofDataHtml += '</div>';
-    proofDataHtml += `<div class="proof-data-note" style="color: #ef4444;">⚠️ 使用 TX1 的证明路径尝试验证伪造交易</div>`;
+    proofDataHtml += `<div class="proof-data-note" style="color: #ef4444;">${typeof t === 'function' ? t('merkle.fake.warning') : '⚠️ 使用 TX1 的证明路径尝试验证伪造交易'}</div>`;
     document.getElementById('verify-proof-data').innerHTML = proofDataHtml;
 
     // 滚动到验证数据区域
@@ -983,16 +984,16 @@ function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer)
             pathContainer.innerHTML = `
                 <div class="verify-anim-step active" style="border-color: #ef4444;">
                     <div class="verify-step-header">
-                        <span class="verify-step-num" style="background: #ef4444;">伪造交易</span>
-                        <span class="verify-step-title">尝试验证不存在的交易</span>
+                        <span class="verify-step-num" style="background: #ef4444;">${typeof t === 'function' ? t('merkle.fake.title') : '伪造交易'}</span>
+                        <span class="verify-step-title">${typeof t === 'function' ? t('merkle.fake.desc') : '尝试验证不存在的交易'}</span>
                     </div>
                     <div class="verify-step-content">
                         <div class="verify-target-info">
-                            <span class="target-label">交易内容:</span>
+                            <span class="target-label">${typeof t === 'function' ? t('merkle.verify.tx.content') : '交易内容:'}</span>
                             <span class="target-value" style="color: #ef4444;">${step.tx}</span>
                         </div>
                         <div class="verify-target-hash">
-                            <span class="hash-label">交易哈希:</span>
+                            <span class="hash-label">${typeof t === 'function' ? t('merkle.verify.tx.hash') : '交易哈希:'}</span>
                             <code style="color: #ef4444;">${step.hash.substring(0, 16)}...</code>
                         </div>
                     </div>
@@ -1001,7 +1002,7 @@ function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer)
 
             calcContainer.innerHTML = `
                 <div class="verify-calc-current" style="border: 1px solid #ef4444;">
-                    <span class="calc-label">伪造哈希:</span>
+                    <span class="calc-label">${typeof t === 'function' ? t('merkle.fake.hash') : '伪造哈希:'}</span>
                     <code class="current-hash" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">${step.hash.substring(0, 20)}...</code>
                 </div>
             `;
@@ -1013,18 +1014,18 @@ function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer)
             pathContainer.innerHTML = `
                 <div class="verify-anim-step active">
                     <div class="verify-step-header">
-                        <span class="verify-step-num">第 ${step.stepNum} 层</span>
-                        <span class="verify-step-title">使用借来的证明路径计算</span>
+                        <span class="verify-step-num">${(typeof t === 'function' ? t('merkle.verify.layer') : '第 {n} 层').replace('{n}', step.stepNum)}</span>
+                        <span class="verify-step-title">${typeof t === 'function' ? t('merkle.fake.using.path') : '使用借来的证明路径计算'}</span>
                     </div>
                     <div class="verify-step-content">
                         <div class="verify-pair">
                             <div class="pair-node ${step.siblingPosition === 'right' ? 'current' : 'sibling'}" ${step.siblingPosition === 'right' ? 'style="border-color: #ef4444;"' : ''}>
-                                <span class="pair-label">${step.siblingPosition === 'right' ? '伪造' : '兄弟(左)'}</span>
+                                <span class="pair-label">${step.siblingPosition === 'right' ? (typeof t === 'function' ? t('merkle.fake.label') : '伪造') : (typeof t === 'function' ? t('merkle.verify.sibling.left') : '兄弟(左)')}</span>
                                 <code>${step.leftHash.substring(0, 10)}...</code>
                             </div>
                             <span class="pair-plus">+</span>
                             <div class="pair-node ${step.siblingPosition === 'left' ? 'current' : 'sibling'}" ${step.siblingPosition === 'left' ? 'style="border-color: #ef4444;"' : ''}>
-                                <span class="pair-label">${step.siblingPosition === 'left' ? '伪造' : '兄弟(右)'}</span>
+                                <span class="pair-label">${step.siblingPosition === 'left' ? (typeof t === 'function' ? t('merkle.fake.label') : '伪造') : (typeof t === 'function' ? t('merkle.verify.sibling.right') : '兄弟(右)')}</span>
                                 <code>${step.rightHash.substring(0, 10)}...</code>
                             </div>
                         </div>
@@ -1042,7 +1043,7 @@ function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer)
                         </div>
                         <div class="calc-arrow-down">↓ SHA256</div>
                         <div class="verify-calc-current">
-                            <span class="calc-label">计算结果:</span>
+                            <span class="calc-label">${typeof t === 'function' ? t('merkle.verify.calc.result') : '计算结果:'}</span>
                             <code class="current-hash" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">${step.resultHash.substring(0, 20)}...</code>
                         </div>
                     </div>
@@ -1063,18 +1064,18 @@ function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer)
             pathContainer.innerHTML = `
                 <div class="verify-anim-step active" style="border-color: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);">
                     <div class="verify-step-header">
-                        <span class="verify-step-num" style="background: #ef4444;">验证失败</span>
-                        <span class="verify-step-title">哈希值不匹配！</span>
+                        <span class="verify-step-num" style="background: #ef4444;">${typeof t === 'function' ? t('merkle.fake.fail.title') : '验证失败'}</span>
+                        <span class="verify-step-title">${typeof t === 'function' ? t('merkle.fake.fail.desc') : '哈希值不匹配！'}</span>
                     </div>
                     <div class="verify-step-content">
                         <div class="verify-compare">
                             <div class="compare-item">
-                                <span class="compare-label">计算得到:</span>
+                                <span class="compare-label">${typeof t === 'function' ? t('merkle.verify.computed') : '计算得到:'}</span>
                                 <code style="color: #ef4444;">${step.computedHash.substring(0, 16)}...</code>
                             </div>
                             <div class="compare-vs" style="color: #ef4444;">≠</div>
                             <div class="compare-item">
-                                <span class="compare-label">Merkle Root:</span>
+                                <span class="compare-label">${typeof t === 'function' ? t('merkle.verify.root.label') : 'Merkle Root:'}</span>
                                 <code>${step.rootHash.substring(0, 16)}...</code>
                             </div>
                         </div>
@@ -1085,12 +1086,12 @@ function animateFakeVerification(steps, tree, svg, pathContainer, calcContainer)
             calcContainer.innerHTML = `
                 <div class="verify-final-result fail">
                     <span class="result-icon">✗</span>
-                    <span class="result-text">验证失败！该交易不存在于 Merkle Tree 中</span>
+                    <span class="result-text">${typeof t === 'function' ? t('merkle.fake.result') : '验证失败！该交易不存在于 Merkle Tree 中'}</span>
                 </div>
                 <div class="fake-explanation">
-                    <p>💡 <strong>为什么验证失败？</strong></p>
-                    <p>伪造交易的哈希值与真实交易不同，即使使用相同的证明路径，计算出的根哈希也会完全不同，无法匹配真正的 Merkle Root。</p>
-                    <p>这就是 Merkle Tree 能够防止数据篡改的原因。</p>
+                    <p>💡 <strong>${typeof t === 'function' ? t('merkle.fake.why.title') : '为什么验证失败？'}</strong></p>
+                    <p>${typeof t === 'function' ? t('merkle.fake.why.desc') : '伪造交易的哈希值与真实交易不同，即使使用相同的证明路径，计算出的根哈希也会完全不同，无法匹配真正的 Merkle Root。'}</p>
+                    <p>${typeof t === 'function' ? t('merkle.fake.why.conclusion') : '这就是 Merkle Tree 能够防止数据篡改的原因。'}</p>
                 </div>
             `;
         }
@@ -1144,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 添加一个不存在的交易选项
         const fakeOption = document.createElement('option');
         fakeOption.value = 'fake';
-        fakeOption.textContent = '❌ TX_FAKE (不存在)';
+        fakeOption.textContent = typeof t === 'function' ? t('merkle.fake.option') : '❌ TX_FAKE (不存在)';
         fakeOption.style.color = '#ef4444';
         verifySelect.appendChild(fakeOption);
 
@@ -1170,3 +1171,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+})();

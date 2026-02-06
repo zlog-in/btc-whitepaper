@@ -1,3 +1,4 @@
+(function() {
 // ==========================================
 // SHA-256 哈希函数
 // ==========================================
@@ -123,7 +124,7 @@ function mineStep() {
         foundHash.style.display = 'block';
         validHashDisplay.textContent = hash;
         validNonce.textContent = nonce.toLocaleString();
-        powStatus.textContent = '🎉 成功!';
+        powStatus.textContent = typeof t === 'function' ? t('pow.sim.status.success') : '🎉 成功!';
         startBtn.disabled = true;
         stepBtn.disabled = true;
         return true;
@@ -142,9 +143,9 @@ function startMining() {
     mining = true;
     startTime = Date.now();
     hashCount = 0;
-    startBtn.textContent = '⏸️ 暂停';
+    startBtn.textContent = typeof t === 'function' ? t('pow.sim.btn.pause') : '⏸️ 暂停';
     stepBtn.disabled = true;
-    powStatus.textContent = '⛏️ 挖矿中...';
+    powStatus.textContent = typeof t === 'function' ? t('pow.sim.status.mining') : '⛏️ 挖矿中...';
 
     miningInterval = setInterval(() => {
         // 每帧计算多个哈希
@@ -167,10 +168,10 @@ function stopMining() {
         clearInterval(miningInterval);
         miningInterval = null;
     }
-    startBtn.textContent = '▶️ 继续挖矿';
+    startBtn.textContent = typeof t === 'function' ? t('pow.sim.btn.continue') : '▶️ 继续挖矿';
     stepBtn.disabled = false;
-    if (powStatus.textContent === '⛏️ 挖矿中...') {
-        powStatus.textContent = '⏸️ 已暂停';
+    if (powStatus.textContent === (typeof t === 'function' ? t('pow.sim.status.mining') : '⛏️ 挖矿中...')) {
+        powStatus.textContent = typeof t === 'function' ? t('pow.sim.status.paused') : '⏸️ 已暂停';
     }
 }
 
@@ -180,10 +181,10 @@ function resetMining() {
     hashCount = 0;
     powAttempts.textContent = '0';
     powSpeed.textContent = '0 H/s';
-    powStatus.textContent = '就绪';
+    powStatus.textContent = typeof t === 'function' ? t('pow.sim.status.ready') : '就绪';
     hashStream.innerHTML = '';
     foundHash.style.display = 'none';
-    startBtn.textContent = '▶️ 开始挖矿';
+    startBtn.textContent = typeof t === 'function' ? t('pow.sim.btn.start') : '▶️ 开始挖矿';
     startBtn.disabled = false;
     stepBtn.disabled = false;
 }
@@ -224,7 +225,7 @@ if (calcAttackBtn) {
         // 显示结果
         document.getElementById('needed-hashrate').textContent = neededHashrate.toFixed(0) + ' EH/s';
         document.getElementById('hardware-cost').textContent = '$' + (hardwareCost / 1e9).toFixed(1) + 'B';
-        document.getElementById('power-cost').textContent = '$' + (powerCostPerHour / 1e6).toFixed(1) + 'M/小时';
+        document.getElementById('power-cost').textContent = '$' + (powerCostPerHour / 1e6).toFixed(1) + (typeof t === 'function' ? t('pow.attack.unit.mhour') : 'M/小时');
         document.getElementById('total-cost').textContent = '$' + (totalCost / 1e9).toFixed(1) + 'B+';
 
         // 更新对比条
@@ -282,3 +283,5 @@ if (hashrateChange) {
 // 初始化
 // ==========================================
 updateTargetDisplay();
+
+})();

@@ -7,8 +7,9 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>哈希时间锁 · 比特币白皮书</title>
+    <meta data-i18n-title="title.htlc">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
-    <link rel="stylesheet" href="../css/style.css?v=20260202t">
+    <link rel="stylesheet" href="../css/style.css?v=20260206a">
 </head>
 <body>
     <nav class="nav">
@@ -153,7 +154,7 @@
                         </div>
                         <div class="config-row">
                             <label data-i18n="htlc.secret">秘密原像 (Secret)：</label>
-                            <input type="text" id="secret-input" placeholder="输入秘密字符串..." value="my_secret_123">
+                            <input type="text" id="secret-input" placeholder="输入秘密字符串..." value="my_secret_123" data-i18n-placeholder="htlc.secret.placeholder">
                         </div>
                         <button class="btn primary" id="create-htlc-btn" data-i18n="htlc.create">🔗 创建 HTLC 合约</button>
                     </div>
@@ -255,7 +256,7 @@
                     <div class="unlock-form">
                         <div class="form-group">
                             <label data-i18n="htlc.enter.preimage">输入原像：</label>
-                            <input type="text" id="unlock-preimage" placeholder="输入秘密原像...">
+                            <input type="text" id="unlock-preimage" placeholder="输入秘密原像..." data-i18n-placeholder="htlc.preimage.placeholder">
                             <div class="preimage-hint" id="preimage-hint"></div>
                         </div>
                         <button class="btn primary" id="unlock-success-btn" data-i18n="htlc.unlock.success">✍️ Bob 签名并解锁</button>
@@ -327,7 +328,7 @@
         <p><span data-i18n="footer.text">基于 Satoshi Nakamoto 的</span><a href="https://bitcoin.org/bitcoin.pdf" target="_blank" data-i18n="footer.link">比特币白皮书</a><span data-i18n="footer.suffix">制作</span></p>
     </footer>
 
-    <script src="../js/i18n.js?v=20260202j"></script>
-    <script src="../js/htlc.js?v=20260202j"></script>
+    <script src="../js/i18n.js?v=20260206a"></script>
+    <script src="../js/htlc.js?v=20260206a"></script>
 </body>
 </html>
