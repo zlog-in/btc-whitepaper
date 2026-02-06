@@ -8304,7 +8304,7 @@ body.menu-open {
     position: relative;
 }
 
-.branch {
+.connector-down .branch {
     position: absolute;
     top: 0;
     width: 50%;
