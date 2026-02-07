@@ -3011,6 +3011,10 @@ function updatePageTexts() {
             el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
         }
     });
+
+    // Reveal page after translations applied (prevents FOUC in English mode)
+    document.documentElement.classList.remove('i18n-loading');
+    document.documentElement.classList.add('i18n-ready');
 }
 
 // 初始化语言切换按钮

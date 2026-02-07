@@ -1,3 +1,7 @@
+/* 防止英文模式下闪现中文 */
+html.i18n-loading body { opacity: 0; }
+html.i18n-ready body { transition: opacity 0.1s; }
+
 /* 基础样式 */
 :root {
     --bg: #fafafa;
